@@ -1,5 +1,6 @@
 import { Mail, Lock, ArrowRight, User } from "lucide-react";
 import { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import { FaGithub } from "react-icons/fa";
 // import { FcGoogle } from "react-icons/fc";
 import { SiGoogle } from "react-icons/si";
@@ -7,6 +8,7 @@ import loginSound from "../assets/sound/Ephemeral_Bloom.mp3";
 
 export default function Login() {
     const [tab, setTab] = useState("login");
+    const navigate = useNavigate();
 
     //play sound when component mounts
     useEffect(() => {
@@ -111,7 +113,10 @@ export default function Login() {
                                 />
                             </div>
 
-                            <button className="w-full bg-[#c8b07a] text-[#0F0F10] text-[12px] py-3 flex items-center justify-center gap-4 hover:bg-[#d7c48f] tracking-[0.10rem] transition">
+                            <button
+                                onClick={() => navigate("/")}
+                                className="w-full bg-[#c8b07a] text-[#0F0F10] text-[12px] py-3 flex items-center justify-center gap-4 hover:bg-[#d7c48f] tracking-[0.10rem] transition"
+                            >
                                 SIGN IN
                                 <ArrowRight size={18} />
                             </button>
@@ -120,28 +125,63 @@ export default function Login() {
 
                     {tab === "register" && (
                         <>
-                            {/* REGISTER FORM */}
-                            <div className="flex h-10 items-center gap-3 bg-[#111] border border-white/5 px-3 py-3 hover:border-[#6D634B] ">
+                            {/* First Name */}
+                            <div className="flex h-10 items-center gap-3 bg-[#111] border border-white/5 px-3 py-3 hover:border-[#6D634B]">
                                 <User size={18} className="text-[#A1A1AA]" />
                                 <input
                                     type="text"
-                                    placeholder="Full Name"
+                                    placeholder="First Name"
                                     className="bg-transparent outline-none text-white w-full text-sm"
                                     required
                                 />
                             </div>
 
-                            <div className="flex h-10 items-center gap-3 bg-[#111] border border-white/5 px-3 py-3 hover:border-[#6D634B] ">
+                            {/* Last Name */}
+                            <div className="flex h-10 items-center gap-3 bg-[#111] border border-white/5 px-3 py-3 hover:border-[#6D634B]">
+                                <User size={18} className="text-[#A1A1AA]" />
+                                <input
+                                    type="text"
+                                    placeholder="Last Name"
+                                    className="bg-transparent outline-none text-white w-full text-sm"
+                                    required
+                                />
+                            </div>
+
+                            {/* Username */}
+                            <div className="flex h-10 items-center gap-3 bg-[#111] border border-white/5 px-3 py-3 hover:border-[#6D634B]">
+                                <User size={18} className="text-[#A1A1AA]" />
+                                <input
+                                    type="text"
+                                    placeholder="Username"
+                                    className="bg-transparent outline-none text-white w-full text-sm"
+                                    required
+                                />
+                            </div>
+
+                            {/* Email */}
+                            <div className="flex h-10 items-center gap-3 bg-[#111] border border-white/5 px-3 py-3 hover:border-[#6D634B]">
                                 <Mail size={18} className="text-[#A1A1AA]" />
                                 <input
                                     type="email"
-                                    placeholder="Email address"
+                                    placeholder="Email Address"
                                     className="bg-transparent outline-none text-white w-full text-sm"
                                     required
                                 />
                             </div>
 
-                            <div className="flex h-10 items-center gap-3 bg-[#111] border border-white/5 px-3 py-3 hover:border-[#6D634B] ">
+                            {/* Phone Number */}
+                            <div className="flex h-10 items-center gap-3 bg-[#111] border border-white/5 px-3 py-3 hover:border-[#6D634B]">
+                                <User size={18} className="text-[#A1A1AA]" />
+                                <input
+                                    type="tel"
+                                    placeholder="Phone Number"
+                                    className="bg-transparent outline-none text-white w-full text-sm"
+                                    required
+                                />
+                            </div>
+
+                            {/* Password */}
+                            <div className="flex h-10 items-center gap-3 bg-[#111] border border-white/5 px-3 py-3 hover:border-[#6D634B]">
                                 <Lock size={18} className="text-[#A1A1AA]" />
                                 <input
                                     type="password"
@@ -151,6 +191,7 @@ export default function Login() {
                                 />
                             </div>
 
+                            {/* Register Button */}
                             <button className="w-full bg-[#C9B582] text-[#0F0F10] text-[13px] py-3 flex items-center justify-center gap-3 hover:bg-[#d7c48f] tracking-[0.10rem] transition">
                                 CREATE ACCOUNT
                                 <ArrowRight size={18} />
