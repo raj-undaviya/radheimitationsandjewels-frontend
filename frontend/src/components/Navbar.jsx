@@ -1,157 +1,201 @@
-import { FiMenu, FiSearch, FiShoppingBag, FiX } from "react-icons/fi";
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { FiMenu, FiSearch, FiShoppingBag, FiX, FiHeart, FiUser } from "react-icons/fi";
+import logo from "../assets/Logo.png";
+import { NavLink } from "react-router-dom";
 
 export default function Navbar() {
 
     const [menuOpen, setMenuOpen] = useState(false);
     const [searchOpen, setSearchOpen] = useState(false);
-    const navigate = useNavigate();
 
     return (
         <>
             {/* NAVBAR */}
-            {/* <nav className="w-full bg-black text-gray-300 px-6 md:px-12 py-5 flex items-center justify-between"> */}
-            <nav className="w-full h-22.5 bg-black text-gray-300 px-6 md:px-12 flex items-center justify-between">
-                {/* LEFT */}
-                <div className="flex items-center gap-8">
+            <nav className="w-full bg-black text-gray-300">
 
-                    {/* Hamburger */}
-                    <button
-                        onClick={() => setMenuOpen(true)}
-                        className="text-2xl md:hidden"
-                    >
-                        <FiMenu />
-                    </button>
+                {/* Center container - for large display */}
+                <div className="max-w-7xl mx-auto px-4 md:px-6 py-2">
 
-                    {/* Desktop menu */}
-                    {/* <div className="hidden md:flex md:gap-3 gap-12 text-xl md:text-xs tracking-[0.25em]">
-                        <a href="#">COLLECTIONS</a>
-                        <a href="#">BRIDAL</a>
-                        <a href="#">GIFTS</a>
+                    <div className="flex items-center justify-between gap-4 p-2">
+
+                        {/* Logo */}
+                        {/* <div className="leading-tight shrink-0">
+                        <h1 className="text-xl sm:text-2xl font-bold tracking-widest 
+                        bg-orange-400 to-white bg-clip-text text-transparent">
+                            RADHE
+                        </h1>
+
+                        <p className="text-[9px] tracking-[3px] text-white">
+                            IMITATIONS & JEWELS
+                        </p>
                     </div> */}
-                    <div className="hidden md:flex gap-3 lg:gap-12 text-xs lg:text-sm xl:text-base tracking-[0.25em]">
-                        <a href="#">COLLECTIONS</a>
-                        <a href="#">BRIDAL</a>
-                        <a href="#">GIFTS</a>
+                        <div className="shrink-0 flex items-center cursor-pointer">
+                            <img
+                                src={logo}
+                                alt="Radhe Imitations & Jewels"
+                                className="h-20 md:h-12 lg:h-25 w-auto object-contain overflow-hidden"
+                            />
+                        </div>
+
+                        {/* Desktop Menu */}
+                        <ul className="hidden md:flex flex-1 justify-center gap-4 lg:gap-8 text-sm tracking-wider">
+
+                            {/* <li className="hover:text-[#EC5B13]  hover:border-b-2 hover:border-[#EC5B13] pb-1 cursor-pointer text-[#94A3B8]">
+                            <Link to="/">COLLECTIONS</Link>
+                        </li> */}
+
+                            <li>
+                                <NavLink
+                                    to="/"
+                                    className={({ isActive }) =>
+                                        `pb-1 cursor-pointer border-b-2 ${isActive
+                                            ? "text-[#EC5B13] border-[#EC5B13]"
+                                            : "border-transparent hover:text-[#EC5B13] hover:border-[#EC5B13] text-[#94A3B8]"
+                                        }`
+                                    }
+                                >
+                                    COLLECTIONS
+                                </NavLink>
+                            </li>
+
+                            <li className="hover:text-[#EC5B13]  hover:border-b-2 hover:border-[#EC5B13] pb-1 cursor-pointer text-[#94A3B8]">
+                                BRIDAL
+                            </li>
+
+                            <li className="hover:text-[#EC5B13] hover:border-b-2 hover:border-[#EC5B13] pb-1 cursor-pointer text-[#94A3B8]">
+                                HERITAGE
+                            </li>
+
+                            <li className="hover:text-[#EC5B13] hover:border-b-2 hover:border-[#EC5B13] pb-1 cursor-pointer text-[#94A3B8]">
+                                STORES
+                            </li>
+
+                        </ul>
+
+
+                        {/* Right Section */}
+                        <div className="flex items-center gap-3 shrink-0">
+
+                            {/* Search bar (tablet + desktop) */}
+                            <div className="hidden sm:flex items-center bg-[#FFFFFF0D] px-3 py-3 rounded-full border border-[#FFFFFF1A]">
+
+                                <FiSearch className="text-[#94A3B8] mr-2" />
+
+                                <input
+                                    type="text"
+                                    placeholder="Search..."
+                                    className="bg-transparent outline-none text-sm text-gray-300 w-16 md:w-24 lg:w-40"
+                                />
+
+                            </div>
+
+
+                            {/* Mobile Search Icon */}
+                            <FiSearch
+                                className="md:hidden text-xl cursor-pointer"
+                                onClick={() => setSearchOpen(true)}
+                            />
+
+                            {/* Icons (desktop + tablet) */}
+                            <div className="hidden md:flex items-center gap-4 text-xl">
+
+                                <FiHeart className="cursor-pointer hover:text-orange-400 text-[#94A3B8]" />
+
+                                <FiShoppingBag className="cursor-pointer hover:text-orange-400 text-[#94A3B8]" />
+
+                                <FiUser className="cursor-pointer hover:text-orange-400 text-[#94A3B8]" />
+
+                            </div>
+
+
+                            {/* Hamburger */}
+                            <div className="md:hidden text-xl cursor-pointer">
+                                {menuOpen ? (
+                                    <FiX onClick={() => setMenuOpen(false)} />
+                                ) : (
+                                    <FiMenu onClick={() => setMenuOpen(true)} />
+                                )}
+                            </div>
+                        </div>
+
                     </div>
-
-                </div>
-
-                {/* LOGO */}
-                <div className="absolute left-1/2 transform -translate-x-1/2">
-                    <h1 className="text-2xl tracking-[0.15em] text-[#C9B582]" style={{ fontFamily: "'High-Contrast Serif', serif" }}>
-                        LUMIÈRE
-                    </h1>
-                </div>
-
-                {/* RIGHT */}
-                <div className="flex items-center gap-6 md:gap-8">
-
-                    <FiSearch
-                        onClick={() => setSearchOpen(true)}
-                        className="text-xl cursor-pointer hover:text-[#C9B582] transition"
-                    />
-
-                    <div className="relative">
-                        <FiShoppingBag className="text-xl cursor-pointer" />
-                        <span className="absolute -top-1 -right-1 text-[9px] bg-[#C9B582] text-black rounded-full px-1">
-                            2
-                        </span>
-                    </div>
-
-                    {/* Desktop Sign in */}
-                    <button
-                        onClick={() => navigate("/login")}
-                        className="hidden md:block border border-gray-600 px-5 py-1 text-sm tracking-widest hover:border-white"
-                    >
-                        SIGN IN
-                    </button>
-
-                </div>
+                </div>  {/* ← CLOSE THIS */}
 
             </nav>
 
-            {/* SEARCH PANEL */}
-            <div
-                className={`fixed top-0 left-0 w-full bg-black/95 backdrop-blur-md 
-  border-b border-[#C9B582]/30 z-50
-  transform transition-transform duration-500 ease-out
-  ${searchOpen ? "translate-y-0" : "-translate-y-full"}`}
-            >
 
-                <div className="flex items-center justify-between px-6 md:px-12 py-6">
+            {/* Mobile Search Bar */}
+            {searchOpen && (
 
-                    {/* Search input */}
-                    <input
-                        type="text"
-                        placeholder="Search jewellery..."
-                        className="w-full md:w-[70%] lg:w-[50%] bg-transparent 
-      border-b border-[#C9B582] text-white text-lg 
-      outline-none placeholder-gray-400 pb-2"
-                    />
+                <div className="fixed inset-0 z-50 flex items-start justify-center bg-black/50 backdrop-blur-sm">
 
-                    {/* Close button */}
-                    <button
-                        onClick={() => setSearchOpen(false)}
-                        className="ml-6 text-2xl text-gray-400 hover:text-[#C9B582]"
-                    >
-                        <FiX />
-                    </button>
+                    {/* Search Box */}
+                    <div className="bg-white rounded-full flex items-center px-4 py-3 mt-24 w-[90%] max-w-xl cursor-pointer shadow-lg">
+
+                        <FiSearch className="text-gray-500 mr-3" />
+
+                        <input
+                            type="text"
+                            placeholder="Search for products..."
+                            className="flex-1 outline-none text-gray-700"
+                            autoFocus
+                        />
+
+                        <FiX
+                            className="text-xl cursor-pointer text-gray-600"
+                            onClick={() => setSearchOpen(false)}
+                        />
+
+                    </div>
 
                 </div>
 
-            </div>
-
-            {/* OVERLAY */}
-            {menuOpen && (
-                <div
-                    onClick={() => setMenuOpen(false)}
-                    className="fixed inset-0 bg-black/60 backdrop-blur-sm z-40"
-                ></div>
             )}
 
-            {/* SIDE MENU */}
+            {menuOpen && (
+                <div className="fixed inset-0 bg-black/50 backdrop-blur-sm z-40"></div>
+            )}
+
+            {/* Mobile Sidebar Menu */}
             <div
-                className={`fixed top-0 left-0 h-full w-75 z-50
-                        bg-linear-to-b from-black via-[#0f0f0f] to-[#1a1a1a]
-                        border-r border-[#C9B582]/30 
-                        transform transition-transform duration-500 ease-out
-                        ${menuOpen ? "translate-x-0" : "-translate-x-full"}`}
+                className={`fixed top-0 right-0 h-full w-64 bg-black text-white transform transition-transform duration-300 ease-in-out z-50
+                ${menuOpen ? "translate-x-0" : "translate-x-full"}`}
             >
 
-                {/* Close Button */}
-                <button
-                    className="absolute top-6 right-6 text-3xl text-gray-400 hover:text-[#C9B582] transition"
-                    onClick={() => setMenuOpen(false)}
-                >
-                    ✕
-                </button>
+                {/* Close button */}
+                <div className="flex justify-end p-4">
+                    <FiX
+                        className="text-2xl cursor-pointer"
+                        onClick={() => setMenuOpen(false)}
+                    />
+                </div>
+
 
                 {/* Menu Items */}
-                <div className="flex flex-col gap-10 mt-28 pl-12 text-lg tracking-[0.25em] text-gray-200">
+                <ul className="flex flex-col gap-6 px-6 text-sm tracking-wider">
 
-                    <a className="hover:text-[#C9B582] transition duration-300 cursor-pointer">
-                        COLLECTIONS
-                    </a>
+                    <li className="hover:text-[#EC5B13] hover:border-b hover:border-[#EC5B13] pb-1 cursor-pointer text-[#94A3B8]">COLLECTIONS</li>
 
-                    <a className="hover:text-[#C9B582] transition duration-300 cursor-pointer">
-                        BRIDAL
-                    </a>
+                    <li className="hover:text-[#EC5B13] hover:border-b hover:border-[#EC5B13] pb-1 cursor-pointer text-[#94A3B8]">BRIDAL</li>
 
-                    <a className="hover:text-[#C9B582] transition duration-300 cursor-pointer">
-                        GIFTS
-                    </a>
+                    <li className="hover:text-[#EC5B13] hover:border-b hover:border-[#EC5B13] pb-1 cursor-pointer text-[#94A3B8]">HERITAGE</li>
 
-                    <button
-                        onClick={() => navigate("/login")}
-                        className="mt-6 border border-[#C9B582]/40 text-[#C9B582] px-6 py-2 w-fit
-      hover:bg-[#C9B582] hover:text-black transition duration-300"
-                    >
-                        SIGN IN
-                    </button>
+                    <li className="hover:text-[#EC5B13] hover:border-b hover:border-[#EC5B13] pb-1 cursor-pointer text-[#94A3B8]">STORES</li>
+
+                </ul>
+
+
+                {/* Icons */}
+                <div className="flex gap-6 px-6 mt-10 text-2xl justify-center">
+
+                    <FiHeart className="text-[#94A3B8] hover:text-[#EC5B13]" />
+
+                    <FiShoppingBag className="text-[#94A3B8] hover:text-[#EC5B13]" />
+
+                    <FiUser className="text-[#94A3B8] hover:text-[#EC5B13]" />
 
                 </div>
+
             </div>
         </>
     );
