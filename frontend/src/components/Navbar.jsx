@@ -8,75 +8,59 @@ export default function Navbar() {
     const [menuOpen, setMenuOpen] = useState(false);
     const [searchOpen, setSearchOpen] = useState(false);
 
+    // PROFESSIONAL MENU STRUCTURE
+    const menuItems = [
+        { name: "COLLECTIONS", path: "/" },
+        { name: "BRIDAL", path: "/bridal" },
+        { name: "HERITAGE", path: "/heritage" },
+        { name: "STORES", path: "/stores" }
+    ];
+
     return (
         <div className="overflow-x-hidden">
+
             {/* NAVBAR */}
             <nav className="w-full bg-black text-gray-300">
 
-                {/* Center container - for large display */}
                 <div className="max-w-7xl mx-auto px-4 md:px-6 py-2">
 
                     <div className="flex items-center justify-between gap-4 p-2">
 
                         {/* Logo */}
-                        {/* <div className="leading-tight shrink-0">
-                        <h1 className="text-xl sm:text-2xl font-bold tracking-widest 
-                        bg-orange-400 to-white bg-clip-text text-transparent">
-                            RADHE
-                        </h1>
-
-                        <p className="text-[9px] tracking-[3px] text-white">
-                            IMITATIONS & JEWELS
-                        </p>
-                    </div> */}
                         <div className="shrink-0 flex items-center cursor-pointer">
                             <img
                                 src={logo}
                                 alt="Radhe Imitations & Jewels"
-                                className="h-20 md:h-12 lg:h-24 w-auto object-contain overflow-hidden"
+                                className="h-20 md:h-12 lg:h-24 w-auto object-contain"
                             />
                         </div>
 
                         {/* Desktop Menu */}
                         <ul className="hidden md:flex flex-1 justify-center gap-4 lg:gap-8 text-sm tracking-wider">
 
-                            {/* <li className="hover:text-[#EC5B13]  hover:border-b-2 hover:border-[#EC5B13] pb-1 cursor-pointer text-[#94A3B8]">
-                            <Link to="/">COLLECTIONS</Link>
-                        </li> */}
-
-                            <li>
-                                <NavLink
-                                    to="/"
-                                    className={({ isActive }) =>
-                                        `pb-1 cursor-pointer border-b-2 ${isActive
-                                            ? "text-[#EC5B13] border-[#EC5B13]"
-                                            : "border-transparent hover:text-[#EC5B13] hover:border-[#EC5B13] text-[#94A3B8]"
-                                        }`
-                                    }
-                                >
-                                    COLLECTIONS
-                                </NavLink>
-                            </li>
-
-                            <li className="hover:text-[#EC5B13]  hover:border-b-2 hover:border-[#EC5B13] pb-1 cursor-pointer text-[#94A3B8]">
-                                BRIDAL
-                            </li>
-
-                            <li className="hover:text-[#EC5B13] hover:border-b-2 hover:border-[#EC5B13] pb-1 cursor-pointer text-[#94A3B8]">
-                                HERITAGE
-                            </li>
-
-                            <li className="hover:text-[#EC5B13] hover:border-b-2 hover:border-[#EC5B13] pb-1 cursor-pointer text-[#94A3B8]">
-                                STORES
-                            </li>
+                            {menuItems.map((item) => (
+                                <li key={item.name}>
+                                    <NavLink
+                                        to={item.path}
+                                        className={({ isActive }) =>
+                                            `pb-1 cursor-pointer border-b-2 ${
+                                                isActive
+                                                    ? "text-[#EC5B13] border-[#EC5B13]"
+                                                    : "border-transparent hover:text-[#EC5B13] hover:border-[#EC5B13] text-[#94A3B8]"
+                                            }`
+                                        }
+                                    >
+                                        {item.name}
+                                    </NavLink>
+                                </li>
+                            ))}
 
                         </ul>
-
 
                         {/* Right Section */}
                         <div className="flex items-center gap-3 shrink-0">
 
-                            {/* Search bar (tablet + desktop) */}
+                            {/* Desktop Search */}
                             <div className="hidden sm:flex items-center bg-[#FFFFFF0D] px-3 py-3 rounded-full border border-[#FFFFFF1A]">
 
                                 <FiSearch className="text-[#94A3B8] mr-2" />
@@ -89,14 +73,13 @@ export default function Navbar() {
 
                             </div>
 
-
                             {/* Mobile Search Icon */}
                             <FiSearch
                                 className="md:hidden text-2xl cursor-pointer"
                                 onClick={() => setSearchOpen(true)}
                             />
 
-                            {/* Icons (desktop + tablet) */}
+                            {/* Desktop Icons */}
                             <div className="hidden md:flex items-center gap-4 text-xl lg:px-6 px-0">
 
                                 <FiHeart className="cursor-pointer hover:text-orange-400 text-[#94A3B8]" />
@@ -107,57 +90,36 @@ export default function Navbar() {
 
                             </div>
 
-
                             {/* Hamburger */}
                             <div className="md:hidden text-2xl cursor-pointer">
+
                                 {menuOpen ? (
                                     <FiX onClick={() => setMenuOpen(false)} />
                                 ) : (
                                     <FiMenu onClick={() => setMenuOpen(true)} />
                                 )}
+
                             </div>
+
                         </div>
 
                     </div>
-                </div>  {/* ← CLOSE THIS */}
+                </div>
 
             </nav>
 
+            {/* MOBILE SEARCH OVERLAY */}
+            {searchOpen && (
 
-            {/* Mobile Search Bar */}
-            {/* {searchOpen && (
+                <div
+                    className="fixed inset-0 z-50 flex items-start justify-center bg-black/30 backdrop-blur-md"
+                    onClick={() => setSearchOpen(false)}
+                >
 
-                <div className="fixed inset-0 z-50 flex items-start justify-center bg-black/50 backdrop-blur-sm">
-
-                    {/* Search Box 
-                    <div className="bg-white rounded-full flex items-center px-4 py-3 mt-24 w-[90%] max-w-xl cursor-pointer shadow-lg">
-
-                        <FiSearch className="text-gray-500 mr-3" />
-
-                        <input
-                            type="text"
-                            placeholder="Search for products..."
-                            className="flex-1 outline-none text-gray-700"
-                            autoFocus
-                        />
-
-                        <FiX
-                            className="text-xl cursor-pointer text-gray-600"
-                            onClick={() => setSearchOpen(false)}
-                        />
-
-                    </div>
-
-                </div>
-
-            )} */}
-
-            {/* this navbar search with X icon */}
-            {/* {searchOpen && (
-
-                <div className="fixed inset-0 z-50 flex items-start justify-center bg-black/30 backdrop-blur-md">
-
-                    <div className="bg-white/10 backdrop-blur-lg border border-white/20 rounded-full flex items-center px-4 py-3 mt-24 w-[90%] max-w-xl shadow-xl">
+                    <div
+                        className="bg-white/10 backdrop-blur-lg border border-white/20 rounded-full flex items-center px-4 py-3 mt-24 w-[90%] max-w-xl shadow-xl"
+                        onClick={(e) => e.stopPropagation()}
+                    >
 
                         <FiSearch className="text-gray-300 mr-3" />
 
@@ -177,36 +139,9 @@ export default function Navbar() {
 
                 </div>
 
-            )} */}
+            )}
 
-            {
-                searchOpen && (
-                    <div
-                        className="fixed inset-0 z-50 flex items-start justify-center bg-black/30 backdrop-blur-md"
-                        onClick={() => setSearchOpen(false)} // close when clicking outside
-                    >
-                        <div
-                            className="bg-white/10 backdrop-blur-lg border border-white/20 rounded-full flex items-center px-4 py-3 mt-24 w-[90%] max-w-xl shadow-xl"
-                            onClick={(e) => e.stopPropagation()} // prevent closing when clicking inside
-                        >
-                            <FiSearch className="text-gray-300 mr-3" />
-
-                            <input
-                                type="text"
-                                placeholder="Search for products..."
-                                className="flex-1 bg-transparent outline-none text-white placeholder-gray-400"
-                                autoFocus
-                            />
-                        </div>
-                    </div>
-                )
-            }
-
-            {/* {
-                menuOpen && (
-                    <div className="fixed inset-0 bg-black/50 backdrop-blur-sm z-40"></div>
-                )
-            } */}
+            {/* DARK BACKGROUND WHEN MENU OPEN */}
             {menuOpen && (
                 <div
                     className="fixed inset-0 bg-black/50 backdrop-blur-sm z-40"
@@ -214,40 +149,44 @@ export default function Navbar() {
                 ></div>
             )}
 
-            {/* Mobile Sidebar Menu */}
-            {/* <div
-                className={`fixed top-0 right-0 h-full w-64 bg-black text-white transform transition-transform duration-300 ease-in-out z-50
-                ${menuOpen ? "translate-x-0" : "translate-x-full"}`}
-            > */}
+            {/* MOBILE SIDEBAR */}
             <div
                 className={`fixed top-0 right-0 h-full w-64 bg-black text-white transition-transform duration-300 ease-in-out z-50
                 ${menuOpen ? "translate-x-0" : "translate-x-full"}`}
             >
 
-                {/* Close button */}
+                {/* Close Button */}
                 <div className="flex justify-end p-4">
-                    <FiX
+                    {/* <FiX
                         className="text-2xl cursor-pointer"
                         onClick={() => setMenuOpen(false)}
-                    />
+                    /> */}
                 </div>
 
-
-                {/* Menu Items */}
+                {/* Mobile Menu */}
                 <ul className="flex flex-col gap-6 px-6 text-sm tracking-wider">
 
-                    <li className="hover:text-[#EC5B13] hover:border-b hover:border-[#EC5B13] pb-1 cursor-pointer text-[#94A3B8]">COLLECTIONS</li>
-
-                    <li className="hover:text-[#EC5B13] hover:border-b hover:border-[#EC5B13] pb-1 cursor-pointer text-[#94A3B8]">BRIDAL</li>
-
-                    <li className="hover:text-[#EC5B13] hover:border-b hover:border-[#EC5B13] pb-1 cursor-pointer text-[#94A3B8]">HERITAGE</li>
-
-                    <li className="hover:text-[#EC5B13] hover:border-b hover:border-[#EC5B13] pb-1 cursor-pointer text-[#94A3B8]">STORES</li>
+                    {menuItems.map((item) => (
+                        <li key={item.name}>
+                            <NavLink
+                                to={item.path}
+                                onClick={() => setMenuOpen(false)}
+                                className={({ isActive }) =>
+                                    `pb-1 cursor-pointer border-b ${
+                                        isActive
+                                            ? "text-[#EC5B13] border-[#EC5B13]"
+                                            : "border-transparent text-[#94A3B8] hover:text-[#EC5B13]"
+                                    }`
+                                }
+                            >
+                                {item.name}
+                            </NavLink>
+                        </li>
+                    ))}
 
                 </ul>
 
-
-                {/* Icons */}
+                {/* Mobile Icons */}
                 <div className="flex gap-6 px-6 mt-10 text-2xl justify-center">
 
                     <FiHeart className="text-[#94A3B8] hover:text-[#EC5B13]" />
@@ -259,6 +198,7 @@ export default function Navbar() {
                 </div>
 
             </div>
+
         </div>
     );
 }

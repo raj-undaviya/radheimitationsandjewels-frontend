@@ -81,7 +81,7 @@ export default function Home() {
             >
 
                 {/* Dark overlay */}
-                <div className="absolute inset-0 bg-black/60"></div>
+                <div className="absolute inset-0 bg-black/60 pointer-events-none"></div>
 
                 {/* CENTER CONTAINER */}
                 <div className="relative z-10 w-full max-w-7xl mx-auto px-6 sm:px-10 lg:px-20">
@@ -104,15 +104,13 @@ export default function Home() {
                     </p>
 
                     <div className="flex flex-col sm:flex-row">
-                        <Link to="/collections">
-                            <button className="bg-[#EC5B13] hover:bg-orange-600 px-6 py-3 text-sm font-medium cursor-pointer">
-                                VIEW ALL COLLECTIONS
-                            </button>
+                        <Link
+                            to="/collections"
+                            className="bg-[#EC5B13] hover:bg-orange-600 px-6 py-3 text-sm font-medium inline-block text-center"
+                        >
+                            VIEW ALL COLLECTIONS
                         </Link>
-
-                        {/* <button className="border border-gray-400 hover:border-white px-6 py-3 text-sm cursor-pointer">
-                            BOOK APPOINTMENT
-                        </button> */}
+                        
                     </div>
 
                 </div>
