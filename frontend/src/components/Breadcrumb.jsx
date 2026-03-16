@@ -5,6 +5,12 @@ export default function Breadcrumb({ customLast }) {
     const location = useLocation();
     const pathnames = location.pathname.split("/").filter(Boolean);
 
+    const formatText = (text) => {
+        return text
+            .replace(/-/g, " ")
+            .replace(/\b\w/g, (char) => char.toUpperCase());
+    };
+
     return (
         <nav className="text-sm text-gray-400 mb-6 flex items-center">
 
@@ -17,6 +23,10 @@ export default function Breadcrumb({ customLast }) {
                 const to = "/" + pathnames.slice(0, index + 1).join("/");
                 const isLast = index === pathnames.length - 1;
 
+                const displayText = customLast && isLast
+                    ? customLast
+                    : formatText(value);
+
                 return (
                     <span key={to} className="flex items-center">
 
@@ -24,11 +34,11 @@ export default function Breadcrumb({ customLast }) {
 
                         {isLast ? (
                             <span className="text-orange-400">
-                                {customLast || value}
+                                {displayText}
                             </span>
                         ) : (
-                            <Link to={to} className="hover:text-white capitalize">
-                                {value}
+                            <Link to={to} className="hover:text-white">
+                                {displayText}
                             </Link>
                         )}
 

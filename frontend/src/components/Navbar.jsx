@@ -9,7 +9,7 @@ export default function Navbar() {
     const [searchOpen, setSearchOpen] = useState(false);
 
     return (
-        <>
+        <div className="overflow-x-hidden">
             {/* NAVBAR */}
             <nav className="w-full bg-black text-gray-300">
 
@@ -33,7 +33,7 @@ export default function Navbar() {
                             <img
                                 src={logo}
                                 alt="Radhe Imitations & Jewels"
-                                className="h-20 md:h-12 lg:h-25 w-auto object-contain overflow-hidden"
+                                className="h-20 md:h-12 lg:h-24 w-auto object-contain overflow-hidden"
                             />
                         </div>
 
@@ -152,7 +152,8 @@ export default function Navbar() {
 
             )} */}
 
-            {searchOpen && (
+            {/* this navbar search with X icon */}
+            {/* {searchOpen && (
 
                 <div className="fixed inset-0 z-50 flex items-start justify-center bg-black/30 backdrop-blur-md">
 
@@ -176,15 +177,50 @@ export default function Navbar() {
 
                 </div>
 
-            )}
+            )} */}
 
+            {
+                searchOpen && (
+                    <div
+                        className="fixed inset-0 z-50 flex items-start justify-center bg-black/30 backdrop-blur-md"
+                        onClick={() => setSearchOpen(false)} // close when clicking outside
+                    >
+                        <div
+                            className="bg-white/10 backdrop-blur-lg border border-white/20 rounded-full flex items-center px-4 py-3 mt-24 w-[90%] max-w-xl shadow-xl"
+                            onClick={(e) => e.stopPropagation()} // prevent closing when clicking inside
+                        >
+                            <FiSearch className="text-gray-300 mr-3" />
+
+                            <input
+                                type="text"
+                                placeholder="Search for products..."
+                                className="flex-1 bg-transparent outline-none text-white placeholder-gray-400"
+                                autoFocus
+                            />
+                        </div>
+                    </div>
+                )
+            }
+
+            {/* {
+                menuOpen && (
+                    <div className="fixed inset-0 bg-black/50 backdrop-blur-sm z-40"></div>
+                )
+            } */}
             {menuOpen && (
-                <div className="fixed inset-0 bg-black/50 backdrop-blur-sm z-40"></div>
+                <div
+                    className="fixed inset-0 bg-black/50 backdrop-blur-sm z-40"
+                    onClick={() => setMenuOpen(false)}
+                ></div>
             )}
 
             {/* Mobile Sidebar Menu */}
-            <div
+            {/* <div
                 className={`fixed top-0 right-0 h-full w-64 bg-black text-white transform transition-transform duration-300 ease-in-out z-50
+                ${menuOpen ? "translate-x-0" : "translate-x-full"}`}
+            > */}
+            <div
+                className={`fixed top-0 right-0 h-full w-64 bg-black text-white transition-transform duration-300 ease-in-out z-50
                 ${menuOpen ? "translate-x-0" : "translate-x-full"}`}
             >
 
@@ -223,6 +259,6 @@ export default function Navbar() {
                 </div>
 
             </div>
-        </>
+        </div>
     );
 }

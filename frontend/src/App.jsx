@@ -1,24 +1,31 @@
-import Navbar from "./components/Navbar.jsx";
-import Home from "./pages/Home.jsx";
-import Collections from "./components/Collections.jsx";
-import Footer from "./components/Footer.jsx";
-
 import { Routes, Route } from "react-router-dom";
+
+import MainLayout from "./layouts/MainLayout";
+import AuthLayout from "./layouts/AuthLayout";
+
+import Home from "./pages/Home";
+import Collections from "./components/Collections";
+import Register from "./pages/Register";
+import Login from "./pages/Login";
 
 function App() {
   return (
-    <>
-      <Navbar />
+    <Routes>
 
-      <Routes>
+      {/* Main Website Layout */}
+      <Route element={<MainLayout />}>
         <Route path="/" element={<Home />} />
-        {/* <Route path="/collections" element={<Collections />} /> */}
         <Route path="/collections" element={<Collections />} />
         <Route path="/collections/:collectionName" element={<Collections />} />
-      </Routes>
+      </Route>
 
-      <Footer />
-    </>
+      {/* Auth Pages Layout */}
+      <Route element={<AuthLayout />}>
+        <Route path="/register" element={<Register />} />
+        <Route path="/login" element={<Login />} />
+      </Route>
+
+    </Routes>
   );
 }
 

@@ -59,7 +59,9 @@ export default function Collections() {
         <div className="min-h-screen bg-[#1c0f09] text-white px-6 md:px-16 py-12">
 
             {/* Breadcrumb */}
-            <Breadcrumb customLast={collectionName} />
+            <Breadcrumb
+                customLast={collectionName.charAt(0).toUpperCase() + collectionName.slice(1)}
+            />
 
             {/* Title */}
             {/* <h1 className="text-4xl font-bold mb-2">Rivaah</h1> */}

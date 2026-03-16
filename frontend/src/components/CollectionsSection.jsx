@@ -22,7 +22,7 @@ export default function CollectionsSection() {
             reverse: true,
         },
         {
-            title: "Aveeer",
+            title: "Aveera",
             subtitle: "TIMELESS HERITAGE",
             desc: "A tribute to the royal grandeur with traditional motifs.",
             img: aveer,
@@ -31,7 +31,7 @@ export default function CollectionsSection() {
     ];
 
     return (
-        <section className="bg-[#0a0301] md:py-32">
+        <section className="bg-[#0a0301] md:py-32 overflow-x-hidden">
 
             <div className="max-w-7xl mx-auto px-6 space-y-20 md:space-y-36">
 

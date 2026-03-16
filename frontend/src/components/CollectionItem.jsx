@@ -89,19 +89,18 @@ import { Link } from "react-router-dom";
 //using width layout
 export default function CollectionItem({ title, subtitle, desc, img, reverse, }) {
     const textAnimation = {
-        hidden: { opacity: 0, x: reverse ? 80 : -80 },
+        hidden: { opacity: 0, x: reverse ? 40 : -40 },
         show: { opacity: 1, x: 0 },
     };
 
     const imageAnimation = {
-        hidden: { opacity: 0, x: reverse ? -80 : 80 },
+        hidden: { opacity: 0, x: reverse ? 40 : -40 },
         show: { opacity: 1, x: 0 },
     };
 
     return (
         <div
-            className={`flex flex-col md:flex-row ${reverse ? "md:flex-row-reverse" : ""
-                } items-center gap-12 md:gap-24`}
+            className={`flex flex-col md:flex-row ${reverse ? "md:flex-row-reverse" : ""} items-center gap-12 md:gap-24 overflow-hidden`}
         >
 
             {/* IMAGE (always first on mobile) */}
@@ -116,7 +115,7 @@ export default function CollectionItem({ title, subtitle, desc, img, reverse, })
                 <img
                     src={img}
                     alt={title}
-                    className="w-full max-w-105 mx-auto rounded-lg object-cover hover:scale-105 transition duration-700"
+                    className="w-full max-w-md mx-auto rounded-lg object-cover hover:scale-105 transition duration-700"
                 />
             </motion.div>
 
