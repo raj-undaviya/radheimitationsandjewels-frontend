@@ -10,7 +10,7 @@ export default function CollectionsSection() {
         {
             title: "Rivaah",
             subtitle: "THE BRIDAL SOUL",
-            desc: "Handcrafted for the modern bride who cherishes her roots.",
+            desc: "Handcrafted for the modern bride who cherishes her roots.Rivaah brings together the diverse wedding traditions ofIndia with exquisite gold and diamond sets designed for youronce-in -a - lifetime moments.",
             img: rivaah,
             reverse: false,
         },
@@ -31,9 +31,9 @@ export default function CollectionsSection() {
     ];
 
     return (
-        <section className="bg-[#0a0301] py-32">
+        <section className="bg-[#0a0301] md:py-32">
 
-            <div className="max-w-7xl mx-auto px-6 space-y-36">
+            <div className="max-w-7xl mx-auto px-6 space-y-20 md:space-y-36">
 
                 {collections.map((item, index) => (
                     <CollectionItem key={index} {...item} />

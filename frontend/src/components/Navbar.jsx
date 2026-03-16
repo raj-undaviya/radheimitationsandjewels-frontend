@@ -92,12 +92,12 @@ export default function Navbar() {
 
                             {/* Mobile Search Icon */}
                             <FiSearch
-                                className="md:hidden text-xl cursor-pointer"
+                                className="md:hidden text-2xl cursor-pointer"
                                 onClick={() => setSearchOpen(true)}
                             />
 
                             {/* Icons (desktop + tablet) */}
-                            <div className="hidden md:flex items-center gap-4 text-xl">
+                            <div className="hidden md:flex items-center gap-4 text-xl lg:px-6 px-0">
 
                                 <FiHeart className="cursor-pointer hover:text-orange-400 text-[#94A3B8]" />
 
@@ -109,7 +109,7 @@ export default function Navbar() {
 
 
                             {/* Hamburger */}
-                            <div className="md:hidden text-xl cursor-pointer">
+                            <div className="md:hidden text-2xl cursor-pointer">
                                 {menuOpen ? (
                                     <FiX onClick={() => setMenuOpen(false)} />
                                 ) : (
@@ -125,11 +125,11 @@ export default function Navbar() {
 
 
             {/* Mobile Search Bar */}
-            {searchOpen && (
+            {/* {searchOpen && (
 
                 <div className="fixed inset-0 z-50 flex items-start justify-center bg-black/50 backdrop-blur-sm">
 
-                    {/* Search Box */}
+                    {/* Search Box 
                     <div className="bg-white rounded-full flex items-center px-4 py-3 mt-24 w-[90%] max-w-xl cursor-pointer shadow-lg">
 
                         <FiSearch className="text-gray-500 mr-3" />
@@ -143,6 +143,32 @@ export default function Navbar() {
 
                         <FiX
                             className="text-xl cursor-pointer text-gray-600"
+                            onClick={() => setSearchOpen(false)}
+                        />
+
+                    </div>
+
+                </div>
+
+            )} */}
+
+            {searchOpen && (
+
+                <div className="fixed inset-0 z-50 flex items-start justify-center bg-black/30 backdrop-blur-md">
+
+                    <div className="bg-white/10 backdrop-blur-lg border border-white/20 rounded-full flex items-center px-4 py-3 mt-24 w-[90%] max-w-xl shadow-xl">
+
+                        <FiSearch className="text-gray-300 mr-3" />
+
+                        <input
+                            type="text"
+                            placeholder="Search for products..."
+                            className="flex-1 bg-transparent outline-none text-white placeholder-gray-400"
+                            autoFocus
+                        />
+
+                        <FiX
+                            className="text-xl cursor-pointer text-gray-300"
                             onClick={() => setSearchOpen(false)}
                         />
 

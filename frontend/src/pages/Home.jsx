@@ -1,5 +1,8 @@
 import heroImg from "../assets/necklace.png";
 import CollectionsSection from "../components/CollectionsSection.jsx";
+import SubscribeSection from "../components/SubscribeSection.jsx";
+import JewelleryInquiry from "../components/JewelleryInquiry.jsx";
+import { Link } from "react-router-dom";
 
 export default function Home() {
     return (
@@ -100,21 +103,29 @@ export default function Home() {
                         heritage, love, and unmatched artistry.
                     </p>
 
-                    <div className="flex flex-col sm:flex-row gap-4">
-                        <button className="bg-[#EC5B13] hover:bg-orange-600 px-6 py-3 text-sm font-medium cursor-pointer">
-                            VIEW ALL COLLECTIONS
-                        </button>
+                    <div className="flex flex-col sm:flex-row">
+                        <Link to="/collections">
+                            <button className="bg-[#EC5B13] hover:bg-orange-600 px-6 py-3 text-sm font-medium cursor-pointer">
+                                VIEW ALL COLLECTIONS
+                            </button>
+                        </Link>
 
-                        <button className="border border-gray-400 hover:border-white px-6 py-3 text-sm cursor-pointer">
+                        {/* <button className="border border-gray-400 hover:border-white px-6 py-3 text-sm cursor-pointer">
                             BOOK APPOINTMENT
-                        </button>
+                        </button> */}
                     </div>
 
                 </div>
 
             </section>
-            {/* COLLECTIONS */}
+            {/* COLLECTIONS COMPONNET */}
             <CollectionsSection />
+
+            {/* JEWELLERYInquiry COMPONNET */}
+            <JewelleryInquiry />
+
+            {/* SUBSCRIBE COMPONETS */}
+            <SubscribeSection />
         </>
     );
 }
