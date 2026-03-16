@@ -1,4 +1,5 @@
 import { Link, useLocation } from "react-router-dom";
+import { FiChevronRight } from "react-icons/fi";
 
 export default function Breadcrumb({ customLast }) {
 
@@ -30,7 +31,7 @@ export default function Breadcrumb({ customLast }) {
                 return (
                     <span key={to} className="flex items-center">
 
-                        <span className="mx-2">{">"}</span>
+                        <span className="mx-2"><FiChevronRight /></span>
 
                         {isLast ? (
                             <span className="text-orange-400">
