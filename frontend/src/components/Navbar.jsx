@@ -2,11 +2,13 @@ import { useState } from "react";
 import { FiMenu, FiSearch, FiShoppingBag, FiX, FiHeart, FiUser } from "react-icons/fi";
 import logo from "../assets/Logo.png";
 import { NavLink } from "react-router-dom";
+import { useWishlist } from "../context/WishlistContext";
 
 export default function Navbar() {
 
     const [menuOpen, setMenuOpen] = useState(false);
     const [searchOpen, setSearchOpen] = useState(false);
+    const { wishlist } = useWishlist();
 
     // PROFESSIONAL MENU STRUCTURE
     const menuItems = [
@@ -43,10 +45,9 @@ export default function Navbar() {
                                     <NavLink
                                         to={item.path}
                                         className={({ isActive }) =>
-                                            `pb-1 cursor-pointer border-b-2 ${
-                                                isActive
-                                                    ? "text-[#EC5B13] border-[#EC5B13]"
-                                                    : "border-transparent hover:text-[#EC5B13] hover:border-[#EC5B13] text-[#94A3B8]"
+                                            `pb-1 cursor-pointer border-b-2 ${isActive
+                                                ? "text-[#EC5B13] border-[#EC5B13]"
+                                                : "border-transparent hover:text-[#EC5B13] hover:border-[#EC5B13] text-[#94A3B8]"
                                             }`
                                         }
                                     >
@@ -82,7 +83,15 @@ export default function Navbar() {
                             {/* Desktop Icons */}
                             <div className="hidden md:flex items-center gap-4 text-xl lg:px-6 px-0">
 
-                                <FiHeart className="cursor-pointer hover:text-orange-400 text-[#94A3B8]" />
+                                <div className="relative">
+                                    <FiHeart className="cursor-pointer hover:text-orange-400 text-[#94A3B8]" />
+
+                                    {wishlist.length > 0 && (
+                                        <span className="absolute -top-2 -right-2 bg-orange-500 text-xs px-1.5 rounded-full">
+                                            {wishlist.length}
+                                        </span>
+                                    )}
+                                </div>
 
                                 <FiShoppingBag className="cursor-pointer hover:text-orange-400 text-[#94A3B8]" />
 
@@ -172,10 +181,9 @@ export default function Navbar() {
                                 to={item.path}
                                 onClick={() => setMenuOpen(false)}
                                 className={({ isActive }) =>
-                                    `pb-1 cursor-pointer border-b ${
-                                        isActive
-                                            ? "text-[#EC5B13] border-[#EC5B13]"
-                                            : "border-transparent text-[#94A3B8] hover:text-[#EC5B13]"
+                                    `pb-1 cursor-pointer border-b ${isActive
+                                        ? "text-[#EC5B13] border-[#EC5B13]"
+                                        : "border-transparent text-[#94A3B8] hover:text-[#EC5B13]"
                                     }`
                                 }
                             >

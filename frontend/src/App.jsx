@@ -5,6 +5,7 @@ import AuthLayout from "./layouts/AuthLayout";
 
 import Home from "./pages/Home";
 import Collections from "./components/Collections";
+import ProductDetails from "./pages/ProductDetails"; 
 import Register from "./pages/Register";
 import Login from "./pages/Login";
 
@@ -14,15 +15,25 @@ function App() {
 
       {/* Main Website Layout */}
       <Route element={<MainLayout />}>
+
         <Route path="/" element={<Home />} />
+
         <Route path="/collections" element={<Collections />} />
+
         <Route path="/collections/:collectionName" element={<Collections />} />
+
+        <Route path="/product/:id" element={<ProductDetails />} />
+
       </Route>
+
 
       {/* Auth Pages Layout */}
       <Route element={<AuthLayout />}>
+
         <Route path="/register" element={<Register />} />
+
         <Route path="/login" element={<Login />} />
+
       </Route>
 
     </Routes>
