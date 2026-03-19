@@ -1,11 +1,16 @@
-import Breadcrumb from "../Breadcrumb";
+import { useNavigate } from "react-router-dom";
+import { useCart } from "../../context/CartContext";
 
 export default function ProductInfo({ product }) {
+
+    const navigate = useNavigate();
+    const { addToCart } = useCart();
+
     return (
         <div className="flex flex-col justify-center">
 
             {/* ✅ BREADCRUMB */}
-            <Breadcrumb customLast={product.name} />
+            {/* <Breadcrumb customLast={product.name} /> */}
 
             {/* TITLE */}
             <h1 className="text-3xl sm:text-4xl md:text-5xl font-semibold leading-tight mb-4">
@@ -60,7 +65,14 @@ export default function ProductInfo({ product }) {
             {/* BUTTONS */}
             <div className="flex flex-col sm:flex-row gap-4">
 
-                <button className="bg-orange-500 hover:bg-orange-600 px-8 py-3 rounded-xl font-semibold transition w-full sm:w-auto">
+                <button
+                    onClick={() => {
+                        console.log("Adding product:", product); // ✅ DEBUG
+                        addToCart(product);   // ✅ ADD DATA
+                        navigate("/cart");    // ✅ GO TO CART
+                    }}
+                    className="bg-orange-500 px-8 py-3 rounded-xl font-semibold"
+                >
                     ADD TO CART
                 </button>
 

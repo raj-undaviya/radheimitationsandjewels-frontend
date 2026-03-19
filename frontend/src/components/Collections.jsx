@@ -4,8 +4,10 @@ import Breadcrumb from "../components/Breadcrumb";
 import { useParams, useNavigate } from "react-router-dom";
 import { products } from "../data/products";
 import { useWishlist } from "../context/WishlistContext";
+import { useCart } from "../context/CartContext";
 
 export default function Collections() {
+    const { addToCart } = useCart();
 
     const { toggleWishlist, isInWishlist } = useWishlist();
 
@@ -191,11 +193,15 @@ export default function Collections() {
 
                             {/* ❤️ WISHLIST */}
                             <button
-                                onClick={() => toggleWishlist(product)}
+                                // onClick={() => toggleWishlist(product)}
+                                onClick={() => {
+                                    // console.log("Clicked product:", product);
+                                    toggleWishlist(product);
+                                }}
                                 className={`absolute top-2 right-2 p-2 rounded-full transition
                                 ${isInWishlist(product.id)
-                                        ? "bg-orange-500 text-white scale-110"
-                                        : "bg-black/50 text-gray-300 hover:scale-110"
+                                        ? "bg-orange-500 text-white"
+                                        : "bg-black/50 text-gray-300"
                                     }`}
                             >
                                 <FiHeart />
@@ -223,7 +229,19 @@ export default function Collections() {
                                 View Details
                             </button>
 
-                            <button className="bg-orange-500 py-2 rounded-md text-sm font-semibold hover:bg-orange-600 transition">
+                            {/* <button
+                                onClick={() => navigate("/cart")}
+                                className="bg-orange-500 py-2 rounded-md text-sm font-semibold hover:bg-orange-600 transition"
+                            >
+                                Add to Cart
+                            </button> */}
+                            <button
+                                onClick={() => {
+                                    addToCart(product);
+                                    navigate("/cart"); // optional
+                                }}
+                                className="bg-orange-500 py-2 rounded-md text-sm font-semibold hover:bg-orange-600 transition"
+                            >
                                 Add to Cart
                             </button>
 

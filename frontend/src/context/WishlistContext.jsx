@@ -18,7 +18,11 @@ export const WishlistProvider = ({ children }) => {
     // ✅ Toggle
     const toggleWishlist = (product) => {
         const updated = toggleWishlistItem(product);
-        setWishlist(updated);
+
+        console.log("Updated wishlist:", updated); // ✅ debug
+
+        // 🔥 FORCE REACT UPDATE
+        setWishlist([...updated]);
     };
 
     // ✅ Check

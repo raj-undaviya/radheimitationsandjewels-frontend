@@ -8,6 +8,8 @@ import Collections from "./components/Collections";
 import ProductDetails from "./pages/ProductDetails"; 
 import Register from "./pages/Register";
 import Login from "./pages/Login";
+import Wishlist from "./pages/Wishlist";
+import Cart from "./pages/Cart";
 
 function App() {
   return (
@@ -23,6 +25,10 @@ function App() {
         <Route path="/collections/:collectionName" element={<Collections />} />
 
         <Route path="/product/:id" element={<ProductDetails />} />
+
+         <Route path="/wishlist" element={<Wishlist />} />
+
+         <Route path="/cart" element={<Cart />} />
 
       </Route>
 

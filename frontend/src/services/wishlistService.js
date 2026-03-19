@@ -2,8 +2,13 @@ const STORAGE_KEY = "wishlist";
 
 // ✅ GET
 export const getWishlist = () => {
-    const data = localStorage.getItem(STORAGE_KEY);
-    return data ? JSON.parse(data) : [];
+    try {
+        const data = localStorage.getItem(STORAGE_KEY);
+        return data ? JSON.parse(data) : [];
+    } catch (error) {
+        console.error("Error reading wishlist:", error);
+        return [];
+    }
 };
 
 // ✅ SAVE
@@ -14,10 +19,14 @@ const saveWishlist = (wishlist) => {
 // ✅ ADD
 export const addToWishlist = (product) => {
     const wishlist = getWishlist();
-    const exists = wishlist.find(item => item.id === product.id);
+
+    // ✅ ensure id exists
+    if (!product || !product.id) return wishlist;
+
+    const exists = wishlist.some(item => item.id === product.id);
 
     if (!exists) {
-        const updated = [...wishlist, product];
+        const updated = [...wishlist, { ...product }]; // ✅ clone object
         saveWishlist(updated);
         return updated;
     }
@@ -35,8 +44,10 @@ export const removeFromWishlist = (id) => {
 
 // ✅ TOGGLE
 export const toggleWishlistItem = (product) => {
+    if (!product || !product.id) return getWishlist();
+
     const wishlist = getWishlist();
-    const exists = wishlist.find(item => item.id === product.id);
+    const exists = wishlist.some(item => item.id === product.id);
 
     if (exists) {
         return removeFromWishlist(product.id);

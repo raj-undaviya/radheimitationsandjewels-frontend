@@ -3,12 +3,14 @@ import { FiMenu, FiSearch, FiShoppingBag, FiX, FiHeart, FiUser } from "react-ico
 import logo from "../assets/Logo.png";
 import { NavLink } from "react-router-dom";
 import { useWishlist } from "../context/WishlistContext";
+import { useNavigate } from "react-router-dom";
 
 export default function Navbar() {
 
     const [menuOpen, setMenuOpen] = useState(false);
     const [searchOpen, setSearchOpen] = useState(false);
     const { wishlist } = useWishlist();
+    const navigate = useNavigate();
 
     // PROFESSIONAL MENU STRUCTURE
     const menuItems = [
@@ -83,8 +85,11 @@ export default function Navbar() {
                             {/* Desktop Icons */}
                             <div className="hidden md:flex items-center gap-4 text-xl lg:px-6 px-0">
 
-                                <div className="relative">
-                                    <FiHeart className="cursor-pointer hover:text-orange-400 text-[#94A3B8]" />
+                                <div
+                                    onClick={() => navigate("/wishlist")}
+                                    className="relative cursor-pointer"
+                                >
+                                    <FiHeart className="hover:text-orange-400 text-[#94A3B8] text-xl" />
 
                                     {wishlist.length > 0 && (
                                         <span className="absolute -top-2 -right-2 bg-orange-500 text-xs px-1.5 rounded-full">
@@ -197,7 +202,21 @@ export default function Navbar() {
                 {/* Mobile Icons */}
                 <div className="flex gap-6 px-6 mt-10 text-2xl justify-center">
 
-                    <FiHeart className="text-[#94A3B8] hover:text-[#EC5B13]" />
+                    <div
+                        onClick={() => {
+                            navigate("/wishlist");
+                            setMenuOpen(false); // close sidebar
+                        }}
+                        className="relative cursor-pointer"
+                    >
+                        <FiHeart className="text-[#94A3B8] hover:text-[#EC5B13]" />
+
+                        {wishlist.length > 0 && (
+                            <span className="absolute -top-2 -right-2 bg-orange-500 text-xs px-1.5 rounded-full">
+                                {wishlist.length}
+                            </span>
+                        )}
+                    </div>
 
                     <FiShoppingBag className="text-[#94A3B8] hover:text-[#EC5B13]" />
 

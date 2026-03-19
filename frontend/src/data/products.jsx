@@ -9,12 +9,18 @@ import necklace3 from "../assets/images/necklace3.png";
 import necklace4 from "../assets/images/necklace4.png";
 import necklace5 from "../assets/images/necklace5.png";
 
+//for relatedproduct component
+import related1 from "../assets/images/related1.png";
+import related2 from "../assets/images/related2.png";
+import related3 from "../assets/images/related3.png";
+import related4 from "../assets/images/related4.png";
+
 export const products = [
     {
         id: 1,
         slug: "gold-kundan-necklace",
         name: "Gold Plated Kundan Necklace",
-        price: 4500, // ✅ number
+        price: 4500,
         originalPrice: 5800,
         category: "Necklaces",
         description: "Premium handcrafted necklace with traditional kundan work.",
@@ -25,11 +31,12 @@ export const products = [
         },
         images: {
             thumbnail: necklace1,
-            gallery: [necklace1, necklace2, necklace3, necklace4,necklace5],
+            gallery: [necklace1, necklace2, necklace3, necklace4, necklace5, necklace5],
         },
         rating: 4.5,
         stock: 10,
         isFeatured: true,
+        relatedImage: related1,
     },
 
     {
@@ -51,6 +58,7 @@ export const products = [
         },
         rating: 4.2,
         stock: 15,
+        relatedImage: related2,
     },
 
     {
@@ -72,6 +80,7 @@ export const products = [
         },
         rating: 4.6,
         stock: 8,
+        relatedImage: related3,
     },
 
     {
@@ -94,6 +103,7 @@ export const products = [
         rating: 4.8,
         stock: 5,
         isFeatured: true,
+        relatedImage: related4,
     },
 
     {
@@ -115,6 +125,7 @@ export const products = [
         },
         rating: 4.1,
         stock: 20,
+        relatedImage: related4,
     },
 
     {
@@ -136,5 +147,6 @@ export const products = [
         },
         rating: 4.7,
         stock: 6,
+        relatedImage: related4,
     }
 ];

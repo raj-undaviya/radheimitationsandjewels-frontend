@@ -1,6 +1,7 @@
 import { Link, useLocation } from "react-router-dom";
 import { FiChevronRight } from "react-icons/fi";
 
+
 export default function Breadcrumb({ customLast }) {
 
     const location = useLocation();

@@ -1,43 +1,126 @@
 import { products } from "../../data/products";
 import { useNavigate } from "react-router-dom";
 
-export default function RelatedProducts({ category, id }) {
+export default function RelatedProducts({ product }) {
 
     const navigate = useNavigate();
 
-    const related = products.filter(
-        p => p.category === category && p.id !== id
-    );
+    if (!product) return null;
+
+    const getSmartRelatedProducts = () => {
+
+        const currentPrice = product.price;
+
+        const sameCategory = products.filter(
+            p => p.category === product.category && p.id !== product.id
+        );
+
+        const similarPrice = products.filter(p => {
+            return (
+                p.id !== product.id &&
+                Math.abs(p.price - currentPrice) <= 2000 &&
+                p.category !== product.category
+            );
+        });
+
+        const others = products.filter(
+            p => p.id !== product.id &&
+                p.category !== product.category
+        );
+
+        const final = [
+            ...sameCategory,
+            ...similarPrice,
+            ...others
+        ];
+
+        return [...new Map(final.map(item => [item.id, item])).values()].slice(0, 4);
+    };
+
+    const related = getSmartRelatedProducts();
 
     return (
-        <section className="mt-24">
+        <section className="mt-20">
 
-            <h2 className="text-2xl mb-8">
+            {/* 🔥 TITLE */}
+            <h2 className="text-xl sm:text-2xl font-medium text-gray-200 mb-8">
                 Complete the Aura Ensemble
             </h2>
 
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
+            {/* 🔥 GRID */}
+            <div className="
+                grid 
+                grid-cols-2 
+                sm:grid-cols-2 
+                md:grid-cols-3 
+                lg:grid-cols-4 
+                gap-5
+            ">
 
-                {related.map(product => (
+                {related.map((item) => (
 
                     <div
-                        key={product.id}
-                        onClick={() => navigate(`/product/${product.id}`)}
-                        className="bg-[#24130c] p-4 rounded-lg cursor-pointer hover:scale-105 transition"
+                        key={item.id}
+                        onClick={() => navigate(`/product/${item.id}`)}
+                        className="group cursor-pointer"
                     >
 
-                        <img
-                            src={product.images[0]}
-                            className="rounded-md"
-                        />
+                        {/* 🔥 CARD */}
+                        <div className="
+                            bg-[#111] 
+                            border border-[#1f1f1f] 
+                            rounded-xl 
+                            p-3 
+                            transition 
+                            hover:border-orange-500/50
+                        ">
 
-                        <h3 className="mt-3 text-sm">
-                            {product.name}
-                        </h3>
+                            {/* 🔥 IMAGE BOX (SQUARE FIXED) */}
+                            <div className="
+                                relative 
+                                w-full 
+                                aspect-square 
+                                bg-[#0b0b0b] 
+                                rounded-lg 
+                                overflow-hidden
+                            ">
 
-                        <p className="text-orange-400">
-                            {product.price}
-                        </p>
+                                <img
+                                    src={item.relatedImage || item.images.thumbnail}
+                                    alt={item.name}
+                                    className="
+                                        w-full h-full 
+                                        object-cover 
+                                        transition duration-300 
+                                        group-hover:scale-105
+                                    "
+                                />
+
+                            </div>
+
+                        </div>
+
+                        {/* 🔥 TEXT */}
+                        <div className="mt-3 px-1">
+
+                            <h3 className="
+                                text-xs sm:text-sm 
+                                text-gray-300 
+                                line-clamp-1
+                            ">
+                                {item.name}
+                            </h3>
+
+                            <p className="
+                                text-orange-500 
+                                text-sm 
+                                mt-1 
+                                font-medium
+                            ">
+                                ₹{item.price}
+                            </p>
+
+                        </div>
 
                     </div>
 
