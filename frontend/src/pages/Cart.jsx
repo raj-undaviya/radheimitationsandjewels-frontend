@@ -135,6 +135,7 @@ export default function Cart() {
                                 <div className="text-right text-orange-500 font-bold">
                                     ₹{(item.price * item.qty).toLocaleString()}
                                 </div>
+                                <h1>Hello World Test...</h1>
 
                             </div>
 
