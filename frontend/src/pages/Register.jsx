@@ -1,8 +1,11 @@
 import { Link } from "react-router-dom";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
+import { useNavigate } from "react-router-dom";
 
 export default function Register() {
+
+    const navigate = useNavigate();
 
     const {
         register,
@@ -17,7 +20,14 @@ export default function Register() {
 
     const onSubmit = (data) => {
         console.log("User Data:", data);
-        alert("Registration Successful...");
+
+        // Store data temporarily (optional)
+        localStorage.setItem("userData", JSON.stringify(data));
+
+        alert("OTP Sent Successfully 📩");
+
+        // Navigate to OTP page
+        navigate("/otp");
     };
 
     const getStrength = () => {
@@ -173,9 +183,7 @@ export default function Register() {
                                 ? "bg-linear-to-r from-orange-400 to-orange-600 hover:opacity-90"
                                 : "bg-gray-600 cursor-not-allowed"}`}
                     >
-                        <Link to="/login">
-                            Initialize Membership →
-                        </Link>
+                        Verify User →
                     </button>
 
                 </form>
