@@ -113,7 +113,12 @@ export default function Navbar() {
                                     )}
                                 </div>
 
-                                <FiUser className="cursor-pointer hover:text-orange-400 text-[#94A3B8]" />
+                                <div
+                                    onClick={() => navigate("/profile")}
+                                    className="cursor-pointer hover:text-orange-400 text-[#94A3B8]"
+                                >
+                                    <FiUser />
+                                </div>
 
                             </div>
 
@@ -247,7 +252,15 @@ export default function Navbar() {
                         )}
                     </div>
 
-                    <FiUser className="text-[#94A3B8] hover:text-[#EC5B13]" />
+                    <div
+                        onClick={() => {
+                            navigate("/profile");
+                            setMenuOpen(false);
+                        }}
+                        className="cursor-pointer text-[#94A3B8] hover:text-[#EC5B13]"
+                    >
+                        <FiUser />
+                    </div>
 
                 </div>
 

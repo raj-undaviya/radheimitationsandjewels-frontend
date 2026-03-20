@@ -11,6 +11,7 @@ import Login from "./pages/Login";
 import Wishlist from "./pages/Wishlist";
 import Cart from "./pages/Cart";
 import Checkout from "./pages/Checkout";
+import Profile from "./pages/Profile";
 
 import OtpPage from "./pages/OtpPage";
 import StatusPage from "./pages/StatusPage";
@@ -38,6 +39,8 @@ function App() {
         <Route path="/cart" element={<Cart />} />
 
         <Route path="/checkout" element={<Checkout />} />
+
+        <Route path="/profile" element={<Profile />} />
 
       </Route>
 
