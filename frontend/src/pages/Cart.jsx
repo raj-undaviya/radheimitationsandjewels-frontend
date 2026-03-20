@@ -2,9 +2,8 @@ import { FiMinus, FiPlus } from "react-icons/fi";
 import { useCart } from "../context/CartContext";
 import Breadcrumb from "../components/Breadcrumb";
 
-
 export default function Cart() {
-    const { cartItems } = useCart();
+    const { cartItems, removeFromCart, increaseQty, decreaseQty } = useCart();
 
     const subtotal = cartItems.reduce((acc, item) => acc + item.price * item.qty, 0);
     const tax = Math.round(subtotal * 0.03);
@@ -57,7 +56,10 @@ export default function Cart() {
                                         <h3 className="font-semibold text-sm">{item.name}</h3>
                                         <p className="text-xs text-gray-400">{item.desc}</p>
 
-                                        <button className="text-red-400 text-xs mt-1">
+                                        <button
+                                            onClick={() => removeFromCart(item.id)}
+                                            className="text-red-400 text-xs mt-1"
+                                        >
                                             Remove
                                         </button>
                                     </div>
@@ -73,13 +75,18 @@ export default function Cart() {
 
                                     {/* QUANTITY */}
                                     <div className="flex items-center gap-3">
-                                        <button className="w-9 h-9 flex items-center justify-center border border-gray-600 rounded-full">
+                                        <button
+                                            onClick={() => decreaseQty(item.id)}
+                                            className="w-9 h-9 flex items-center justify-center border border-gray-600 rounded-full"
+                                        >
                                             <FiMinus />
                                         </button>
 
                                         <span className="text-sm">{item.qty}</span>
-
-                                        <button className="w-9 h-9 flex items-center justify-center border border-gray-600 rounded-full">
+                                        <button
+                                            onClick={() => increaseQty(item.id)}
+                                            className="w-9 h-9 flex items-center justify-center border border-gray-600 rounded-full"
+                                        >
                                             <FiPlus />
                                         </button>
                                     </div>
@@ -107,9 +114,14 @@ export default function Cart() {
                                     <div>
                                         <h3 className="font-semibold">{item.name}</h3>
                                         <p className="text-xs text-gray-400">{item.desc}</p>
-                                        <button className="text-red-400 text-xs mt-1 hover:text-red-500">
+
+                                        <button
+                                            onClick={() => removeFromCart(item.id)}
+                                            className="text-red-400 text-xs mt-1 hover:text-red-500"
+                                        >
                                             Remove
                                         </button>
+
                                     </div>
                                 </div>
 
@@ -120,13 +132,19 @@ export default function Cart() {
 
                                 {/* QUANTITY */}
                                 <div className="flex items-center gap-3">
-                                    <button className="p-2 border border-gray-600 rounded-full hover:bg-orange-500">
+                                    <button
+                                        onClick={() => decreaseQty(item.id)}
+                                        className="p-2 border border-gray-600 rounded-full hover:bg-orange-500"
+                                    >
                                         <FiMinus />
                                     </button>
 
                                     <span>{item.qty}</span>
 
-                                    <button className="p-2 border border-gray-600 rounded-full hover:bg-orange-500">
+                                    <button
+                                        onClick={() => increaseQty(item.id)}
+                                        className="p-2 border border-gray-600 rounded-full hover:bg-orange-500"
+                                    >
                                         <FiPlus />
                                     </button>
                                 </div>
