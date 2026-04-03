@@ -18,7 +18,7 @@ export default function SubscribeSection() {
                     className="text-3xl md:text-4xl font-serif mb-4"
                     style={{ fontFamily: "'Playfair Display', serif" }}
                 >
-                    Join the Circle of Elegance
+                    Join the Circle of Elegance of jewellery
                 </h2>
 
                 {/* Description */}
