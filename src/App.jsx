@@ -10,13 +10,10 @@ import Register from "./pages/Register";
 import Login from "./pages/Login";
 import Wishlist from "./pages/Wishlist";
 import Cart from "./pages/Cart";
-import Checkout from "./pages/Checkout";
-import Profile from "./pages/Profile";
 
 import OtpPage from "./pages/OtpPage";
 import StatusPage from "./pages/StatusPage";
 import ForgetPassword from "./pages/ForgetPassword";
-import ResetPassword from "./pages/ResetPassword";
 
 
 function App() {
@@ -38,10 +35,6 @@ function App() {
 
         <Route path="/cart" element={<Cart />} />
 
-        <Route path="/checkout" element={<Checkout />} />
-
-        <Route path="/profile" element={<Profile />} />
-
       </Route>
 
 
@@ -51,14 +44,12 @@ function App() {
         <Route path="/register" element={<Register />} />
 
         <Route path="/login" element={<Login />} />
-
+        
         <Route path="/forgot-password" element={<ForgetPassword />} />
 
         <Route path="/otp" element={<OtpPage />} />
 
         <Route path="/status" element={<StatusPage />} />
-
-        <Route path="/reset-password" element={<ResetPassword />} />
 
       </Route>
 

@@ -1,24 +1,11 @@
 import { FaCheck, FaTimes } from "react-icons/fa";
 import { motion } from "framer-motion";
 import { useNavigate } from "react-router-dom";
-import { useEffect } from "react";
 
-export default function StatusCard({ status = "success", flow }) {
+export default function StatusCard({ status = "success" }) {
     const navigate = useNavigate();
 
     const isSuccess = status === "success";
-
-    useEffect(() => {
-        if (status === "success") {
-            setTimeout(() => {
-                if (flow === "forgot") {
-                    navigate("/reset-password");
-                } else {
-                    navigate("/collections");
-                }
-            }, 2000);
-        }
-    }, [status, flow, navigate]);
 
     return (
         <motion.div
@@ -72,14 +59,10 @@ export default function StatusCard({ status = "success", flow }) {
             {isSuccess ? (
                 <>
                     <button
-                        onClick={() =>
-                            flow === "forgot"
-                                ? navigate("/reset-password")
-                                : navigate("/collections")
-                        }
+                        onClick={() => navigate("/collections")}
                         className="w-full py-3 rounded-lg font-semibold bg-linear-to-r from-orange-400 to-orange-600 text-white mb-3"
                     >
-                        {flow === "forgot" ? "Reset Password →" : "Explore Collections"}
+                        Explore Collections
                     </button>
 
                     <button
