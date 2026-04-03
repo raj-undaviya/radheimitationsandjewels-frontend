@@ -83,7 +83,7 @@ export default function Login() {
                             <button
                                 type="button"
                                 onClick={() => setShowPassword(!showPassword)}
-                                className="absolute right-3 top-3 text-gray-400 hover:text-orange-400 "
+                                className="absolute right-3 top-2 text-gray-400 hover:text-orange-400"
                             >
                                 {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
                             </button>
@@ -107,9 +107,9 @@ export default function Login() {
                             Remember Me
                         </label>
 
-                        <Link to="/forgot-password" className="text-orange-500 hover:underline">
+                        <a href="#" className="text-orange-500 hover:underline">
                             Forgot Password?
-                        </Link>
+                        </a>
 
                     </div>
 
