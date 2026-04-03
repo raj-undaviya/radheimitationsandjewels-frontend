@@ -10,6 +10,7 @@ import Register from "./pages/Register";
 import Login from "./pages/Login";
 import Wishlist from "./pages/Wishlist";
 import Cart from "./pages/Cart";
+import Checkout from "./pages/Checkout";
 
 import OtpPage from "./pages/OtpPage";
 import StatusPage from "./pages/StatusPage";
@@ -35,6 +36,8 @@ function App() {
         <Route path="/wishlist" element={<Wishlist />} />
 
         <Route path="/cart" element={<Cart />} />
+
+        <Route path="/checkout" element={<Checkout />} />
 
       </Route>
 
