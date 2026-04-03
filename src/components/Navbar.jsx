@@ -4,12 +4,14 @@ import logo from "../assets/Logo.png";
 import { NavLink } from "react-router-dom";
 import { useWishlist } from "../context/WishlistContext";
 import { useNavigate } from "react-router-dom";
+import { useCart } from "../context/CartContext";
 
 export default function Navbar() {
 
     const [menuOpen, setMenuOpen] = useState(false);
     const [searchOpen, setSearchOpen] = useState(false);
     const { wishlist } = useWishlist();
+    const { cartItems } = useCart();
     const navigate = useNavigate();
 
     // PROFESSIONAL MENU STRUCTURE
@@ -98,9 +100,25 @@ export default function Navbar() {
                                     )}
                                 </div>
 
-                                <FiShoppingBag className="cursor-pointer hover:text-orange-400 text-[#94A3B8]" />
+                                <div
+                                    onClick={() => navigate("/cart")}
+                                    className="relative cursor-pointer"
+                                >
+                                    <FiShoppingBag className="hover:text-orange-400 text-[#94A3B8]" />
 
-                                <FiUser className="cursor-pointer hover:text-orange-400 text-[#94A3B8]" />
+                                    {cartItems.length > 0 && (
+                                        <span className="absolute -top-2 -right-2 bg-orange-500 text-xs px-1.5 rounded-full">
+                                            {cartItems.length}
+                                        </span>
+                                    )}
+                                </div>
+
+                                <div
+                                    onClick={() => navigate("/profile")}
+                                    className="cursor-pointer hover:text-orange-400 text-[#94A3B8]"
+                                >
+                                    <FiUser />
+                                </div>
 
                             </div>
 
@@ -218,9 +236,31 @@ export default function Navbar() {
                         )}
                     </div>
 
-                    <FiShoppingBag className="text-[#94A3B8] hover:text-[#EC5B13]" />
+                    <div
+                        onClick={() => {
+                            navigate("/cart");
+                            setMenuOpen(false);
+                        }}
+                        className="relative cursor-pointer"
+                    >
+                        <FiShoppingBag className="text-[#94A3B8] hover:text-[#EC5B13]" />
 
-                    <FiUser className="text-[#94A3B8] hover:text-[#EC5B13]" />
+                        {cartItems.length > 0 && (
+                            <span className="absolute -top-2 -right-2 bg-orange-500 text-xs px-1.5 rounded-full">
+                                {cartItems.length}
+                            </span>
+                        )}
+                    </div>
+
+                    <div
+                        onClick={() => {
+                            navigate("/profile");
+                            setMenuOpen(false);
+                        }}
+                        className="cursor-pointer text-[#94A3B8] hover:text-[#EC5B13]"
+                    >
+                        <FiUser />
+                    </div>
 
                 </div>
 
