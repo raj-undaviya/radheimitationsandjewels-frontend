@@ -1,13 +1,18 @@
-import { useUser } from "../../context/UserContext";
 import { useNavigate } from "react-router-dom";
 
 export default function QuickSettings() {
 
-    const { logout } = useUser();
     const navigate = useNavigate();
 
     const handleLogout = () => {
-        logout();
+        // ✅ Remove user + token
+        localStorage.removeItem("user");
+        localStorage.removeItem("token");
+
+        // 🔥 Notify app (optional but good)
+        window.dispatchEvent(new Event("userUpdated"));
+
+        // ✅ Redirect
         navigate("/login");
     };
 

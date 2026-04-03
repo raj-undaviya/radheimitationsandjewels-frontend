@@ -1,93 +1,14 @@
-// import { motion } from "framer-motion";
-// import { LuSparkles } from "react-icons/lu";
-
-//using grid layout
-// export default function CollectionItem({ title, subtitle, desc, img, reverse }) {
-
-//     const textAnimation = {
-//         hidden: { opacity: 0, x: reverse ? 80 : -80 },
-//         show: { opacity: 1, x: 0 }
-//     };
-
-//     const imageAnimation = {
-//         hidden: { opacity: 0, x: reverse ? -80 : 80 },
-//         show: { opacity: 1, x: 0 }
-//     };
-
-//     return (
-//         <div className="grid md:grid-cols-2 items-center gap-24">
-
-//             {/* TEXT */}
-//             <motion.div
-//                 className={`order-2 ${reverse ? "md:order-2" : "md:order-1"} max-w-md`}
-//                 variants={textAnimation}
-//                 initial="hidden"
-//                 whileInView="show"
-//                 transition={{ duration: 0.8 }}
-//                 viewport={{ once: true }}
-//             >
-
-//                 <h2 className="text-4xl font-serif mb-3 italic text-white">
-//                     {title}
-//                 </h2>
-
-//                 <p className="text-[#EC5B13] text-xs tracking-[4px] mb-6">
-//                     {subtitle}
-//                 </p>
-
-//                 <p className="text-gray-400 text-sm leading-relaxed mb-8">
-//                     {desc}
-//                 </p>
-
-//                 <ul className="space-y-3 text-sm text-gray-300 mb-8">
-
-//                     <li className="flex items-center gap-2">
-//                         <LuSparkles className="text-orange-500 text-lg" />
-//                         <span>Intricate Filigree Work</span>
-//                     </li>
-
-//                     <li className="flex items-center gap-2">
-//                         <LuSparkles className="text-orange-500 text-lg" />
-//                         <span>Customized Regional Designs</span>
-//                     </li>
-
-//                 </ul>
-
-//                 <button className="text-sm text-white tracking-wide hover:text-[#EC5B13] transition">
-//                     EXPLORE {title.toUpperCase()} →
-//                 </button>
-
-//             </motion.div>
-
-
-//             {/* IMAGE */}
-//             <motion.div
-//                 className={`order-1 ${reverse ? "md:order-1" : "md:order-1"}`}
-//                 variants={imageAnimation}
-//                 initial="hidden"
-//                 whileInView="show"
-//                 transition={{ duration: 0.8 }}
-//                 viewport={{ once: true }}
-//             >
-
-//                 <img
-//                     src={img}
-//                     alt={title}
-//                     className="w-full max-w-105 mx-auto rounded-lg object-cover hover:scale-105 transition duration-700"
-//                 />
-
-//             </motion.div>
-
-//         </div>
-//     );
-// }
-
 import { motion } from "framer-motion";
 import { LuSparkles } from "react-icons/lu";
 import { Link } from "react-router-dom";
 
 //using width layout
-export default function CollectionItem({ title, subtitle, desc, img, reverse, }) {
+export default function CollectionItem({ Items, reverse }) {
+
+    const { description, category_image, name, id } = Items;
+
+    // console.log(Items, "items")
+
     const textAnimation = {
         hidden: { opacity: 0, x: reverse ? 40 : -40 },
         show: { opacity: 1, x: 0 },
@@ -113,10 +34,11 @@ export default function CollectionItem({ title, subtitle, desc, img, reverse, })
                 viewport={{ once: true }}
             >
                 <img
-                    src={img}
-                    alt={title}
+                    src={category_image}
+                    alt={name}
                     className="w-full max-w-md mx-auto rounded-lg object-cover hover:scale-105 transition duration-700"
                 />
+
             </motion.div>
 
             {/* TEXT */}
@@ -129,15 +51,15 @@ export default function CollectionItem({ title, subtitle, desc, img, reverse, })
                 viewport={{ once: true }}
             >
                 <h2 className="text-4xl font-serif mb-3 italic text-white">
-                    {title}
+                    {name}
                 </h2>
 
                 <p className="text-[#EC5B13] text-xs tracking-[4px] mb-6">
-                    {subtitle}
+                    COLLECTION
                 </p>
 
                 <p className="text-gray-400 text-sm leading-relaxed mb-8">
-                    {desc}
+                    {description}
                 </p>
 
                 <ul className="space-y-3 text-sm text-gray-300 mb-8">
@@ -159,9 +81,9 @@ export default function CollectionItem({ title, subtitle, desc, img, reverse, })
                     EXPLORE {title.toUpperCase()} →
                 </Link> */}
 
-                <Link to={`/collections/${title.toLowerCase()}`}
+                <Link to={`/collections/${name.toLowerCase()}`}
                     className="text-sm text-white tracking-wide hover:text-[#EC5B13] transition">
-                    EXPLORE {title.toUpperCase()} →
+                    EXPLORE {name.toUpperCase()} →
                 </Link>
             </motion.div>
         </div>

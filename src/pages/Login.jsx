@@ -4,7 +4,13 @@ import { useForm } from "react-hook-form";
 import { Eye, EyeOff } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 
+import API from "../api/axiosInstance";
+import { loginUserAPI } from "../api/api";
+
 export default function Login() {
+
+    const [loading, setLoading] = useState(false);
+
     const navigate = useNavigate();
 
     const {
@@ -16,11 +22,43 @@ export default function Login() {
     const [remember, setRemember] = useState(false);
     const [showPassword, setShowPassword] = useState(false);
 
-    const onSubmit = (data) => {
-        console.log("Login Data:", data);
+    const onSubmit = async (data) => {
+        try {
+            setLoading(true);
 
-        // redirect to home page
-        navigate("/");
+            const payload = {
+                email: data.email,
+                password: data.password
+            };
+
+            console.log("Login Payload:", payload);
+
+            const response = await API.post(
+                loginUserAPI(),
+                payload
+            );
+
+            console.log("LOGIN SUCCESS:", response.data);
+
+            // Save token
+            if (response.data?.token) {
+                localStorage.setItem("token", response.data.token);
+            }
+
+            navigate("/profile");
+
+        } catch (error) {
+            console.log("LOGIN ERROR:", error.response?.data);
+
+            const msg =
+                error?.response?.data?.errors?.email?.[0] ||
+                error?.response?.data?.message ||
+                "Login failed";
+
+            alert(msg);
+        } finally {
+            setLoading(false);
+        }
     };
 
     return (
@@ -114,7 +152,7 @@ export default function Login() {
                     </div>
 
                     {/* Button */}
-                    <button
+                    {/* <button
                         disabled={!isValid}
                         type="submit"
                         className={`w-full py-3 rounded-lg font-semibold transition
@@ -123,6 +161,17 @@ export default function Login() {
                                 : "bg-gray-600 cursor-not-allowed"}`}
                     >
                         Sign In →
+                    </button> */}
+
+                    <button
+                        disabled={!isValid || loading}
+                        type="submit"
+                        className={`w-full py-3 rounded-lg font-semibold transition
+                    ${isValid
+                                ? "bg-linear-to-r from-orange-400 to-orange-600 hover:opacity-90"
+                                : "bg-gray-600 cursor-not-allowed"}`}
+                    >
+                        {loading ? "Signing In..." : "Sign In →"}
                     </button>
 
                 </form>

@@ -1,17 +1,19 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { FiMenu, FiSearch, FiShoppingBag, FiX, FiHeart, FiUser } from "react-icons/fi";
 import logo from "../assets/Logo.png";
 import { NavLink } from "react-router-dom";
-import { useWishlist } from "../context/WishlistContext";
 import { useNavigate } from "react-router-dom";
-import { useCart } from "../context/CartContext";
+import { getWishlist, subscribe } from "../store/WishlistStore";
+
 
 export default function Navbar() {
 
+    const [wishlist, setWishlist] = useState(getWishlist());
+    const [cartItems, setCartItems] = useState([]);
+
     const [menuOpen, setMenuOpen] = useState(false);
     const [searchOpen, setSearchOpen] = useState(false);
-    const { wishlist } = useWishlist();
-    const { cartItems } = useCart();
+
     const navigate = useNavigate();
 
     // PROFESSIONAL MENU STRUCTURE
@@ -21,6 +23,18 @@ export default function Navbar() {
         { name: "HERITAGE", path: "/heritage" },
         { name: "STORES", path: "/stores" }
     ];
+
+    useEffect(() => {
+        const unsubscribe = subscribe(setWishlist);
+        return () => unsubscribe();
+    }, []);
+
+    useEffect(() => {
+        const unsubscribe = subscribe(setWishlist);
+        return () => unsubscribe();
+    }, []);
+
+
 
     return (
         <div className="overflow-x-hidden">

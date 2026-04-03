@@ -1,21 +1,41 @@
 import { FiHeart } from "react-icons/fi";
-import { useWishlist } from "../context/WishlistContext";
 import { useNavigate } from "react-router-dom";
 import Breadcrumb from "../components/Breadcrumb";
+import { useEffect, useState } from "react";
 
 export default function Wishlist() {
-
-    const { wishlist, toggleWishlist, isInWishlist } = useWishlist();
     const navigate = useNavigate();
+
+    const [wishlist, setWishlist] = useState([]);
+
+    useEffect(() => {
+        const storedWishlist = JSON.parse(localStorage.getItem("wishlist")) || [];
+        setWishlist(storedWishlist);
+    }, []);
+
+    const toggleWishlist = (product) => {
+        let updatedWishlist;
+
+        const exists = wishlist.find((item) => item.id === product.id);
+
+        if (exists) {
+            updatedWishlist = wishlist.filter((item) => item.id !== product.id);
+        } else {
+            updatedWishlist = [...wishlist, product];
+        }
+
+        setWishlist(updatedWishlist);
+        localStorage.setItem("wishlist", JSON.stringify(updatedWishlist));
+    };
 
     return (
         <div className="min-h-screen bg-[#1c0f09] text-white px-6 md:px-16 py-12">
-            {/* ✅ MOBILE BREADCRUMB */}
+            {/*  MOBILE BREADCRUMB */}
             <div className="block lg:hidden mb-4">
                 <Breadcrumb customLast="Wishlist" />
             </div>
             {/* TITLE */}
-            {/* ✅ TITLE + DESKTOP BREADCRUMB */}
+            {/*  TITLE + DESKTOP BREADCRUMB */}
             <div className="mb-6">
 
                 {/* DESKTOP BREADCRUMB */}
@@ -72,7 +92,7 @@ export default function Wishlist() {
                                 className="rounded-lg w-full h-48 object-cover"
                             />
 
-                            {/* ❤️ REMOVE */}
+                            {/* REMOVE */}
                             <button
                                 onClick={() => toggleWishlist(product)}
                                 className="absolute top-2 right-2 p-2 rounded-full bg-orange-500 text-white"

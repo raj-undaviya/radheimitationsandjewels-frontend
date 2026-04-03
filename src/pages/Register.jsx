@@ -2,8 +2,12 @@ import { Link } from "react-router-dom";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
+import API from "../api/axiosInstance";
+import { registerUserAPI } from "../api/api";
 
 export default function Register() {
+
+    const [loading, setLoading] = useState(false);
 
     const navigate = useNavigate();
 
@@ -18,16 +22,53 @@ export default function Register() {
 
     const password = watch("password");
 
-    const onSubmit = (data) => {
-        console.log("User Data:", data);
+    //for otp verification page
+    // const onSubmit = (data) => {
+    //     console.log("User Data:", data);
 
-        // Store data temporarily (optional)
-        localStorage.setItem("userData", JSON.stringify(data));
+    //     // Store data temporarily (optional)
+    //     localStorage.setItem("userData", JSON.stringify(data));
 
-        alert("OTP Sent Successfully 📩");
+    //     // alert("OTP Sent Successfully 📩");
 
-        // Navigate to OTP page
-        navigate("/otp");
+    //     // Navigate to OTP page
+    //     // navigate("/otp");
+    //     navigate("/login");
+    // };
+
+    const onSubmit = async (data) => {
+        try {
+            setLoading(true);
+
+            const payload = {
+                username: data.username,
+                first_name: data.firstName,
+                last_name: data.lastName,
+                email: data.email,
+                phonenumber: data.phone,
+                password: data.password,
+                // role: "customer",
+                // is_staff: false,
+                // profile_image: ""
+            };
+
+            console.log("Payload:", payload);
+
+            const response = await API.post(
+                registerUserAPI(),
+                payload
+            );
+
+            console.log("SUCCESS:", response.data);
+
+            navigate("/login");
+
+        } catch (error) {
+            console.log("BACKEND ERROR:", error.response?.data);
+            alert(error.response?.data?.message || "Registration failed");
+        } finally {
+            setLoading(false);
+        }
     };
 
     const getStrength = () => {
@@ -176,14 +217,14 @@ export default function Register() {
 
                     {/* Button */}
                     <button
-                        disabled={!isValid}
+                        disabled={!isValid || loading}
                         type="submit"
                         className={`w-full mt-4 py-3 rounded-lg font-semibold transition
-                            ${isValid
+        ${isValid
                                 ? "bg-linear-to-r from-orange-400 to-orange-600 hover:opacity-90"
                                 : "bg-gray-600 cursor-not-allowed"}`}
                     >
-                        Verify User →
+                        {loading ? "Processing..." : "Verify User →"}
                     </button>
 
                 </form>

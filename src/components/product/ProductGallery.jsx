@@ -2,7 +2,7 @@ import { useState, useEffect, useRef } from "react";
 
 export default function ProductGallery({ images }) {
 
-    // ✅ Support both structures
+    //  Support both structures
     const galleryImages = Array.isArray(images)
         ? images
         : images?.gallery || [];
@@ -69,23 +69,23 @@ export default function ProductGallery({ images }) {
     return (
         <div className="w-full max-w-xl mx-auto overflow-hidden">
 
-            {/* 🔥 MAIN IMAGE */}
+            {/*  MAIN IMAGE */}
             <div
-                className="w-full max-w-fullaspect-square bg-[#111] rounded-xl overflow-hidden shadow-xl flex items-center justify-center"
+                className="w-full max-w-full aspect-square bg-[#111] rounded-xl overflow-hidden shadow-xl flex items-center justify-center"
                 onMouseMove={handleMouseMove}
                 onMouseLeave={resetZoom}
                 onTouchStart={handleTouchStart}
                 onTouchEnd={handleTouchEnd}
             >
                 <img
-                    src={galleryImages[index]}
+                    src={galleryImages[index]?.image_url}
                     alt="product"
                     className="w-full h-full object-cover rounded-xl transition duration-300"
                     style={window.innerWidth >= 768 ? zoomStyle : {}}
                 />
             </div>
 
-            {/* 🔹 DOTS */}
+            {/*  DOTS */}
             <div className="flex justify-center gap-2 mt-3">
                 {galleryImages.map((_, i) => (
                     <div
@@ -96,7 +96,7 @@ export default function ProductGallery({ images }) {
                 ))}
             </div>
 
-            {/* 🔥 THUMBNAILS (SCROLL FIXED) */}
+            {/*  THUMBNAILS (SCROLL) */}
             <div className="flex gap-3 mt-4 overflow-x-auto max-w-full px-1 scrollbar-hide">
                 {galleryImages.map((img, i) => (
                     <div
@@ -115,7 +115,7 @@ export default function ProductGallery({ images }) {
             `}
                     >
                         <img
-                            src={img}
+                            src={img.image_url}
                             alt="thumb"
                             className="w-full h-full object-cover rounded-sm"
                         />

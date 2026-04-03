@@ -1,12 +1,34 @@
-import { useUser } from "../../context/UserContext";
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 
 export default function ProfileHeader() {
 
-    const { user, updateUser } = useUser();
+    const [user, setUser] = useState(null);
     const [editing, setEditing] = useState(false);
-    const [name, setName] = useState(user?.name);
+    const [name, setName] = useState("");
     const fileRef = useRef();
+
+    // ✅ Load user from localStorage
+    useEffect(() => {
+        const storedUser = JSON.parse(localStorage.getItem("user"));
+        setUser(storedUser);
+    }, []);
+
+    // ✅ Sync name when user loads
+    useEffect(() => {
+        if (user) {
+            setName(user.name || "");
+        }
+    }, [user]);
+
+    // ✅ Update user
+    const updateUser = (data) => {
+        const updatedUser = { ...user, ...data };
+
+        setUser(updatedUser);
+        localStorage.setItem("user", JSON.stringify(updatedUser));
+
+        window.dispatchEvent(new Event("userUpdated")); // 🔥 sync globally
+    };
 
     // HANDLE IMAGE UPLOAD
     const handleImageChange = (e) => {
@@ -15,7 +37,7 @@ export default function ProfileHeader() {
 
         const imageUrl = URL.createObjectURL(file);
 
-        updateUser({ avatar: imageUrl }); // save in context
+        updateUser({ avatar: imageUrl });
     };
 
     const handleSave = () => {
@@ -23,9 +45,13 @@ export default function ProfileHeader() {
             alert("Name cannot be empty");
             return;
         }
+
         updateUser({ name });
         setEditing(false);
     };
+
+    // ✅ Prevent crash if user not loaded
+    if (!user) return null;
 
     return (
         <div className="bg-[#1c0f09] p-4 sm:p-5 rounded-xl border border-[#ffffff10]">
@@ -41,7 +67,7 @@ export default function ProfileHeader() {
                         className="w-12 h-12 sm:w-14 sm:h-14 rounded-full border-2 border-orange-500 overflow-hidden cursor-pointer hover:opacity-80"
                     >
                         <img
-                            src={user?.avatar || "https://i.pravatar.cc/100"}
+                            src={user.avatar || "https://i.pravatar.cc/100"}
                             className="w-full h-full object-cover"
                         />
                     </div>
@@ -68,14 +94,14 @@ export default function ProfileHeader() {
                             <h2 className="text-base sm:text-lg font-semibold">
                                 Welcome back,
                                 <span className="block sm:inline sm:ml-1">
-                                    {user?.name}
+                                    {user.name}
                                 </span>
                             </h2>
                         )}
 
                         <p className="text-xs sm:text-sm text-orange-400 mt-1">
-                            {user?.membership} <br className="sm:hidden" />
-                            • Member since {user?.memberSince}
+                            {user.membership} <br className="sm:hidden" />
+                            • Member since {user.memberSince}
                         </p>
 
                     </div>

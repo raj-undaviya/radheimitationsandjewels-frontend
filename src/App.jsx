@@ -53,12 +53,12 @@ function App() {
         <Route path="/login" element={<Login />} />
 
         <Route path="/forgot-password" element={<ForgetPassword />} />
-
-        <Route path="/otp" element={<OtpPage />} />
+{/* 
+        <Route path="/otp" element={<OtpPage />} /> */}
 
         <Route path="/status" element={<StatusPage />} />
 
-        <Route path="/reset-password" element={<ResetPassword />} />
+        {/* <Route path="/reset-password" element={<ResetPassword />} /> */}
 
       </Route>
 
