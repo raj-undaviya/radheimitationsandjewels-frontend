@@ -1,6 +1,6 @@
 import { FiHeart } from "react-icons/fi";
 import { useEffect, useState } from "react";
-import { getWishlist, updateWishlist, subscribe } from "../store/wishlistStore";
+import { getWishlist, updateWishlist, subscribe } from "../store/WishlistStore";
 import Breadcrumb from "../components/Breadcrumb";
 import { useParams, useNavigate } from "react-router-dom";
 
