@@ -1,7 +1,7 @@
 import { motion } from "framer-motion";
-import art1 from "../../assets/images/Art1.png";
-import art2 from "../../assets/images/Art2.png";
-import art3 from "../../assets/images/Art3.png";
+import art1 from "../../assets/images/art1.png";
+import art2 from "../../assets/images/art2.png";
+import art3 from "../../assets/images/art3.png";
 
 export default function ArtOfCreation() {
 

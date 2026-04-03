@@ -50,9 +50,9 @@ export default function OtpVerification() {
         }
 
         if (finalOtp === "123456") {
-            navigate("/status", { state: { status: "success", flow: "forgot" } });
+            navigate("/status", { state: { status: "success" } });
         } else {
-            navigate("/status", { state: { status: "error", flow: "forgot" } });
+            navigate("/status", { state: { status: "error" } });
         }
     };
 
