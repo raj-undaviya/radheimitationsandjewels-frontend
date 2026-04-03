@@ -1,9 +1,14 @@
 import React from "react";
 import resetImg from "../assets/images/ResetPass.png";
+// import { useNavigate } from "react-router-dom";
 
 const ForgetPasswordCard = ({
-    title = "Reset Your Access",
-    subtitle = "Enter your registered email address below. We'll send you a secure link to create a new password.",
+    mode = "email",
+    title = mode === "email" ? "Reset Your Access" : "Create New Password",
+    subtitle =
+    mode === "email"
+        ? "Enter your registered email. We'll send you a reset link."
+        : "Enter your new password below.",
     onSubmit,
     onLoginClick,
     image = resetImg,
@@ -36,29 +41,85 @@ const ForgetPasswordCard = ({
                 <form
                     onSubmit={(e) => {
                         e.preventDefault();
-                        if (onSubmit) onSubmit(e);
+
+                        if (mode === "email") {
+                            const email = e.target.email.value;
+
+                            if (!email) {
+                                alert("Email is required");
+                                return;
+                            }
+
+                            onSubmit && onSubmit({ email });
+
+                        } else {
+                            const password = e.target.password.value;
+                            const confirmPassword = e.target.confirmPassword.value;
+
+                            if (password.length < 6) {
+                                alert("Password must be at least 6 characters");
+                                return;
+                            }
+
+                            if (password !== confirmPassword) {
+                                alert("Passwords do not match");
+                                return;
+                            }
+
+                            onSubmit && onSubmit({ password });
+                        }
                     }}
                 >
-                    {/* EMAIL */}
-                    <div className="mb-6">
-                        <label className="block text-sm mb-2 text-gray-300">
-                            Email Address
-                        </label>
-                        <input
-                            type="email"
-                            name="email"
-                            required
-                            placeholder="name@example.com"
-                            className="w-full px-4 py-3 rounded-lg bg-black/60 border border-gray-700 focus:outline-none focus:ring-2 focus:ring-orange-500"
-                        />
-                    </div>
+                    {/* EMAIL OR PASSWORD FIELDS */}
+                    {mode === "email" ? (
+                        <div className="mb-6">
+                            <label className="block text-sm mb-2 text-gray-300">
+                                Email Address
+                            </label>
+                            <input
+                                type="email"
+                                name="email"
+                                required
+                                placeholder="name@example.com"
+                                className="w-full px-4 py-3 rounded-lg bg-black/60 border border-gray-700 focus:ring-2 focus:ring-orange-500"
+                            />
+                        </div>
+                    ) : (
+                        <>
+                            <div className="mb-6">
+                                <label className="block text-sm mb-2 text-gray-300">
+                                    New Password
+                                </label>
+                                <input
+                                    type="password"
+                                    name="password"
+                                    required
+                                    placeholder="Enter new password"
+                                    className="w-full px-4 py-3 rounded-lg bg-black/60 border border-gray-700 focus:ring-2 focus:ring-orange-500"
+                                />
+                            </div>
 
-                    {/* BUTTON */}
+                            <div className="mb-6">
+                                <label className="block text-sm mb-2 text-gray-300">
+                                    Confirm Password
+                                </label>
+                                <input
+                                    type="password"
+                                    name="confirmPassword"
+                                    required
+                                    placeholder="Confirm password"
+                                    className="w-full px-4 py-3 rounded-lg bg-black/60 border border-gray-700 focus:ring-2 focus:ring-orange-500"
+                                />
+                            </div>
+                        </>
+                    )}
+
+                    {/* Button */}
                     <button
                         type="submit"
                         className="w-full bg-orange-500 hover:bg-orange-600 transition duration-300 py-3 rounded-lg font-semibold flex items-center justify-center gap-2"
                     >
-                        Send Reset Link →
+                        {mode === "email" ? "Send Reset Link →" : "Reset Password →"}
                     </button>
                 </form>
 

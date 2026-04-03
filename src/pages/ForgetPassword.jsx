@@ -6,9 +6,12 @@ import resetImg from "../assets/images/ResetPass.png";
 const ForgetPassword = () => {
     const navigate = useNavigate();
 
-    const handleSubmit = (e) => {
-        const email = e.target.email.value;
+    const handleSubmit = ({ email }) => {
         console.log("Send reset link to:", email);
+
+        // 👉 Later API call here
+
+        navigate("/otp", { state: { email } });
     };
 
     //  THIS FUNCTION REDIRECTS TO LOGIN
