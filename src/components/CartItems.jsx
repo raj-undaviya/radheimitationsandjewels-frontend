@@ -1,8 +1,46 @@
 import { FiMinus, FiPlus } from "react-icons/fi";
-import { useCart } from "../context/CartContext";
 
-export default function CartItems() {
-    const { cartItems, removeFromCart, increaseQty, decreaseQty } = useCart();
+export default function CartItems({ cartItems, setCartItems }) {
+
+    // REMOVE ITEM
+    const removeFromCart = (id) => {
+        const updated = cartItems.filter((item) => item.id !== id);
+
+        setCartItems(updated);
+        localStorage.setItem("cart", JSON.stringify(updated));
+
+        window.dispatchEvent(new Event("cartUpdated"));
+    };
+
+    // INCREASE QTY
+    const increaseQty = (id) => {
+        const updated = cartItems.map((item) =>
+            item.id === id
+                ? { ...item, qty: item.qty + 1 }
+                : item
+        );
+
+        setCartItems(updated);
+        localStorage.setItem("cart", JSON.stringify(updated));
+
+        window.dispatchEvent(new Event("cartUpdated"));
+    };
+
+    // DECREASE QTY
+    const decreaseQty = (id) => {
+        const updated = cartItems
+            .map((item) =>
+                item.id === id
+                    ? { ...item, qty: item.qty - 1 }
+                    : item
+            )
+            .filter((item) => item.qty > 0); // remove if qty = 0
+
+        setCartItems(updated);
+        localStorage.setItem("cart", JSON.stringify(updated));
+
+        window.dispatchEvent(new Event("cartUpdated"));
+    };
 
     return (
         <div className="space-y-4">
@@ -16,13 +54,18 @@ export default function CartItems() {
                         {/* LEFT */}
                         <div className="flex gap-4 flex-1">
                             <img
-                                src={item.images.thumbnail}
+                                src={item.images?.thumbnail || item.images?.[0]}
                                 className="w-20 h-20 object-cover rounded-md"
                             />
 
                             <div>
-                                <h3 className="font-semibold text-sm md:text-base">{item.name}</h3>
-                                <p className="text-xs text-gray-400">{item.desc}</p>
+                                <h3 className="font-semibold text-sm md:text-base">
+                                    {item.name}
+                                </h3>
+
+                                <p className="text-xs text-gray-400">
+                                    {item.desc}
+                                </p>
 
                                 <button
                                     onClick={() => removeFromCart(item.id)}

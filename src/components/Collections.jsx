@@ -1,15 +1,13 @@
 import { FiHeart } from "react-icons/fi";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { getWishlist, updateWishlist, subscribe } from "../store/wishlistStore";
 import Breadcrumb from "../components/Breadcrumb";
 import { useParams, useNavigate } from "react-router-dom";
-import { products } from "../data/products";
-import { useWishlist } from "../context/WishlistContext";
-import { useCart } from "../context/CartContext";
+
+import API from "../api/axiosInstance";
+import { ProductSectionAPI } from "../api/api";
 
 export default function Collections() {
-    const { addToCart } = useCart();
-
-    const { toggleWishlist, isInWishlist } = useWishlist();
 
     const { collectionName } = useParams();
     const navigate = useNavigate();
@@ -18,15 +16,78 @@ export default function Collections() {
         ? collectionName.charAt(0).toUpperCase() + collectionName.slice(1)
         : "All Collections";
 
+    // ✅ GLOBAL WISHLIST STATE
+    const [wishlist, setWishlist] = useState(getWishlist());
+
+    const [products, setProducts] = useState([]);
     const [openSort, setOpenSort] = useState(false);
     const [activeCategory, setActiveCategory] = useState("All");
     const [searchText, setSearchText] = useState("");
     const [sortOption, setSortOption] = useState("Default");
 
-    // ✅ FILTER
+    // ✅ SUBSCRIBE TO GLOBAL STORE
+    useEffect(() => {
+        const unsubscribe = subscribe(setWishlist);
+        return () => unsubscribe();
+    }, []);
+
+    // ================= FETCH API =================
+    useEffect(() => {
+        const fetchProducts = async () => {
+            try {
+                const res = await API.get(ProductSectionAPI());
+                setProducts(res.data.data);
+            } catch (err) {
+                console.log(err);
+            }
+        };
+
+        fetchProducts();
+    }, []);
+
+    // ================= WISHLIST =================
+    const toggleWishlist = (product) => {
+        const exists = wishlist.find((item) => item.id === product.id);
+
+        let updated;
+
+        if (exists) {
+            updated = wishlist.filter((item) => item.id !== product.id);
+        } else {
+            updated = [...wishlist, product];
+        }
+
+        updateWishlist(updated); // ✅ GLOBAL UPDATE
+    };
+
+    const isInWishlist = (id) => {
+        return wishlist.some((item) => item.id === id);
+    };
+
+    // ================= CART =================
+    const addToCart = (product) => {
+        const cart = JSON.parse(localStorage.getItem("cart")) || [];
+
+        const exists = cart.find((item) => item.id === product.id);
+
+        let updated;
+
+        if (exists) {
+            updated = cart.map((item) =>
+                item.id === product.id
+                    ? { ...item, qty: item.qty + 1 }
+                    : item
+            );
+        } else {
+            updated = [...cart, { ...product, qty: 1 }];
+        }
+
+        localStorage.setItem("cart", JSON.stringify(updated));
+    };
+
+    // ================= FILTER =================
     let filteredProducts = products.filter((product) => {
-        const matchesCategory =
-            activeCategory === "All" || product.category === activeCategory;
+        const matchesCategory = activeCategory === "All";
 
         const matchesSearch =
             product.name.toLowerCase().includes(searchText.toLowerCase());
@@ -34,16 +95,15 @@ export default function Collections() {
         return matchesCategory && matchesSearch;
     });
 
-    // ✅ SORT (PRO)
+    // ================= SORT =================
     if (sortOption === "Low") {
-        filteredProducts.sort((a, b) => a.price - b.price);
+        filteredProducts.sort((a, b) => Number(a.price) - Number(b.price));
     }
 
     if (sortOption === "High") {
-        filteredProducts.sort((a, b) => b.price - a.price);
+        filteredProducts.sort((a, b) => Number(b.price) - Number(a.price));
     }
 
-    // ✅ COUNT
     const totalCount = filteredProducts.length;
 
     return (
@@ -51,7 +111,6 @@ export default function Collections() {
 
             <Breadcrumb customLast={title} />
 
-            {/* TITLE */}
             <h1 className="text-4xl font-bold mb-2 capitalize">
                 {title}
             </h1>
@@ -60,58 +119,25 @@ export default function Collections() {
                 Keep track of your favorite obsidian and gold handcrafted pieces.
             </p>
 
-            {/* FILTER BAR */}
+            {/* FILTER */}
             <div className="border-b border-[#3b2017] pb-4 mb-8">
 
                 <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
 
-                    {/* CATEGORIES */}
+                    {/* CATEGORY */}
                     <div className="flex gap-6 text-sm font-medium overflow-x-auto whitespace-nowrap">
 
-                        <button
-                            onClick={() => setActiveCategory("All")}
-                            className={activeCategory === "All"
-                                ? "text-orange-500 border-b-2 border-orange-500 pb-1"
-                                : "hover:text-orange-400"}
-                        >
-                            All Items ({totalCount})
-                        </button>
-
-                        <button
-                            onClick={() => setActiveCategory("Necklaces")}
-                            className={activeCategory === "Necklaces"
-                                ? "text-orange-500 border-b-2 border-orange-500 pb-1"
-                                : "hover:text-orange-400"}
-                        >
-                            Necklaces
-                        </button>
-
-                        <button
-                            onClick={() => setActiveCategory("Rings")}
-                            className={activeCategory === "Rings"
-                                ? "text-orange-500 border-b-2 border-orange-500 pb-1"
-                                : "hover:text-orange-400"}
-                        >
-                            Rings
-                        </button>
-
-                        <button
-                            onClick={() => setActiveCategory("Bangles")}
-                            className={activeCategory === "Bangles"
-                                ? "text-orange-500 border-b-2 border-orange-500 pb-1"
-                                : "hover:text-orange-400"}
-                        >
-                            Bangles
-                        </button>
-
-                        <button
-                            onClick={() => setActiveCategory("Earrings")}
-                            className={activeCategory === "Earrings"
-                                ? "text-orange-500 border-b-2 border-orange-500 pb-1"
-                                : "hover:text-orange-400"}
-                        >
-                            Earrings
-                        </button>
+                        {["All", "Necklaces", "Rings", "Bangles", "Earrings"].map((cat) => (
+                            <button
+                                key={cat}
+                                onClick={() => setActiveCategory(cat)}
+                                className={activeCategory === cat
+                                    ? "text-orange-500 border-b-2 border-orange-500 pb-1"
+                                    : "hover:text-orange-400"}
+                            >
+                                {cat} {cat === "All" && `(${totalCount})`}
+                            </button>
+                        ))}
 
                     </div>
 
@@ -122,7 +148,7 @@ export default function Collections() {
                         <div className="relative">
                             <div
                                 onClick={() => setOpenSort(!openSort)}
-                                className="flex items-center gap-2 text-[10px] md:text-sm text-gray-300 cursor-pointer hover:text-white"
+                                className="flex items-center gap-2 text-sm text-gray-300 cursor-pointer hover:text-white"
                             >
                                 <span>Sort by</span>
                                 <span>▼</span>
@@ -131,24 +157,18 @@ export default function Collections() {
                             {openSort && (
                                 <div className="absolute left-0 mt-2 w-44 bg-[#24130c] border border-[#3b2017] rounded-lg shadow-lg z-50">
 
-                                    <button
-                                        onClick={() => { setSortOption("Default"); setOpenSort(false); }}
-                                        className="block w-full text-left px-4 py-2 hover:bg-[#3b2017] text-sm"
-                                    >
+                                    <button onClick={() => { setSortOption("Default"); setOpenSort(false); }}
+                                        className="block w-full text-left px-4 py-2 hover:bg-[#3b2017]">
                                         Default
                                     </button>
 
-                                    <button
-                                        onClick={() => { setSortOption("Low"); setOpenSort(false); }}
-                                        className="block w-full text-left px-4 py-2 hover:bg-[#3b2017] text-sm"
-                                    >
+                                    <button onClick={() => { setSortOption("Low"); setOpenSort(false); }}
+                                        className="block w-full text-left px-4 py-2 hover:bg-[#3b2017]">
                                         Price: Low to High
                                     </button>
 
-                                    <button
-                                        onClick={() => { setSortOption("High"); setOpenSort(false); }}
-                                        className="block w-full text-left px-4 py-2 hover:bg-[#3b2017] text-sm"
-                                    >
+                                    <button onClick={() => { setSortOption("High"); setOpenSort(false); }}
+                                        className="block w-full text-left px-4 py-2 hover:bg-[#3b2017]">
                                         Price: High to Low
                                     </button>
 
@@ -170,39 +190,28 @@ export default function Collections() {
                 </div>
             </div>
 
-            {/* PRODUCTS GRID */}
+            {/* PRODUCTS */}
             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8">
 
                 {filteredProducts.map((product) => (
-                    <div
-                        key={product.id}
-                        className="bg-[#24130c] p-4 rounded-xl shadow-lg hover:scale-105 transition duration-300 border border-[#ffffff0d]"
-                    >
+                    <div key={product.id}
+                        className="bg-[#24130c] p-4 rounded-xl shadow-lg hover:scale-105 transition border border-[#ffffff0d]">
 
                         {/* IMAGE */}
                         <div className="relative">
                             <img
-                                src={
-                                    Array.isArray(product.images)
-                                        ? product.images[0]
-                                        : product.images?.thumbnail
-                                }
+                                src={product.images[0]?.image_url}
                                 alt={product.name}
                                 className="rounded-lg w-full h-48 object-cover"
                             />
 
-                            {/* ❤️ WISHLIST */}
+                            {/* WISHLIST */}
                             <button
-                                // onClick={() => toggleWishlist(product)}
-                                onClick={() => {
-                                    // console.log("Clicked product:", product);
-                                    toggleWishlist(product);
-                                }}
+                                onClick={() => toggleWishlist(product)}
                                 className={`absolute top-2 right-2 p-2 rounded-full transition
                                 ${isInWishlist(product.id)
                                         ? "bg-orange-500 text-white"
-                                        : "bg-black/50 text-gray-300"
-                                    }`}
+                                        : "bg-black/50 text-gray-300"}`}
                             >
                                 <FiHeart />
                             </button>
@@ -214,9 +223,7 @@ export default function Collections() {
                         </h3>
 
                         <p className="text-orange-400 font-semibold">
-                            ₹{typeof product.price === "number"
-                                ? product.price.toLocaleString()
-                                : product.price}
+                            ₹{Number(product.price).toLocaleString()}
                         </p>
 
                         {/* ACTIONS */}
@@ -224,23 +231,17 @@ export default function Collections() {
 
                             <button
                                 onClick={() => navigate(`/product/${product.id}`)}
-                                className="bg-[#2f1a12] py-2 rounded-md text-sm hover:bg-[#3b2017] transition"
+                                className="bg-[#2f1a12] py-2 rounded-md text-sm hover:bg-[#3b2017]"
                             >
                                 View Details
                             </button>
 
-                            {/* <button
-                                onClick={() => navigate("/cart")}
-                                className="bg-orange-500 py-2 rounded-md text-sm font-semibold hover:bg-orange-600 transition"
-                            >
-                                Add to Cart
-                            </button> */}
                             <button
                                 onClick={() => {
                                     addToCart(product);
-                                    navigate("/cart"); // optional
+                                    navigate("/cart");
                                 }}
-                                className="bg-orange-500 py-2 rounded-md text-sm font-semibold hover:bg-orange-600 transition"
+                                className="bg-orange-500 py-2 rounded-md text-sm font-semibold hover:bg-orange-600"
                             >
                                 Add to Cart
                             </button>
