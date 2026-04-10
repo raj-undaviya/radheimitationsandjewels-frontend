@@ -1,7 +1,7 @@
 import axios from "axios";
 
 const API = axios.create({
-    baseURL: "/api", // IMPORTANT (proxy will handle real URL)
+    baseURL: "https://radheimitationsandjewels-backend.onrender.com/api",
     headers: {
         "Content-Type": "application/json",
     },
