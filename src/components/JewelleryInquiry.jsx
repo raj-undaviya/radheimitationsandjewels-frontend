@@ -1,29 +1,37 @@
 import { useCallback, useState } from "react";
 import { useDropzone } from "react-dropzone";
+import { useForm } from "react-hook-form";
+
+import API from "../api/axiosInstance";
+import { JewelleryInquiryAPI } from "../api/api";
 
 export default function JewelleryInquiry() {
 
-    const [form, setForm] = useState({
-        name: "",
-        phone: "+91",
-        email: "",
-        description: ""
+    const {
+        register,
+        handleSubmit,
+        formState: { errors },
+        reset
+    } = useForm({
+        defaultValues: {
+            name: "",
+            phone: "+91",
+            email: "",
+            description: ""
+        }
     });
 
-    const [errors, setErrors] = useState({});
     const [preview, setPreview] = useState(null);
     const [file, setFile] = useState(null);
 
     // DROPZONE FUNCTION
     const onDrop = useCallback((acceptedFiles) => {
-
         const uploaded = acceptedFiles[0];
 
         if (uploaded) {
             setFile(uploaded);
             setPreview(URL.createObjectURL(uploaded));
         }
-
     }, []);
 
     const { getRootProps, getInputProps, isDragActive } = useDropzone({
@@ -35,66 +43,77 @@ export default function JewelleryInquiry() {
         maxSize: 5000000
     });
 
-    // FORM CHANGE
-    const handleChange = (e) => {
-        setForm({
-            ...form,
-            [e.target.name]: e.target.value
-        });
-    };
-
     // REMOVE IMAGE
     const removeImage = () => {
         setPreview(null);
         setFile(null);
     };
 
-    // VALIDATION
-    const validate = () => {
-
-        const newErrors = {};
-
-        if (!form.name.trim()) {
-            newErrors.name = "Customer name is required";
-        }
-
-        const phoneRegex = /^\+91[6-9]\d{9}$/;
-
-        if (!phoneRegex.test(form.phone)) {
-            newErrors.phone = "Enter valid Indian number (+91XXXXXXXXXX)";
-        }
-
-        if (!form.email.includes("@")) {
-            newErrors.email = "Enter valid email address";
-        }
-
-        if (!form.description.trim()) {
-            newErrors.description = "Description is required";
-        }
-
-        return newErrors;
-    };
+    const [loading, setLoading] = useState(false);
 
     // SUBMIT
-    const handleSubmit = (e) => {
+    const onSubmit = async (data) => {
 
-        e.preventDefault();
+        // OPTIONAL: loading state (recommended)
+        // setLoading(true);
 
-        const validationErrors = validate();
+        try {
+            const formData = new FormData();
 
-        if (Object.keys(validationErrors).length > 0) {
-            setErrors(validationErrors);
-            return;
+            formData.append("customer_name", data.name);
+            formData.append("phone_number", "+91" + data.phone);
+            formData.append("email", data.email);
+            formData.append("description", data.description);
+
+            formData.append("date", data.date);
+            formData.append("time_slot", data.time_slot);
+            formData.append("appointment_type", data.appointment_type);
+
+            if (file) {
+                formData.append("reference_photo", file);
+            }
+
+            const response = await API.post(
+                JewelleryInquiryAPI(),
+                formData,
+                {
+                    headers: {
+                        "Content-Type": "multipart/form-data"
+                    }
+                }
+            );
+
+            const result = response.data;
+
+            console.log("API Response:", result);
+
+            alert(result.message || "Appointment booked successfully!");
+
+            // reset only on success
+            reset();
+            setPreview(null);
+            setFile(null);
+
+        } catch (error) {
+            console.error("Axios Error:", error);
+
+            if (error.response) {
+                alert(error.response.data?.message || "Server error");
+            } else if (error.request) {
+                alert("No response from server");
+            } else {
+                alert("Something went wrong!");
+            }
+
+        } finally {
+            // ALWAYS runs (success or error)
+
+            console.log("API call finished");
+
+            // OPTIONAL cleanup
+            // setLoading(false);
         }
-
-        console.log("Form Data:", form);
-        console.log("Uploaded File:", file);
-
-        alert("Inquiry Submitted Successfully!");
-
-        setErrors({});
     };
-
     return (
         <div className="py-16 md:py-20 xl:py-24 bg-black px-4 flex justify-center">
 
@@ -104,7 +123,7 @@ export default function JewelleryInquiry() {
                     Customize Jewellery Inquiry
                 </h2>
 
-                <form className="space-y-5" onSubmit={handleSubmit}>
+                <form className="space-y-5" onSubmit={handleSubmit(onSubmit)}>
 
                     {/* NAME + PHONE */}
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -117,16 +136,16 @@ export default function JewelleryInquiry() {
 
                             <input
                                 type="text"
-                                name="name"
-                                value={form.name}
-                                onChange={handleChange}
                                 placeholder="John Doe"
+                                {...register("name", {
+                                    required: "Customer name is required"
+                                })}
                                 className="w-full mt-1 bg-[#1a0b05] border border-gray-700 rounded-lg px-4 py-3 text-white focus:border-orange-500 outline-none"
                             />
 
                             {errors.name && (
                                 <p className="text-red-400 text-sm mt-1">
-                                    {errors.name}
+                                    {errors.name.message}
                                 </p>
                             )}
                         </div>
@@ -139,16 +158,20 @@ export default function JewelleryInquiry() {
 
                             <input
                                 type="text"
-                                name="phone"
-                                value={form.phone}
-                                onChange={handleChange}
-                                placeholder="+919876543210"
+                                placeholder="9876543210"
+                                {...register("phone", {
+                                    required: "Phone required",
+                                    pattern: {
+                                        value: /^[6-9]\d{9}$/,
+                                        message: "Enter valid 10-digit number"
+                                    }
+                                })}
                                 className="w-full mt-1 bg-[#1a0b05] border border-gray-700 rounded-lg px-4 py-3 text-white focus:border-orange-500 outline-none"
                             />
 
                             {errors.phone && (
                                 <p className="text-red-400 text-sm mt-1">
-                                    {errors.phone}
+                                    {errors.phone.message}
                                 </p>
                             )}
                         </div>
@@ -164,18 +187,92 @@ export default function JewelleryInquiry() {
 
                         <input
                             type="email"
-                            name="email"
-                            value={form.email}
-                            onChange={handleChange}
                             placeholder="email@example.com"
+                            {...register("email", {
+                                required: "Enter valid email address",
+                                pattern: {
+                                    value: /\S+@\S+\.\S+/,
+                                    message: "Enter valid email address"
+                                }
+                            })}
                             className="w-full mt-1 bg-[#1a0b05] border border-gray-700 rounded-lg px-4 py-3 text-white focus:border-orange-500 outline-none"
                         />
 
                         {errors.email && (
                             <p className="text-red-400 text-sm mt-1">
-                                {errors.email}
+                                {errors.email.message}
                             </p>
                         )}
+
+                    </div>
+
+
+                    {/* DATE + TIME + TYPE */}
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+
+                        {/* DATE */}
+                        <div>
+                            <label className="text-gray-300 text-sm">
+                                Appointment Date *
+                            </label>
+
+                            <input
+                                type="date"
+                                {...register("date", { required: "Date is required" })}
+                                className="w-full mt-1 bg-[#1a0b05] border border-gray-700 rounded-lg px-4 py-3 text-white focus:border-orange-500 outline-none"
+                            />
+
+                            {errors.date && (
+                                <p className="text-red-400 text-sm mt-1">
+                                    {errors.date.message}
+                                </p>
+                            )}
+                        </div>
+
+                        {/* TIME SLOT */}
+                        <div>
+                            <label className="text-gray-300 text-sm">
+                                Time Slot *
+                            </label>
+
+                            <select
+                                {...register("time_slot", { required: "Time slot is required" })}
+                                className="w-full mt-1 bg-[#1a0b05] border border-gray-700 rounded-lg px-4 py-3 text-white focus:border-orange-500 outline-none"
+                            >
+                                <option value="">Select Time</option>
+                                <option value="11:40 AM">11:40 AM</option>
+                                <option value="12:00 PM">12:00 PM</option>
+                                <option value="01:00 PM">01:00 PM</option>
+                            </select>
+
+                            {errors.time_slot && (
+                                <p className="text-red-400 text-sm mt-1">
+                                    {errors.time_slot.message}
+                                </p>
+                            )}
+                        </div>
+
+                        {/* APPOINTMENT TYPE */}
+                        <div>
+                            <label className="text-gray-300 text-sm">
+                                Appointment Type *
+                            </label>
+
+                            <select
+                                {...register("appointment_type", { required: "Type is required" })}
+                                className="w-full mt-1 bg-[#1a0b05] border border-gray-700 rounded-lg px-4 py-3 text-white focus:border-orange-500 outline-none"
+                            >
+                                <option value="">Select Type</option>
+                                <option value="virtual">Virtual</option>
+                                <option value="in-store">In Store</option>
+                            </select>
+
+                            {errors.appointment_type && (
+                                <p className="text-red-400 text-sm mt-1">
+                                    {errors.appointment_type.message}
+                                </p>
+                            )}
+                        </div>
 
                     </div>
 
@@ -242,27 +339,27 @@ export default function JewelleryInquiry() {
 
                         <textarea
                             rows="4"
-                            name="description"
-                            value={form.description}
-                            onChange={handleChange}
                             placeholder="Describe the jewellery design..."
+                            {...register("description", {
+                                required: "Description is required"
+                            })}
                             className="w-full mt-1 bg-[#1a0b05] border border-gray-700 rounded-lg px-4 py-3 text-white focus:border-orange-500 outline-none"
                         />
 
                         {errors.description && (
                             <p className="text-red-400 text-sm mt-1">
-                                {errors.description}
+                                {errors.description.message}
                             </p>
                         )}
 
                     </div>
 
                     {/* SUBMIT */}
-                    <button
+                    <button disabled={loading}
                         type="submit"
                         className="w-full bg-orange-600 hover:bg-orange-700 text-white font-semibold py-3 rounded-lg transition"
                     >
-                        Book an Appointment →
+                        {loading ? "Submitting..." : "Book an Appointment →"}
                     </button>
 
                 </form>
