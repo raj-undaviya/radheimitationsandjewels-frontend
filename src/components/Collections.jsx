@@ -9,6 +9,8 @@ import { ProductSectionAPI } from "../api/api";
 
 export default function Collections() {
 
+    const [loading, setLoading] = useState(true);
+
     const { collectionName } = useParams();
     const navigate = useNavigate();
 
@@ -35,10 +37,15 @@ export default function Collections() {
     useEffect(() => {
         const fetchProducts = async () => {
             try {
+                setLoading(true);
+
                 const res = await API.get(ProductSectionAPI());
                 setProducts(res.data.data);
+
             } catch (err) {
                 console.log(err);
+            } finally {
+                setLoading(false);
             }
         };
 
@@ -193,63 +200,84 @@ export default function Collections() {
             {/* PRODUCTS */}
             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8">
 
-                {filteredProducts.map((product) => (
-                    <div key={product.id}
-                        className="bg-[#24130c] p-4 rounded-xl shadow-lg hover:scale-105 transition border border-[#ffffff0d]">
+                {loading
+                    ? Array.from({ length: 8 }).map((_, i) => (
+                        <div
+                            key={i}
+                            className="bg-[#24130c] p-4 rounded-xl border border-[#ffffff0d] animate-pulse"
+                        >
+                            {/* IMAGE */}
+                            <div className="w-full h-48 bg-gray-700 rounded-lg"></div>
 
-                        {/* IMAGE */}
-                        <div className="relative">
-                            <img
-                                src={product.images[0]?.image_url}
-                                alt={product.name}
-                                className="rounded-lg w-full h-48 object-cover"
-                            />
+                            {/* TEXT */}
+                            <div className="mt-4 h-4 bg-gray-700 rounded w-3/4"></div>
+                            <div className="mt-2 h-4 bg-gray-700 rounded w-1/2"></div>
 
-                            {/* WISHLIST */}
-                            <button
-                                onClick={() => toggleWishlist(product)}
-                                className={`absolute top-2 right-2 p-2 rounded-full transition
-                                ${isInWishlist(product.id)
-                                        ? "bg-orange-500 text-white"
-                                        : "bg-black/50 text-gray-300"}`}
-                            >
-                                <FiHeart />
-                            </button>
+                            {/* BUTTONS */}
+                            <div className="mt-4 space-y-2">
+                                <div className="h-8 bg-gray-700 rounded"></div>
+                                <div className="h-8 bg-gray-700 rounded"></div>
+                            </div>
                         </div>
+                    ))
+                    : filteredProducts.map((product) => (
+                        <div key={product.id}
+                            className="bg-[#24130c] p-4 rounded-xl shadow-lg hover:scale-105 transition border border-[#ffffff0d]">
 
-                        {/* INFO */}
-                        <h3 className="mt-4 font-semibold text-sm">
-                            {product.name}
-                        </h3>
+                            {/* IMAGE */}
+                            <div className="relative">
+                                <img
+                                    src={product.images[0]?.image_url}
+                                    alt={product.name}
+                                    className="rounded-lg w-full h-48 object-cover"
+                                />
 
-                        <p className="text-orange-400 font-semibold">
-                            ₹{Number(product.price).toLocaleString()}
-                        </p>
+                                {/* WISHLIST */}
+                                <button
+                                    onClick={() => toggleWishlist(product)}
+                                    className={`absolute top-2 right-2 p-2 rounded-full transition
+                        ${isInWishlist(product.id)
+                                            ? "bg-orange-500 text-white"
+                                            : "bg-black/50 text-gray-300"}`}
+                                >
+                                    <FiHeart />
+                                </button>
+                            </div>
 
-                        {/* ACTIONS */}
-                        <div className="mt-4 flex flex-col gap-2">
+                            {/* INFO */}
+                            <h3 className="mt-4 font-semibold text-sm">
+                                {product.name}
+                            </h3>
 
-                            <button
-                                onClick={() => navigate(`/product/${product.id}`)}
-                                className="bg-[#2f1a12] py-2 rounded-md text-sm hover:bg-[#3b2017]"
-                            >
-                                View Details
-                            </button>
+                            <p className="text-orange-400 font-semibold">
+                                ₹{Number(product.price).toLocaleString()}
+                            </p>
 
-                            <button
-                                onClick={() => {
-                                    addToCart(product);
-                                    navigate("/cart");
-                                }}
-                                className="bg-orange-500 py-2 rounded-md text-sm font-semibold hover:bg-orange-600"
-                            >
-                                Add to Cart
-                            </button>
+                            {/* ACTIONS */}
+                            <div className="mt-4 flex flex-col gap-2">
+
+                                <button
+                                    onClick={() => navigate(`/product/${product.id}`)}
+                                    className="bg-[#2f1a12] py-2 rounded-md text-sm hover:bg-[#3b2017]"
+                                >
+                                    View Details
+                                </button>
+
+                                <button
+                                    onClick={() => {
+                                        addToCart(product);
+                                        navigate("/cart");
+                                    }}
+                                    className="bg-orange-500 py-2 rounded-md text-sm font-semibold hover:bg-orange-600"
+                                >
+                                    Add to Cart
+                                </button>
+
+                            </div>
 
                         </div>
-
-                    </div>
-                ))}
+                    ))
+                }
 
             </div>
 

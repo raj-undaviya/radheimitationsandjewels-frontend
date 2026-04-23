@@ -5,7 +5,7 @@ import { Link } from "react-router-dom";
 //using width layout
 export default function CollectionItem({ Items, reverse }) {
 
-    const { description, category_image, name, id } = Items;
+    const { description, category_image_url, name, id } = Items;
 
     // console.log(Items, "items")
 
@@ -34,7 +34,7 @@ export default function CollectionItem({ Items, reverse }) {
                 viewport={{ once: true }}
             >
                 <img
-                    src={category_image}
+                    src={category_image_url}
                     alt={name}
                     className="w-full max-w-md mx-auto rounded-lg object-cover hover:scale-105 transition duration-700"
                 />

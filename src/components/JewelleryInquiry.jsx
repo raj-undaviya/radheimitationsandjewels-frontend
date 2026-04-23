@@ -1,25 +1,44 @@
-import { useCallback, useState } from "react";
+import { useCallback, useState, useEffect } from "react";
 import { useDropzone } from "react-dropzone";
 import { useForm } from "react-hook-form";
+import BookingModal from "./BookingModal";
 
 import API from "../api/axiosInstance";
 import { JewelleryInquiryAPI } from "../api/api";
 
 export default function JewelleryInquiry() {
 
+    const [showBooking, setShowBooking] = useState(false);
+
+    const user = JSON.parse(localStorage.getItem("user"));
+
     const {
         register,
         handleSubmit,
+        setValue,
         formState: { errors },
         reset
     } = useForm({
         defaultValues: {
             name: "",
-            phone: "+91",
-            email: "",
+            // phone: "+91",
+            email: user?.email || "",   // ✅ auto fill
             description: ""
         }
     });
+
+    useEffect(() => {
+        if (showBooking) {
+            document.body.style.overflow = "hidden";
+        } else {
+            document.body.style.overflow = "auto";
+        }
+
+        // cleanup (important)
+        return () => {
+            document.body.style.overflow = "auto";
+        };
+    }, [showBooking]);
 
     const [preview, setPreview] = useState(null);
     const [file, setFile] = useState(null);
@@ -125,6 +144,9 @@ export default function JewelleryInquiry() {
 
                 <form className="space-y-5" onSubmit={handleSubmit(onSubmit)}>
 
+                    <input type="hidden" {...register("date", { required: true })} />
+                    <input type="hidden" {...register("time_slot", { required: true })} />
+
                     {/* NAME + PHONE */}
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
 
@@ -156,18 +178,34 @@ export default function JewelleryInquiry() {
                                 Phone Number *
                             </label>
 
-                            <input
-                                type="text"
-                                placeholder="9876543210"
-                                {...register("phone", {
-                                    required: "Phone required",
-                                    pattern: {
-                                        value: /^[6-9]\d{9}$/,
-                                        message: "Enter valid 10-digit number"
-                                    }
-                                })}
-                                className="w-full mt-1 bg-[#1a0b05] border border-gray-700 rounded-lg px-4 py-3 text-white focus:border-orange-500 outline-none"
-                            />
+                            <div className="flex mt-1">
+                                {/* FIXED +91 */}
+                                <span className="bg-[#1a0b05] border border-gray-700 px-4 py-3 text-gray-400 rounded-l-lg">
+                                    +91
+                                </span>
+
+                                {/* INPUT */}
+                                <input
+                                    type="tel"
+                                    maxLength={10}
+                                    placeholder="**********"
+
+                                    onInput={(e) => {
+                                        e.target.value = e.target.value
+                                            .replace(/\D/g, "")
+                                            .slice(0, 10);
+                                    }}
+
+                                    {...register("phone", {
+                                        required: "Phone required",
+                                        pattern: {
+                                            value: /^[6-9]\d{9}$/,
+                                            message: "Enter valid 10-digit number"
+                                        }
+                                    })}
+                                    className="w-full bg-[#1a0b05] border border-gray-700 rounded-r-lg px-4 py-3 text-white focus:border-orange-500 outline-none"
+                                />
+                            </div>
 
                             {errors.phone && (
                                 <p className="text-red-400 text-sm mt-1">
@@ -194,7 +232,7 @@ export default function JewelleryInquiry() {
                                     value: /\S+@\S+\.\S+/,
                                     message: "Enter valid email address"
                                 }
-                            })}
+                            })} readOnly
                             className="w-full mt-1 bg-[#1a0b05] border border-gray-700 rounded-lg px-4 py-3 text-white focus:border-orange-500 outline-none"
                         />
 
@@ -203,76 +241,6 @@ export default function JewelleryInquiry() {
                                 {errors.email.message}
                             </p>
                         )}
-
-                    </div>
-
-
-                    {/* DATE + TIME + TYPE */}
-                    <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-
-                        {/* DATE */}
-                        <div>
-                            <label className="text-gray-300 text-sm">
-                                Appointment Date *
-                            </label>
-
-                            <input
-                                type="date"
-                                {...register("date", { required: "Date is required" })}
-                                className="w-full mt-1 bg-[#1a0b05] border border-gray-700 rounded-lg px-4 py-3 text-white focus:border-orange-500 outline-none"
-                            />
-
-                            {errors.date && (
-                                <p className="text-red-400 text-sm mt-1">
-                                    {errors.date.message}
-                                </p>
-                            )}
-                        </div>
-
-                        {/* TIME SLOT */}
-                        <div>
-                            <label className="text-gray-300 text-sm">
-                                Time Slot *
-                            </label>
-
-                            <select
-                                {...register("time_slot", { required: "Time slot is required" })}
-                                className="w-full mt-1 bg-[#1a0b05] border border-gray-700 rounded-lg px-4 py-3 text-white focus:border-orange-500 outline-none"
-                            >
-                                <option value="">Select Time</option>
-                                <option value="11:40 AM">11:40 AM</option>
-                                <option value="12:00 PM">12:00 PM</option>
-                                <option value="01:00 PM">01:00 PM</option>
-                            </select>
-
-                            {errors.time_slot && (
-                                <p className="text-red-400 text-sm mt-1">
-                                    {errors.time_slot.message}
-                                </p>
-                            )}
-                        </div>
-
-                        {/* APPOINTMENT TYPE */}
-                        <div>
-                            <label className="text-gray-300 text-sm">
-                                Appointment Type *
-                            </label>
-
-                            <select
-                                {...register("appointment_type", { required: "Type is required" })}
-                                className="w-full mt-1 bg-[#1a0b05] border border-gray-700 rounded-lg px-4 py-3 text-white focus:border-orange-500 outline-none"
-                            >
-                                <option value="">Select Type</option>
-                                <option value="virtual">Virtual</option>
-                                <option value="in-store">In Store</option>
-                            </select>
-
-                            {errors.appointment_type && (
-                                <p className="text-red-400 text-sm mt-1">
-                                    {errors.appointment_type.message}
-                                </p>
-                            )}
-                        </div>
 
                     </div>
 
@@ -356,7 +324,8 @@ export default function JewelleryInquiry() {
 
                     {/* SUBMIT */}
                     <button disabled={loading}
-                        type="submit"
+                        type="button"
+                        onClick={() => setShowBooking(true)}
                         className="w-full bg-orange-600 hover:bg-orange-700 text-white font-semibold py-3 rounded-lg transition"
                     >
                         {loading ? "Submitting..." : "Book an Appointment →"}
@@ -365,6 +334,18 @@ export default function JewelleryInquiry() {
                 </form>
 
             </div>
+
+            <BookingModal
+                isOpen={showBooking}
+                onClose={() => setShowBooking(false)}
+                onConfirm={(date, time) => {
+                    setValue("date", date.toISOString().split("T")[0]);
+                    setValue("time_slot", time);
+                    setShowBooking(false);
+
+                    handleSubmit(onSubmit)(); // 🔥 THIS LINE ADD
+                }}
+            />
 
         </div>
     );

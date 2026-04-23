@@ -1,4 +1,6 @@
 import { motion } from "framer-motion";
+import { useState } from "react";
+
 import art1 from "../../assets/images/Art1.png";
 import art2 from "../../assets/images/Art2.png";
 import art3 from "../../assets/images/Art3.png";
@@ -22,6 +24,9 @@ export default function ArtOfCreation() {
             img: art3
         }
     ];
+
+    // ✅ one state for all images
+    const [loadedImages, setLoadedImages] = useState({});
 
     return (
         <section className="mt-24 px-4 md:px-10">
@@ -49,55 +54,56 @@ export default function ArtOfCreation() {
             {/* CARDS */}
             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
 
-                {items.map((item, index) => (
-                    <motion.div
-                        key={index}
-                        initial={{ opacity: 0, y: 50 }}
-                        whileInView={{ opacity: 1, y: 0 }}
-                        transition={{ duration: 0.6, delay: index * 0.2 }}
-                        viewport={{ once: true }}
-                        className="
-                            relative 
-                            h-75 sm:h-87.5 md:h-100
-                            rounded-xl 
-                            overflow-hidden 
-                            group 
-                            cursor-pointer
-                        "
-                    >
+                {items.map((item, index) => {
 
-                        {/* IMAGE */}
-                        <img
-                            src={item.img}
-                            alt={item.title}
-                            className="
-                                w-full h-full 
-                                object-cover 
-                                transition duration-500 
-                                group-hover:scale-110
-                            "
-                        />
+                    const isLoaded = loadedImages[index];
 
-                        {/* OVERLAY */}
-                        <div className="
-                            absolute inset-0 
-                            bg-linear-to-t 
-                            from-black/90 via-black/40 to-transparent
-                        "></div>
+                    return (
+                        <motion.div
+                            key={index}
+                            initial={{ opacity: 0, y: 50 }}
+                            whileInView={{ opacity: 1, y: 0 }}
+                            transition={{ duration: 0.6, delay: index * 0.2 }}
+                            viewport={{ once: true }}
+                            className="relative h-75 sm:h-87.5 md:h-100 rounded-xl overflow-hidden group cursor-pointer"
+                        >
 
-                        {/* TEXT */}
-                        <div className="absolute bottom-0 p-5">
-                            <h3 className="text-white text-lg md:text-xl font-semibold mb-1">
-                                {item.title}
-                            </h3>
+                            {/* SKELETON */}
+                            {!isLoaded && (
+                                <div className="absolute inset-0 bg-gray-700 animate-pulse z-10" />
+                            )}
 
-                            <p className="text-gray-300 text-sm">
-                                {item.desc}
-                            </p>
-                        </div>
+                            {/* IMAGE */}
+                            <img
+                                src={item.img}
+                                alt={item.title}
+                                onLoad={() =>
+                                    setLoadedImages((prev) => ({
+                                        ...prev,
+                                        [index]: true
+                                    }))
+                                }
+                                className={`w-full h-full object-cover transition duration-500 group-hover:scale-110
+                                    ${isLoaded ? "opacity-100" : "opacity-0"}`}
+                            />
 
-                    </motion.div>
-                ))}
+                            {/* OVERLAY */}
+                            <div className="absolute inset-0 bg-linear-to-t from-black/90 via-black/40 to-transparent"></div>
+
+                            {/* TEXT */}
+                            <div className="absolute bottom-0 p-5">
+                                <h3 className="text-white text-lg md:text-xl font-semibold mb-1">
+                                    {item.title}
+                                </h3>
+
+                                <p className="text-gray-300 text-sm">
+                                    {item.desc}
+                                </p>
+                            </div>
+
+                        </motion.div>
+                    );
+                })}
 
             </div>
 

@@ -19,9 +19,9 @@ export default function Navbar() {
     // PROFESSIONAL MENU STRUCTURE
     const menuItems = [
         { name: "COLLECTIONS", path: "/" },
-        { name: "BRIDAL", path: "/bridal" },
-        { name: "HERITAGE", path: "/heritage" },
-        { name: "STORES", path: "/stores" }
+        { name: "ABOUT US", path: "/aboutus" },
+        { name: "CONTACT US", path: "/contact" },
+        { name: "TERMS & CONDITIONS", path: "/termsandcondition" }
     ];
 
     useEffect(() => {

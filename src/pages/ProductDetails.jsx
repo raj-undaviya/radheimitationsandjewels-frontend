@@ -41,10 +41,34 @@ export default function ProductDetails() {
 
         fetchProduct();
     }, [id]);
-   
+
 
     if (loading) {
-        return <h1 className="text-white">Loading...</h1>;
+        return (
+            <div className="bg-[#0b0b0b] min-h-screen px-4 sm:px-6 md:px-12 lg:px-20 py-10">
+
+                <div className="grid lg:grid-cols-2 gap-10 lg:gap-16">
+
+                    {/* LEFT - IMAGE SKELETON */}
+                    <div className="w-full aspect-square bg-gray-700 animate-pulse rounded-xl" />
+
+                    {/* RIGHT - INFO SKELETON */}
+                    <div className="space-y-4">
+
+                        <div className="h-6 w-3/4 bg-gray-700 rounded animate-pulse" />
+                        <div className="h-4 w-1/2 bg-gray-700 rounded animate-pulse" />
+                        <div className="h-4 w-full bg-gray-700 rounded animate-pulse" />
+                        <div className="h-4 w-5/6 bg-gray-700 rounded animate-pulse" />
+
+                        <div className="h-10 w-full bg-gray-700 rounded animate-pulse mt-6" />
+                        <div className="h-10 w-full bg-gray-700 rounded animate-pulse" />
+
+                    </div>
+
+                </div>
+
+            </div>
+        );
     }
 
     if (error) {

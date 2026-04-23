@@ -45,6 +45,11 @@ export default function Login() {
                 localStorage.setItem("token", response.data.token);
             }
 
+            //✅ Save email only
+            localStorage.setItem("user", JSON.stringify({
+                email: data.email
+            }));
+
             navigate("/profile");
 
         } catch (error) {
@@ -151,18 +156,6 @@ export default function Login() {
 
                     </div>
 
-                    {/* Button */}
-                    {/* <button
-                        disabled={!isValid}
-                        type="submit"
-                        className={`w-full py-3 rounded-lg font-semibold transition
-                        ${isValid
-                                ? "bg-linear-to-r from-orange-400 to-orange-600 hover:opacity-90"
-                                : "bg-gray-600 cursor-not-allowed"}`}
-                    >
-                        Sign In →
-                    </button> */}
-
                     <button
                         disabled={!isValid || loading}
                         type="submit"
@@ -171,7 +164,14 @@ export default function Login() {
                                 ? "bg-linear-to-r from-orange-400 to-orange-600 hover:opacity-90"
                                 : "bg-gray-600 cursor-not-allowed"}`}
                     >
-                        {loading ? "Signing In..." : "Sign In →"}
+                        {loading ? (
+                            <div className="flex items-center justify-center gap-2">
+                                <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+                                Signing In...
+                            </div>
+                        ) : (
+                            "Sign In →"
+                        )}
                     </button>
 
                 </form>

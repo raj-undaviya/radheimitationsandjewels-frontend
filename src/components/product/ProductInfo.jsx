@@ -4,7 +4,7 @@ export default function ProductInfo({ product }) {
 
     const navigate = useNavigate();
 
-    // ADD TO CART (LOCALSTORAGE)
+    // ADD TO CART
     const addToCart = (product) => {
         const cart = JSON.parse(localStorage.getItem("cart")) || [];
 
@@ -23,9 +23,52 @@ export default function ProductInfo({ product }) {
         }
 
         localStorage.setItem("cart", JSON.stringify(updated));
-
-        window.dispatchEvent(new Event("cartUpdated")); // 🔥 sync navbar
+        window.dispatchEvent(new Event("cartUpdated"));
     };
+
+    // ✅ SKELETON STATE
+    if (!product) {
+        return (
+            <div className="flex flex-col justify-center animate-pulse">
+
+                {/* TITLE */}
+                <div className="h-8 w-3/4 bg-gray-700 rounded mb-4"></div>
+
+                {/* SUBTITLE */}
+                <div className="h-4 w-1/2 bg-gray-700 rounded mb-6"></div>
+
+                {/* DESCRIPTION */}
+                <div className="space-y-2 mb-8">
+                    <div className="h-3 bg-gray-700 rounded w-full"></div>
+                    <div className="h-3 bg-gray-700 rounded w-5/6"></div>
+                    <div className="h-3 bg-gray-700 rounded w-4/6"></div>
+                </div>
+
+                {/* BOXES */}
+                <div className="grid grid-cols-3 gap-3 mb-8">
+                    {[1, 2, 3].map((i) => (
+                        <div key={i} className="bg-[#111] p-4 rounded-xl border border-[#2a1a14]">
+                            <div className="h-3 w-1/2 bg-gray-700 rounded mb-2"></div>
+                            <div className="h-4 w-2/3 bg-gray-700 rounded"></div>
+                        </div>
+                    ))}
+                </div>
+
+                {/* PRICE */}
+                <div className="flex items-center gap-4 mb-8">
+                    <div className="h-6 w-24 bg-gray-700 rounded"></div>
+                    <div className="h-4 w-16 bg-gray-700 rounded"></div>
+                </div>
+
+                {/* BUTTONS */}
+                <div className="flex gap-4">
+                    <div className="h-12 w-40 bg-gray-700 rounded-xl"></div>
+                    <div className="h-12 w-40 bg-gray-700 rounded-xl"></div>
+                </div>
+
+            </div>
+        );
+    }
 
     return (
         <div className="flex flex-col justify-center">
@@ -79,7 +122,6 @@ export default function ProductInfo({ product }) {
 
                 <button
                     onClick={() => {
-                        console.log("Adding product:", product);
                         addToCart(product);
                         navigate("/cart");
                     }}
