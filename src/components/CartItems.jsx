@@ -1,45 +1,22 @@
 import { FiMinus, FiPlus } from "react-icons/fi";
+import {
+    removeFromCart,
+    increaseQty,
+    decreaseQty
+} from "../store/CartStore";
 
 export default function CartItems({ cartItems, setCartItems }) {
 
-    // REMOVE ITEM
-    const removeFromCart = (id) => {
-        const updated = cartItems.filter((item) => item.id !== id);
-
-        setCartItems(updated);
-        localStorage.setItem("cart", JSON.stringify(updated));
-
-        window.dispatchEvent(new Event("cartUpdated"));
+    const handleRemove = (id) => {
+        removeFromCart(id);
     };
 
-    // INCREASE QTY
-    const increaseQty = (id) => {
-        const updated = cartItems.map((item) =>
-            item.id === id
-                ? { ...item, qty: item.qty + 1 }
-                : item
-        );
-
-        setCartItems(updated);
-        localStorage.setItem("cart", JSON.stringify(updated));
-
-        window.dispatchEvent(new Event("cartUpdated"));
+    const handleIncrease = (id) => {
+        increaseQty(id);
     };
 
-    // DECREASE QTY
-    const decreaseQty = (id) => {
-        const updated = cartItems
-            .map((item) =>
-                item.id === id
-                    ? { ...item, qty: item.qty - 1 }
-                    : item
-            )
-            .filter((item) => item.qty > 0); // remove if qty = 0
-
-        setCartItems(updated);
-        localStorage.setItem("cart", JSON.stringify(updated));
-
-        window.dispatchEvent(new Event("cartUpdated"));
+    const handleDecrease = (id) => {
+        decreaseQty(id);
     };
 
     return (

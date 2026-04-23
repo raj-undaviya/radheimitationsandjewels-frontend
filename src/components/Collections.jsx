@@ -1,6 +1,7 @@
 import { FiHeart } from "react-icons/fi";
 import { useEffect, useState } from "react";
 import { getWishlist, updateWishlist, subscribe } from "../store/WishlistStore";
+import { addToCart } from "../store/CartStore";
 import Breadcrumb from "../components/Breadcrumb";
 import { useParams, useNavigate } from "react-router-dom";
 
@@ -71,26 +72,6 @@ export default function Collections() {
         return wishlist.some((item) => item.id === id);
     };
 
-    // ================= CART =================
-    const addToCart = (product) => {
-        const cart = JSON.parse(localStorage.getItem("cart")) || [];
-
-        const exists = cart.find((item) => item.id === product.id);
-
-        let updated;
-
-        if (exists) {
-            updated = cart.map((item) =>
-                item.id === product.id
-                    ? { ...item, qty: item.qty + 1 }
-                    : item
-            );
-        } else {
-            updated = [...cart, { ...product, qty: 1 }];
-        }
-
-        localStorage.setItem("cart", JSON.stringify(updated));
-    };
 
     // ================= FILTER =================
     let filteredProducts = products.filter((product) => {

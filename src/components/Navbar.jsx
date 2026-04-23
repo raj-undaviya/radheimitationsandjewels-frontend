@@ -4,12 +4,19 @@ import logo from "../assets/Logo.png";
 import { NavLink } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
 import { getWishlist, subscribe } from "../store/WishlistStore";
+import { getCart, subscribeCart } from "../store/CartStore";
 
 
 export default function Navbar() {
 
     const [wishlist, setWishlist] = useState(getWishlist());
-    const [cartItems, setCartItems] = useState([]);
+
+    const [cartItems, setCartItems] = useState(getCart());
+
+    useEffect(() => {
+        const unsubscribe = subscribeCart(setCartItems);
+        return () => unsubscribe();
+    }, []);
 
     const [menuOpen, setMenuOpen] = useState(false);
     const [searchOpen, setSearchOpen] = useState(false);
@@ -28,12 +35,6 @@ export default function Navbar() {
         const unsubscribe = subscribe(setWishlist);
         return () => unsubscribe();
     }, []);
-
-    useEffect(() => {
-        const unsubscribe = subscribe(setWishlist);
-        return () => unsubscribe();
-    }, []);
-
 
 
     return (

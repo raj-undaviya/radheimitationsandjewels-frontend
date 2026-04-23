@@ -2,13 +2,17 @@ import { useEffect, useState } from "react";
 import Breadcrumb from "../components/Breadcrumb";
 import CartItems from "../components/CartItems";
 import OrderSummary from "../components/OrderSummary";
+import { getCart, subscribeCart } from "../store/CartStore";
+
 
 export default function Cart() {
     const [cartItems, setCartItems] = useState([]);
 
     useEffect(() => {
-        const storedCart = JSON.parse(localStorage.getItem("cart")) || [];
-        setCartItems(storedCart);
+        setCartItems(getCart());
+
+        const unsubscribe = subscribeCart(setCartItems);
+        return () => unsubscribe();
     }, []);
 
     const subtotal = cartItems.reduce((acc, item) => acc + item.price * item.qty, 0);

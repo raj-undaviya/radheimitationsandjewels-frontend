@@ -60,6 +60,7 @@ export default function OrderSummary({ cartItems }) {
 
             {/* BUTTON */}
             <button
+                type="submit"
                 onClick={() => navigate("/checkout")}
                 className="w-full mt-6 bg-orange-500 py-3 rounded-md font-semibold hover:bg-orange-600 transition"
             >
