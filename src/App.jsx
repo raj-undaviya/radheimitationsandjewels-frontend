@@ -14,6 +14,7 @@ import Checkout from "./pages/Checkout";
 import Profile from "./pages/Profile";
 import TermsPage from "./pages/TermsPage";
 import AboutPage from "./pages/AboutPage";
+import ContactPage from "./pages/ContactPage";
 
 import OtpPage from "./pages/OtpPage";
 import StatusPage from "./pages/StatusPage";
@@ -37,6 +38,8 @@ function App() {
         <Route path="/collections/:collectionName" element={<Collections />} />
 
         <Route path="/aboutus" element={<AboutPage />} />
+
+        <Route path="/contact" element={<ContactPage />} />
 
         <Route path="/terms" element={<TermsPage />} />
 

@@ -43,7 +43,7 @@ export default function Navbar() {
             {/* NAVBAR */}
             <nav className="w-full bg-black text-gray-300">
 
-                <div className="max-w-7xl mx-auto px-4 md:px-6 py-2">
+                <div className="max-w-7xl mx-auto px-3 md:px-4 lg:px-6 py-2">
 
                     <div className="flex items-center justify-between gap-4 p-2">
 
@@ -52,12 +52,12 @@ export default function Navbar() {
                             <img
                                 src={logo}
                                 alt="Radhe Imitations & Jewels"
-                                className="h-20 md:h-12 lg:h-24 w-auto object-contain"
+                                className="h-14 md:h-16 lg:h-20 w-auto object-contain"
                             />
                         </div>
 
                         {/* Desktop Menu */}
-                        <ul className="hidden md:flex flex-1 justify-center gap-4 lg:gap-8 text-sm tracking-wider">
+                        <ul className="hidden lg:flex flex-1 justify-center gap-4 xl:gap-8 text-xs xl:text-sm tracking-wide">
 
                             {menuItems.map((item) => (
                                 <li key={item.name}>
@@ -81,26 +81,26 @@ export default function Navbar() {
                         <div className="flex items-center gap-3 shrink-0">
 
                             {/* Desktop Search */}
-                            <div className="hidden sm:flex items-center bg-[#FFFFFF0D] px-3 py-3 rounded-full border border-[#FFFFFF1A]">
+                            <div className="hidden lg:flex items-center bg-[#FFFFFF0D] px-3 py-3 rounded-full border border-[#FFFFFF1A]">
 
                                 <FiSearch className="text-[#94A3B8] mr-2" />
 
                                 <input
                                     type="text"
                                     placeholder="Search..."
-                                    className="bg-transparent outline-none text-sm text-gray-300 w-16 md:w-24 lg:w-40"
+                                    className="bg-transparent outline-none text-sm text-gray-300 w-12 md:w-20 lg:w-32 xl:w-40"
                                 />
 
                             </div>
 
                             {/* Mobile Search Icon */}
                             <FiSearch
-                                className="md:hidden text-2xl cursor-pointer"
+                                className="lg:hidden text-2xl cursor-pointer"
                                 onClick={() => setSearchOpen(true)}
                             />
 
                             {/* Desktop Icons */}
-                            <div className="hidden md:flex items-center gap-4 text-xl lg:px-6 px-0">
+                            <div className="hidden lg:flex items-center gap-3 xl:gap-4 text-lg xl:text-xl px-2 xl:px-6">
 
                                 <div
                                     onClick={() => navigate("/wishlist")}
@@ -138,7 +138,7 @@ export default function Navbar() {
                             </div>
 
                             {/* Hamburger */}
-                            <div className="md:hidden text-2xl cursor-pointer">
+                            <div className="lg:hidden text-2xl cursor-pointer">
 
                                 {menuOpen ? (
                                     <FiX onClick={() => setMenuOpen(false)} />

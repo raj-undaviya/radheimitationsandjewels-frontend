@@ -170,3 +170,20 @@ body {
         transform: scale(1.1);
     }
 }
+
+/* contact */
+.input-style {
+  width: 100%;
+  padding: 12px;
+  background: #0a0a0a;
+  border: 1px solid #1a1a1a;
+  color: white;
+  outline: none;
+  font-size: 14px;
+  transition: 0.3s;
+}
+
+.input-style:focus {
+  border-color: #f97316;
+  box-shadow: 0 0 8px rgba(249,115,22,0.3);
+}
