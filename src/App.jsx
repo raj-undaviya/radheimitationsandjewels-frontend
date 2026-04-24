@@ -12,6 +12,8 @@ import Wishlist from "./pages/Wishlist";
 import Cart from "./pages/Cart";
 import Checkout from "./pages/Checkout";
 import Profile from "./pages/Profile";
+import TermsPage from "./pages/TermsPage";
+import AboutPage from "./pages/AboutPage";
 
 import OtpPage from "./pages/OtpPage";
 import StatusPage from "./pages/StatusPage";
@@ -32,7 +34,11 @@ function App() {
 
         <Route path="/collections/:collectionName" element={<Collections />} />
 
-        <Route path="/product/:id" element={<ProductDetails />} />
+        <Route path="/collections/:collectionName" element={<Collections />} />
+
+        <Route path="/aboutus" element={<AboutPage />} />
+
+        <Route path="/terms" element={<TermsPage />} />
 
         <Route path="/wishlist" element={<Wishlist />} />
 
@@ -53,7 +59,7 @@ function App() {
         <Route path="/login" element={<Login />} />
 
         <Route path="/forgot-password" element={<ForgetPassword />} />
-{/* 
+        {/* 
         <Route path="/otp" element={<OtpPage />} /> */}
 
         <Route path="/status" element={<StatusPage />} />

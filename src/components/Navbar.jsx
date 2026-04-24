@@ -28,7 +28,7 @@ export default function Navbar() {
         { name: "COLLECTIONS", path: "/" },
         { name: "ABOUT US", path: "/aboutus" },
         { name: "CONTACT US", path: "/contact" },
-        { name: "TERMS & CONDITIONS", path: "/termsandcondition" }
+        { name: "TERMS & CONDITIONS", path: "/terms" }
     ];
 
     useEffect(() => {
