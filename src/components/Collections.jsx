@@ -1,12 +1,12 @@
 import { FiHeart } from "react-icons/fi";
 import { useEffect, useState } from "react";
 import { getWishlist, updateWishlist, subscribe } from "../store/WishlistStore";
-import { addToCart } from "../store/CartStore";
 import Breadcrumb from "../components/Breadcrumb";
-import { useParams, useNavigate } from "react-router-dom";
+import { useParams, useNavigate, useLocation } from "react-router-dom";
 
 import API from "../api/axiosInstance";
-import { ProductSectionAPI } from "../api/api";
+import { ProductSectionAPI, AddToCartAPI } from "../api/api";
+import toast from "react-hot-toast";
 
 export default function Collections() {
 
@@ -14,6 +14,7 @@ export default function Collections() {
 
     const { collectionName } = useParams();
     const navigate = useNavigate();
+    const location = useLocation();
 
     const title = collectionName
         ? collectionName.charAt(0).toUpperCase() + collectionName.slice(1)
@@ -28,21 +29,19 @@ export default function Collections() {
     const [searchText, setSearchText] = useState("");
     const [sortOption, setSortOption] = useState("Default");
 
-    // ✅ SUBSCRIBE TO GLOBAL STORE
+    // ================= SUBSCRIBE =================
     useEffect(() => {
         const unsubscribe = subscribe(setWishlist);
         return () => unsubscribe();
     }, []);
 
-    // ================= FETCH API =================
+    // ================= FETCH PRODUCTS =================
     useEffect(() => {
         const fetchProducts = async () => {
             try {
                 setLoading(true);
-
                 const res = await API.get(ProductSectionAPI());
                 setProducts(res.data.data);
-
             } catch (err) {
                 console.log(err);
             } finally {
@@ -65,13 +64,51 @@ export default function Collections() {
             updated = [...wishlist, product];
         }
 
-        updateWishlist(updated); // ✅ GLOBAL UPDATE
+        updateWishlist(updated);
     };
 
     const isInWishlist = (id) => {
         return wishlist.some((item) => item.id === id);
     };
 
+    // ================= ADD TO CART (🔥 MAIN FIX) =================
+    // ================= ADD TO CART =================
+    const handleAddToCart = async (product) => {
+
+        const token = localStorage.getItem("token");
+
+        // ❌ NOT LOGGED IN
+        if (!token) {
+            localStorage.setItem("pendingCart", JSON.stringify(product));
+
+            toast.error("Please login first");
+
+            navigate("/login", {
+                state: { from: location.pathname }
+            });
+
+            return;
+        }
+
+        // ✅ LOGGED IN → CALL API
+        try {
+            await API.post(AddToCartAPI(), {
+                product: product.id,
+                quantity: 1,
+            });
+
+            toast.success("Added to cart");
+
+            // 🔥🔥🔥 ADD THIS LINE (VERY IMPORTANT)
+            window.dispatchEvent(new Event("cartUpdated"));
+
+            navigate("/cart");
+
+        } catch (err) {
+            console.log(err);
+            toast.error("Failed to add to cart");
+        }
+    };
 
     // ================= FILTER =================
     let filteredProducts = products.filter((product) => {
@@ -104,7 +141,7 @@ export default function Collections() {
             </h1>
 
             <p className="text-gray-400 mb-10">
-                Keep track of your favorite obsidian and gold handcrafted pieces.
+                Keep track of your favorite handcrafted pieces.
             </p>
 
             {/* FILTER */}
@@ -183,49 +220,21 @@ export default function Collections() {
 
                 {loading
                     ? Array.from({ length: 8 }).map((_, i) => (
-                        <div
-                            key={i}
-                            className="bg-[#24130c] p-4 rounded-xl border border-[#ffffff0d] animate-pulse"
-                        >
-                            {/* IMAGE */}
+                        <div key={i} className="bg-[#24130c] p-4 rounded-xl animate-pulse">
                             <div className="w-full h-48 bg-gray-700 rounded-lg"></div>
-
-                            {/* TEXT */}
                             <div className="mt-4 h-4 bg-gray-700 rounded w-3/4"></div>
                             <div className="mt-2 h-4 bg-gray-700 rounded w-1/2"></div>
-
-                            {/* BUTTONS */}
-                            <div className="mt-4 space-y-2">
-                                <div className="h-8 bg-gray-700 rounded"></div>
-                                <div className="h-8 bg-gray-700 rounded"></div>
-                            </div>
                         </div>
                     ))
                     : filteredProducts.map((product) => (
                         <div key={product.id}
-                            className="bg-[#24130c] p-4 rounded-xl shadow-lg hover:scale-105 transition border border-[#ffffff0d]">
+                            className="bg-[#24130c] p-4 rounded-xl shadow-lg hover:scale-105 transition">
 
-                            {/* IMAGE */}
-                            <div className="relative">
-                                <img
-                                    src={product.images[0]?.image_url}
-                                    alt={product.name}
-                                    className="rounded-lg w-full h-48 object-cover"
-                                />
+                            <img
+                                src={product.images[0]?.image_url}
+                                className="rounded-lg w-full h-48 object-cover"
+                            />
 
-                                {/* WISHLIST */}
-                                <button
-                                    onClick={() => toggleWishlist(product)}
-                                    className={`absolute top-2 right-2 p-2 rounded-full transition
-                        ${isInWishlist(product.id)
-                                            ? "bg-orange-500 text-white"
-                                            : "bg-black/50 text-gray-300"}`}
-                                >
-                                    <FiHeart />
-                                </button>
-                            </div>
-
-                            {/* INFO */}
                             <h3 className="mt-4 font-semibold text-sm">
                                 {product.name}
                             </h3>
@@ -234,21 +243,17 @@ export default function Collections() {
                                 ₹{Number(product.price).toLocaleString()}
                             </p>
 
-                            {/* ACTIONS */}
                             <div className="mt-4 flex flex-col gap-2">
 
                                 <button
                                     onClick={() => navigate(`/product/${product.id}`)}
-                                    className="bg-[#2f1a12] py-2 rounded-md text-sm hover:bg-[#3b2017]"
+                                    className="bg-[#2f1a12] py-2 rounded-md text-sm"
                                 >
                                     View Details
                                 </button>
 
                                 <button
-                                    onClick={() => {
-                                        addToCart(product);
-                                        navigate("/cart");
-                                    }}
+                                    onClick={() => handleAddToCart(product)}
                                     className="bg-orange-500 py-2 rounded-md text-sm font-semibold hover:bg-orange-600"
                                 >
                                     Add to Cart

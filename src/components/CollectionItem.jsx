@@ -1,3 +1,5 @@
+// home page collection component
+
 import { motion } from "framer-motion";
 import { LuSparkles } from "react-icons/lu";
 import { Link } from "react-router-dom";

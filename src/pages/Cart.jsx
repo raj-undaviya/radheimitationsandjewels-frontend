@@ -2,17 +2,41 @@ import { useEffect, useState } from "react";
 import Breadcrumb from "../components/Breadcrumb";
 import CartItems from "../components/CartItems";
 import OrderSummary from "../components/OrderSummary";
-import { getCart, subscribeCart } from "../store/CartStore";
-
+import API from "../api/axiosInstance";
+import { GetCartAPI } from "../api/api";
 
 export default function Cart() {
+    const [loading, setLoading] = useState(true);
+
     const [cartItems, setCartItems] = useState([]);
 
-    useEffect(() => {
-        setCartItems(getCart());
+   const fetchCart = async () => {
+    try {
+        setLoading(true); // ✅ START LOADING
 
-        const unsubscribe = subscribeCart(setCartItems);
-        return () => unsubscribe();
+        const res = await API.get(GetCartAPI());
+
+        const items = res.data?.data?.items || [];
+
+        const formatted = items.map(item => ({
+            id: item.id,
+            name: item.product_details.name,
+            price: Number(item.price),
+            qty: item.quantity,
+            image: item.product_details.image,
+        }));
+
+        setCartItems(formatted);
+
+    } catch (err) {
+        console.log(err);
+    } finally {
+        setLoading(false); // ✅ STOP LOADING
+    }
+};
+
+    useEffect(() => {
+        fetchCart();
     }, []);
 
     const subtotal = cartItems.reduce((acc, item) => acc + item.price * item.qty, 0);
@@ -43,10 +67,18 @@ export default function Cart() {
                         <span className="text-right">TOTAL</span>
                     </div>
 
-                    <CartItems cartItems={cartItems} setCartItems={setCartItems} />
+                    <CartItems
+                        cartItems={cartItems}
+                        refreshCart={fetchCart}
+                        loading={loading}
+                    />
                 </div>
 
-                <OrderSummary cartItems={cartItems} />
+                <OrderSummary
+                    subtotal={subtotal}
+                    tax={tax}
+                    total={total}
+                />
 
             </div>
         </div>

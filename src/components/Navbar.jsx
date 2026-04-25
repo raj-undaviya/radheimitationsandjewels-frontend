@@ -4,19 +4,39 @@ import logo from "../assets/Logo.png";
 import { NavLink } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
 import { getWishlist, subscribe } from "../store/WishlistStore";
-import { getCart, subscribeCart } from "../store/CartStore";
+// import { getCart, subscribeCart } from "../store/CartStore";
+
+import API from "../api/axiosInstance";
+import { GetCartAPI } from "../api/api";
 
 
 export default function Navbar() {
 
     const [wishlist, setWishlist] = useState(getWishlist());
 
-    const [cartItems, setCartItems] = useState(getCart());
+    const [cartCount, setCartCount] = useState(0);
+
+    const fetchCartCount = async () => {
+        try {
+            const res = await API.get(GetCartAPI());
+            const items = res.data?.data?.items || [];
+            setCartCount(items.length);
+        } catch (err) {
+            console.log(err);
+        }
+    };
 
     useEffect(() => {
-        const unsubscribe = subscribeCart(setCartItems);
-        return () => unsubscribe();
+        fetchCartCount();
+
+        const handleUpdate = () => fetchCartCount();
+        window.addEventListener("cartUpdated", handleUpdate);
+
+        return () => {
+            window.removeEventListener("cartUpdated", handleUpdate);
+        };
     }, []);
+
 
     const [menuOpen, setMenuOpen] = useState(false);
     const [searchOpen, setSearchOpen] = useState(false);
@@ -121,9 +141,9 @@ export default function Navbar() {
                                 >
                                     <FiShoppingBag className="hover:text-orange-400 text-[#94A3B8]" />
 
-                                    {cartItems.length > 0 && (
+                                    {cartCount > 0 && (
                                         <span className="absolute -top-2 -right-2 bg-orange-500 text-xs px-1.5 rounded-full">
-                                            {cartItems.length}
+                                            {cartCount}
                                         </span>
                                     )}
                                 </div>
@@ -260,9 +280,9 @@ export default function Navbar() {
                     >
                         <FiShoppingBag className="text-[#94A3B8] hover:text-[#EC5B13]" />
 
-                        {cartItems.length > 0 && (
+                        {cartCount > 0 && (
                             <span className="absolute -top-2 -right-2 bg-orange-500 text-xs px-1.5 rounded-full">
-                                {cartItems.length}
+                                {cartCount}
                             </span>
                         )}
                     </div>
