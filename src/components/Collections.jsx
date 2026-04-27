@@ -1,16 +1,29 @@
 import { FiHeart } from "react-icons/fi";
 import { useEffect, useState } from "react";
-import { getWishlist, updateWishlist, subscribe } from "../store/WishlistStore";
+
 import Breadcrumb from "../components/Breadcrumb";
 import { useParams, useNavigate, useLocation } from "react-router-dom";
 
 import API from "../api/axiosInstance";
-import { ProductSectionAPI, AddToCartAPI } from "../api/api";
+import {
+    ProductSectionAPI,
+    AddToCartAPI,
+    AddToWishlistAPI,
+    GetWishlistAPI
+} from "../api/api";
+
 import toast from "react-hot-toast";
 
 export default function Collections() {
 
     const [loading, setLoading] = useState(true);
+    const [products, setProducts] = useState([]);
+    const [wishlist, setWishlist] = useState([]);
+
+    const [openSort, setOpenSort] = useState(false);
+    const [activeCategory, setActiveCategory] = useState("All");
+    const [searchText, setSearchText] = useState("");
+    const [sortOption, setSortOption] = useState("Default");
 
     const { collectionName } = useParams();
     const navigate = useNavigate();
@@ -19,21 +32,6 @@ export default function Collections() {
     const title = collectionName
         ? collectionName.charAt(0).toUpperCase() + collectionName.slice(1)
         : "All Collections";
-
-    // ✅ GLOBAL WISHLIST STATE
-    const [wishlist, setWishlist] = useState(getWishlist());
-
-    const [products, setProducts] = useState([]);
-    const [openSort, setOpenSort] = useState(false);
-    const [activeCategory, setActiveCategory] = useState("All");
-    const [searchText, setSearchText] = useState("");
-    const [sortOption, setSortOption] = useState("Default");
-
-    // ================= SUBSCRIBE =================
-    useEffect(() => {
-        const unsubscribe = subscribe(setWishlist);
-        return () => unsubscribe();
-    }, []);
 
     // ================= FETCH PRODUCTS =================
     useEffect(() => {
@@ -52,32 +50,72 @@ export default function Collections() {
         fetchProducts();
     }, []);
 
-    // ================= WISHLIST =================
-    const toggleWishlist = (product) => {
-        const exists = wishlist.find((item) => item.id === product.id);
+    // ================= FETCH WISHLIST =================
+    useEffect(() => {
+        const fetchWishlist = async () => {
+            try {
+                const res = await API.get(GetWishlistAPI());
+                setWishlist(res.data.data);
+            } catch (err) {
+                console.log(err);
+            }
+        };
 
-        let updated;
+        fetchWishlist();
+    }, []);
 
-        if (exists) {
-            updated = wishlist.filter((item) => item.id !== product.id);
-        } else {
-            updated = [...wishlist, product];
+    // ================= CHECK IF IN WISHLIST =================
+    const isInWishlist = (id) => {
+        return wishlist.some(item => item.product === id);
+    };
+
+    // ================= TOGGLE WISHLIST =================
+    const toggleWishlist = async (product) => {
+
+        const token = localStorage.getItem("token");
+
+        if (!token) {
+            toast.error("Please login first");
+            navigate("/login");
+            return;
         }
 
-        updateWishlist(updated);
-    };
 
-    const isInWishlist = (id) => {
-        return wishlist.some((item) => item.id === id);
-    };
+        try {
 
-    // ================= ADD TO CART (🔥 MAIN FIX) =================
+            const exists = wishlist.find(item => item.product === product.id);
+
+            if (exists) {
+                // 🔴 REMOVE
+                await API.delete(`/orders/wishlist/${exists.id}`);
+                toast.success("Removed from wishlist");
+
+            } else {
+                // 🟢 ADD
+                await API.post(AddToWishlistAPI(), {
+                    product: product.id
+                });
+                toast.success("Added to wishlist");
+            }
+
+            // 🔄 refresh wishlist
+            const res = await API.get(GetWishlistAPI());
+            setWishlist(res.data.data);
+
+            // 🔥 ADD THIS LINE (VERY IMPORTANT)
+            window.dispatchEvent(new Event("wishlistUpdated"));
+
+        } catch (err) {
+            console.log(err);
+            toast.error("Wishlist update failed");
+        }
+    };
+    
     // ================= ADD TO CART =================
     const handleAddToCart = async (product) => {
 
         const token = localStorage.getItem("token");
 
-        // ❌ NOT LOGGED IN
         if (!token) {
             localStorage.setItem("pendingCart", JSON.stringify(product));
 
@@ -90,7 +128,6 @@ export default function Collections() {
             return;
         }
 
-        // ✅ LOGGED IN → CALL API
         try {
             await API.post(AddToCartAPI(), {
                 product: product.id,
@@ -99,7 +136,6 @@ export default function Collections() {
 
             toast.success("Added to cart");
 
-            // 🔥🔥🔥 ADD THIS LINE (VERY IMPORTANT)
             window.dispatchEvent(new Event("cartUpdated"));
 
             navigate("/cart");
@@ -144,77 +180,6 @@ export default function Collections() {
                 Keep track of your favorite handcrafted pieces.
             </p>
 
-            {/* FILTER */}
-            <div className="border-b border-[#3b2017] pb-4 mb-8">
-
-                <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
-
-                    {/* CATEGORY */}
-                    <div className="flex gap-6 text-sm font-medium overflow-x-auto whitespace-nowrap">
-
-                        {["All", "Necklaces", "Rings", "Bangles", "Earrings"].map((cat) => (
-                            <button
-                                key={cat}
-                                onClick={() => setActiveCategory(cat)}
-                                className={activeCategory === cat
-                                    ? "text-orange-500 border-b-2 border-orange-500 pb-1"
-                                    : "hover:text-orange-400"}
-                            >
-                                {cat} {cat === "All" && `(${totalCount})`}
-                            </button>
-                        ))}
-
-                    </div>
-
-                    {/* SORT + SEARCH */}
-                    <div className="flex items-center gap-4 mt-4">
-
-                        {/* SORT */}
-                        <div className="relative">
-                            <div
-                                onClick={() => setOpenSort(!openSort)}
-                                className="flex items-center gap-2 text-sm text-gray-300 cursor-pointer hover:text-white"
-                            >
-                                <span>Sort by</span>
-                                <span>▼</span>
-                            </div>
-
-                            {openSort && (
-                                <div className="absolute left-0 mt-2 w-44 bg-[#24130c] border border-[#3b2017] rounded-lg shadow-lg z-50">
-
-                                    <button onClick={() => { setSortOption("Default"); setOpenSort(false); }}
-                                        className="block w-full text-left px-4 py-2 hover:bg-[#3b2017]">
-                                        Default
-                                    </button>
-
-                                    <button onClick={() => { setSortOption("Low"); setOpenSort(false); }}
-                                        className="block w-full text-left px-4 py-2 hover:bg-[#3b2017]">
-                                        Price: Low to High
-                                    </button>
-
-                                    <button onClick={() => { setSortOption("High"); setOpenSort(false); }}
-                                        className="block w-full text-left px-4 py-2 hover:bg-[#3b2017]">
-                                        Price: High to Low
-                                    </button>
-
-                                </div>
-                            )}
-                        </div>
-
-                        {/* SEARCH */}
-                        <input
-                            type="text"
-                            placeholder="Search jewelry..."
-                            value={searchText}
-                            onChange={(e) => setSearchText(e.target.value)}
-                            className="bg-[#2a140c] px-4 py-2 rounded-md border border-[#3b2017] outline-none text-sm"
-                        />
-
-                    </div>
-
-                </div>
-            </div>
-
             {/* PRODUCTS */}
             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8">
 
@@ -222,13 +187,26 @@ export default function Collections() {
                     ? Array.from({ length: 8 }).map((_, i) => (
                         <div key={i} className="bg-[#24130c] p-4 rounded-xl animate-pulse">
                             <div className="w-full h-48 bg-gray-700 rounded-lg"></div>
-                            <div className="mt-4 h-4 bg-gray-700 rounded w-3/4"></div>
-                            <div className="mt-2 h-4 bg-gray-700 rounded w-1/2"></div>
                         </div>
                     ))
                     : filteredProducts.map((product) => (
                         <div key={product.id}
-                            className="bg-[#24130c] p-4 rounded-xl shadow-lg hover:scale-105 transition">
+                            className="relative bg-[#24130c] p-4 rounded-xl shadow-lg hover:scale-105 transition">
+
+                            {/* ❤️ WISHLIST ICON */}
+                            <button
+                                onClick={() => toggleWishlist(product)}
+                                className="absolute top-3 right-3 z-10 hover:scale-110 transition"
+                            >
+                                <FiHeart
+                                    size={20}
+                                    className={
+                                        isInWishlist(product.id)
+                                            ? "text-red-500 fill-red-500"
+                                            : "text-white"
+                                    }
+                                />
+                            </button>
 
                             <img
                                 src={product.images[0]?.image_url}

@@ -1,9 +1,7 @@
 import { FiMinus, FiPlus } from "react-icons/fi";
+
 import API from "../api/axiosInstance";
-import {
-    RemoveCartItemAPI,
-    UpdateCartItemAPI
-} from "../api/api";
+import { RemoveCartItemAPI, UpdateCartItemAPI } from "../api/api";
 import toast from "react-hot-toast";
 
 export default function CartItems({ cartItems, refreshCart, loading }) {

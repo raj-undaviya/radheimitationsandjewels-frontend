@@ -3,8 +3,7 @@ import { FiMenu, FiSearch, FiShoppingBag, FiX, FiHeart, FiUser } from "react-ico
 import logo from "../assets/Logo.png";
 import { NavLink } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
-import { getWishlist, subscribe } from "../store/WishlistStore";
-// import { getCart, subscribeCart } from "../store/CartStore";
+import { GetWishlistAPI } from "../api/api";
 
 import API from "../api/axiosInstance";
 import { GetCartAPI } from "../api/api";
@@ -12,7 +11,7 @@ import { GetCartAPI } from "../api/api";
 
 export default function Navbar() {
 
-    const [wishlist, setWishlist] = useState(getWishlist());
+    const [wishlist, setWishlist] = useState([]);
 
     const [cartCount, setCartCount] = useState(0);
 
@@ -38,6 +37,27 @@ export default function Navbar() {
     }, []);
 
 
+    useEffect(() => {
+        const fetchWishlist = async () => {
+            try {
+                const res = await API.get(GetWishlistAPI());
+                setWishlist(res.data.data);
+            } catch (err) {
+                console.log(err);
+            }
+        };
+
+        fetchWishlist();
+
+        // 🔥 listen for updates
+        const handleUpdate = () => fetchWishlist();
+        window.addEventListener("wishlistUpdated", handleUpdate);
+
+        return () => {
+            window.removeEventListener("wishlistUpdated", handleUpdate);
+        };
+    }, []);
+
     const [menuOpen, setMenuOpen] = useState(false);
     const [searchOpen, setSearchOpen] = useState(false);
 
@@ -50,12 +70,6 @@ export default function Navbar() {
         { name: "CONTACT US", path: "/contact" },
         { name: "TERMS & CONDITIONS", path: "/terms" }
     ];
-
-    useEffect(() => {
-        const unsubscribe = subscribe(setWishlist);
-        return () => unsubscribe();
-    }, []);
-
 
     return (
         <div className="overflow-x-hidden">

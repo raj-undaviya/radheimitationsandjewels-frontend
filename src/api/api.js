@@ -21,6 +21,10 @@ const JewelleryInquiry = "/appointments/";
 //========================== CART API =====================================
 const AddToCart = "/orders/cart";
 
+//========================== WHISHLIST API =================================
+const Wishlist = "/orders/wishlist";
+
+
 
 
 
@@ -49,3 +53,13 @@ export const UpdateCartItemAPI = (id) => `/orders/cart/${id}`;
 
 // REMOVE ITEM FROM CART
 export const RemoveCartItemAPI = (id) => `/orders/cart/${id}`;
+
+//========================== WHISHLIST FUNCTION API ====================
+//add to whishlist
+export const AddToWishlistAPI = () => Wishlist;
+
+//remove whishlist
+export const RemoveWishlistAPI = (id) => `/orders/wishlist/${id}`;
+
+//view whishlist
+export const GetWishlistAPI = () => Wishlist;

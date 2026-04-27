@@ -37,6 +37,8 @@ function App() {
 
         <Route path="/collections/:collectionName" element={<Collections />} />
 
+        <Route path="/product/:id" element={<ProductDetails />} />
+
         <Route path="/aboutus" element={<AboutPage />} />
 
         <Route path="/contact" element={<ContactPage />} />
