@@ -4,26 +4,56 @@ import OrderSummary from "../components/OrderSummary";
 import Breadcrumb from "../components/Breadcrumb";
 import { useForm } from "react-hook-form";
 
+import API from "../api/axiosInstance";
+import { GetCartAPI, CreateOrderAPI, VerifyPaymentAPI } from "../api/api";
+
 export default function Checkout() {
 
-    // CART STATE 
+    const [coupon, setCoupon] = useState("");
+    const [couponApplied, setCouponApplied] = useState(false);
+
     const [cartItems, setCartItems] = useState([]);
 
-    // REACT HOOK FORM
     const {
         register,
         handleSubmit,
-        formState: { errors },
         reset
     } = useForm();
 
-    // LOAD CART
+    // ================= LOAD RAZORPAY =================
+    const loadRazorpay = () => {
+        return new Promise((resolve) => {
+            const script = document.createElement("script");
+            script.src = "https://checkout.razorpay.com/v1/checkout.js";
+            script.onload = () => resolve(true);
+            script.onerror = () => resolve(false);
+            document.body.appendChild(script);
+        });
+    };
+
+    // ================= FETCH CART =================
+    const refreshCart = async () => {
+        try {
+            const res = await API.get(GetCartAPI());
+            const rawItems = res?.data?.data?.items || [];
+
+            const normalized = rawItems.map(item => ({
+                id: item.id,
+                quantity: item.quantity ?? 1,
+                product: item.product_details || item.product
+            }));
+
+            setCartItems(normalized);
+
+        } catch (err) {
+            console.log(err);
+        }
+    };
+
     useEffect(() => {
-        const storedCart = JSON.parse(localStorage.getItem("cart")) || [];
-        setCartItems(storedCart);
+        refreshCart();
     }, []);
 
-    // LOAD PROFILE
     useEffect(() => {
         const savedProfile = JSON.parse(localStorage.getItem("profile"));
         if (savedProfile) {
@@ -31,21 +61,89 @@ export default function Checkout() {
         }
     }, [reset]);
 
-    // CLEAR CART
-    const clearCart = () => {
-        setCartItems([]);
-        localStorage.setItem("cart", JSON.stringify([]));
-        window.dispatchEvent(new Event("cartUpdated"));
-    };
+    // ================= CALCULATIONS =================
+    const subtotal = cartItems.reduce(
+        (acc, item) => acc + (item.product?.price || 0) * item.quantity,
+        0
+    );
 
-    // FORM SUBMIT
-    const onSubmit = (data) => {
-        console.log("User Details:", data);
+    const tax = subtotal * 0.03;
+    const total = subtotal + tax;
 
-        // Save profile
-        localStorage.setItem("profile", JSON.stringify(data));
+    // ================= PLACE ORDER =================
+    const placeOrder = async (formData, paymentMethod = "online") => {
+        try {
+            const res = await API.post(CreateOrderAPI(), {
+                address: formData.address,
+                city: "Surat",
+                pincode: "395003",
+                payment_method: paymentMethod,
+                coupon_code: couponApplied ? coupon : null
+            });
 
-        alert("Profile saved! Now you can proceed to payment.");
+            const data = res.data;
+
+            // COD
+            if (paymentMethod === "cod") {
+                alert("Order placed successfully!");
+                return;
+            }
+
+            const loaded = await loadRazorpay();
+            if (!loaded) {
+                alert("Razorpay SDK failed");
+                return;
+            }
+
+            const options = {
+                key: data.key,
+                amount: data.amount * 100,
+                currency: "INR",
+                name: "Radhe Jewellery",
+                description: `Order #${data.order_id}`,
+                order_id: data.razorpay_order_id,
+
+                handler: async function (response) {
+                    try {
+                        await API.post(VerifyPaymentAPI(), {
+                            razorpay_order_id: response.razorpay_order_id,
+                            razorpay_payment_id: response.razorpay_payment_id,
+                            razorpay_signature: response.razorpay_signature
+                        });
+
+                        const discount = Number(data.data.discount_amount || 0);
+
+                        if (discount > 0) {
+                            alert(`🎉 You saved ₹${discount}`);
+                        } else {
+                            alert("Payment successful 🎉");
+                        }
+
+                        window.dispatchEvent(new Event("cartUpdated"));
+
+                    } catch (err) {
+                        console.log(err);
+                        alert("Payment verification failed ❌");
+                    }
+                },
+
+                prefill: {
+                    name: formData.name,
+                    email: formData.email,
+                    contact: formData.phone
+                },
+
+                theme: {
+                    color: "#f97316"
+                }
+            };
+
+            const rzp = new window.Razorpay(options);
+            rzp.open();
+
+        } catch (err) {
+            console.log(err);
+        }
     };
 
     return (
@@ -53,7 +151,7 @@ export default function Checkout() {
 
             <Breadcrumb customLast="Checkout" />
 
-            <h1 className="text-3xl md:text-4xl font-bold text-orange-500 mb-2">
+            <h1 className="text-3xl font-bold text-orange-500 mb-2">
                 Checkout
             </h1>
 
@@ -61,126 +159,142 @@ export default function Checkout() {
                 You have {cartItems.length} items in your cart.
             </p>
 
-            <div className="space-y-8">
+            <form
+                onSubmit={handleSubmit((data) => placeOrder(data, "online"))}
+                className="bg-[#1c0f09] rounded-2xl p-6 md:p-8 border border-[#ffffff10] shadow-xl"
+            >
 
-                {/* 🔥 PROFILE FORM */}
-                <form
-                    onSubmit={handleSubmit(onSubmit)}
-                    className="bg-[#1c0f09] rounded-xl p-6 border border-[#ffffff10]"
-                >
-                    <h2 className="text-xl font-semibold mb-4">Profile Detail</h2>
+                {/* HEADER */}
+                <div className="mb-6">
+                    <h2 className="text-2xl font-semibold text-white">
+                        Shipping Details
+                    </h2>
+                    <p className="text-gray-400 text-sm mt-1">
+                        Enter your delivery information
+                    </p>
+                </div>
 
-                    <div className="grid md:grid-cols-2 gap-4">
+                {/* INPUT GRID */}
+                <div className="grid md:grid-cols-2 gap-5">
 
-                        {/* NAME */}
-                        <div>
-                            <input
-                                type="text"
-                                placeholder="Full Name"
-                                {...register("name", { required: "Name is required" })}
-                                className="w-full px-4 py-3 bg-black border border-gray-700 rounded-md"
-                            />
-                            <p className="text-red-500 text-xs">{errors.name?.message}</p>
-                        </div>
-
-                        {/* EMAIL */}
-                        <div>
-                            <input
-                                type="email"
-                                placeholder="Email"
-                                {...register("email", {
-                                    required: "Email is required",
-                                    pattern: {
-                                        value: /\S+@\S+\.\S+/,
-                                        message: "Invalid email"
-                                    }
-                                })}
-                                className="w-full px-4 py-3 bg-black border border-gray-700 rounded-md"
-                            />
-                            <p className="text-red-500 text-xs">{errors.email?.message}</p>
-                        </div>
-
-                        {/* PHONE */}
-                        <div>
-                            <input
-                                type="text"
-                                placeholder="Phone Number"
-                                {...register("phone", {
-                                    required: "Phone is required",
-                                    minLength: {
-                                        value: 10,
-                                        message: "Minimum 10 digits"
-                                    }
-                                })}
-                                className="w-full px-4 py-3 bg-black border border-gray-700 rounded-md"
-                            />
-                            <p className="text-red-500 text-xs">{errors.phone?.message}</p>
-                        </div>
-
-                        {/* ADDRESS */}
-                        <div className="md:col-span-2">
-                            <input
-                                type="text"
-                                placeholder="Shipping Address"
-                                {...register("address", { required: "Address is required" })}
-                                className="w-full px-4 py-3 bg-black border border-gray-700 rounded-md"
-                            />
-                            <p className="text-red-500 text-xs">{errors.address?.message}</p>
-                        </div>
-
+                    {/* NAME */}
+                    <div>
+                        <label className="text-sm text-gray-400 mb-1 block">
+                            Full Name
+                        </label>
+                        <input
+                            {...register("name")}
+                            placeholder="John Doe"
+                            className="w-full px-4 py-3 bg-black border border-gray-700 rounded-lg focus:border-orange-500 focus:ring-1 focus:ring-orange-500 outline-none transition"
+                        />
                     </div>
 
-                    {/* ✅ SUBMIT BUTTON (IMPORTANT FIX) */}
-                    <button
-                        type="submit"
-                        className="w-full mt-6 bg-orange-500 py-3 rounded-md font-semibold hover:bg-orange-600 transition"
-                    >
-                        Save Details
-                    </button>
-
-                </form>
-
-                {/* 🔥 CART + SUMMARY */}
-                <div className="grid lg:grid-cols-3 gap-8">
-
-                    {/* LEFT */}
-                    <div className="lg:col-span-2 bg-[#1c0f09] rounded-xl p-6 border border-[#ffffff10]">
-
-                        <div className="hidden md:grid grid-cols-4 text-gray-400 text-sm border-b border-gray-700 pb-2 mb-4">
-                            <span>PRODUCT</span>
-                            <span>PRICE</span>
-                            <span>QUANTITY</span>
-                            <span className="text-right">TOTAL</span>
-                        </div>
-
-                        <CartItems cartItems={cartItems} setCartItems={setCartItems} />
-
-                        <div className="flex justify-between mt-6 text-sm text-gray-400">
-
-                            <span className="cursor-pointer hover:text-white">
-                                ← Continue Shopping
-                            </span>
-
-                            <span
-                                onClick={clearCart}
-                                className="cursor-pointer hover:text-red-400"
-                            >
-                                Clear Cart
-                            </span>
-
-                        </div>
-
+                    {/* EMAIL */}
+                    <div>
+                        <label className="text-sm text-gray-400 mb-1 block">
+                            Email Address
+                        </label>
+                        <input
+                            {...register("email")}
+                            placeholder="john@example.com"
+                            className="w-full px-4 py-3 bg-black border border-gray-700 rounded-lg focus:border-orange-500 focus:ring-1 focus:ring-orange-500 outline-none transition"
+                        />
                     </div>
 
-                    {/* RIGHT */}
-                    <div className="bg-[#1c0f09] rounded-xl md:p-3 border border-[#ffffff10] h-fit">
+                    {/* PHONE */}
+                    <div>
+                        <label className="text-sm text-gray-400 mb-1 block">
+                            Phone Number
+                        </label>
+                        <input
+                            {...register("phone")}
+                            placeholder="+91 9876543210"
+                            className="w-full px-4 py-3 bg-black border border-gray-700 rounded-lg focus:border-orange-500 focus:ring-1 focus:ring-orange-500 outline-none transition"
+                        />
+                    </div>
 
-                        {/* 🔥 PASS BUTTON CONTROL */}
-                        <OrderSummary cartItems={cartItems} />
-
+                    {/* ADDRESS */}
+                    <div className="md:col-span-2">
+                        <label className="text-sm text-gray-400 mb-1 block">
+                            Shipping Address
+                        </label>
+                        <textarea
+                            {...register("address")}
+                            rows={3}
+                            placeholder="Street, Area, Landmark"
+                            className="w-full px-4 py-3 bg-black border border-gray-700 rounded-lg focus:border-orange-500 focus:ring-1 focus:ring-orange-500 outline-none transition resize-none"
+                        />
                     </div>
 
                 </div>
+
+                {/* COUPON (IMPROVED UI) */}
+                <div className="mt-6 bg-[#120904] p-4 rounded-xl border border-[#ffffff10]">
+
+                    <p className="text-sm text-gray-400 mb-3">
+                        Apply Coupon
+                    </p>
+
+                    <div className="flex gap-2">
+                        <input
+                            type="text"
+                            value={coupon}
+                            onChange={(e) => setCoupon(e.target.value)}
+                            placeholder="Enter coupon code"
+                            className="flex-1 px-4 py-2 bg-black border border-gray-700 rounded-md text-sm focus:border-orange-500 outline-none"
+                        />
+
+                        <button
+                            type="button"
+                            onClick={() => {
+                                if (!coupon) return alert("Enter coupon code");
+                                setCouponApplied(true);
+                            }}
+                            className="bg-orange-500 hover:bg-orange-600 px-4 rounded-md text-sm font-medium transition"
+                        >
+                            Apply
+                        </button>
+                    </div>
+
+                    {couponApplied && (
+                        <p className="text-yellow-400 text-sm mt-2">
+                            Coupon will be applied at checkout
+                        </p>
+                    )}
+                </div>
+
+                {/* BUTTONS */}
+                <div className="mt-6 space-y-3">
+
+                    {/* ONLINE */}
+                    <button className="w-full bg-orange-500 hover:bg-orange-600 py-3 rounded-lg font-semibold transition shadow-md">
+                        Pay Online →
+                    </button>
+
+                    {/* COD */}
+                    <button
+                        type="button"
+                        onClick={handleSubmit((data) => placeOrder(data, "cod"))}
+                        className="w-full bg-gray-700 hover:bg-gray-800 py-3 rounded-lg font-semibold transition"
+                    >
+                        Cash on Delivery
+                    </button>
+
+                </div>
+
+            </form>
+
+            <div className="grid lg:grid-cols-3 gap-8 mt-8">
+
+                <div className="lg:col-span-2">
+                    <CartItems cartItems={cartItems} refreshCart={refreshCart} />
+                </div>
+
+                <OrderSummary
+                    subtotal={subtotal}
+                    tax={tax}
+                    total={total}
+                />
 
             </div>
 

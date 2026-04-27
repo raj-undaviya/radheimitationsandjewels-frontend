@@ -10,36 +10,38 @@ export default function Cart() {
 
     const [cartItems, setCartItems] = useState([]);
 
-   const fetchCart = async () => {
-    try {
-        setLoading(true); // ✅ START LOADING
+    const fetchCart = async () => {
+        try {
+            setLoading(true);
 
-        const res = await API.get(GetCartAPI());
+            const res = await API.get(GetCartAPI());
+            const items = res.data?.data?.items || [];
 
-        const items = res.data?.data?.items || [];
+            // ✅ NORMALIZED STRUCTURE
+            const normalized = items.map(item => ({
+                id: item.id,
+                quantity: item.quantity,
+                product: item.product_details || item.product
+            }));
 
-        const formatted = items.map(item => ({
-            id: item.id,
-            name: item.product_details.name,
-            price: Number(item.price),
-            qty: item.quantity,
-            image: item.product_details.image,
-        }));
+            setCartItems(normalized);
 
-        setCartItems(formatted);
-
-    } catch (err) {
-        console.log(err);
-    } finally {
-        setLoading(false); // ✅ STOP LOADING
-    }
-};
+        } catch (err) {
+            console.log(err);
+        } finally {
+            setLoading(false);
+        }
+    };
 
     useEffect(() => {
         fetchCart();
     }, []);
 
-    const subtotal = cartItems.reduce((acc, item) => acc + item.price * item.qty, 0);
+    const subtotal = cartItems.reduce(
+    (acc, item) => acc + (item.product?.price || 0) * item.quantity,
+    0
+);
+
     const tax = Math.round(subtotal * 0.03);
     const total = subtotal + tax;
 

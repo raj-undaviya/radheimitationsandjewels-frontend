@@ -24,6 +24,14 @@ const AddToCart = "/orders/cart";
 //========================== WHISHLIST API =================================
 const Wishlist = "/orders/wishlist";
 
+// ================= ORDER API =================
+
+// CREATE ORDER (Checkout)
+const CreateOrder = "/orders/";
+
+// VERIFY PAYMENT
+const VerifyPayment = "/orders/payment/verify/";
+
 
 
 
@@ -63,3 +71,8 @@ export const RemoveWishlistAPI = (id) => `/orders/wishlist/${id}`;
 
 //view whishlist
 export const GetWishlistAPI = () => Wishlist;
+
+// ================= EXPORT =================
+
+export const CreateOrderAPI = () => CreateOrder;
+export const VerifyPaymentAPI = () => VerifyPayment;
