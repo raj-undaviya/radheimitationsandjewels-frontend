@@ -187,3 +187,41 @@ body {
   border-color: #f97316;
   box-shadow: 0 0 8px rgba(249,115,22,0.3);
 }
+
+/* //toast glass */
+/* 🔥 GLASS TOAST STYLE */
+
+.custom-toast {
+  background: rgba(30, 20, 10, 0.7) !important;
+  backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 165, 0, 0.2);
+  border-radius: 12px;
+  color: #fff;
+  font-weight: 500;
+  box-shadow: 0 8px 25px rgba(0,0,0,0.4);
+}
+
+.custom-toast-body {
+  font-size: 14px;
+}
+
+/* SUCCESS */
+.Toastify__toast--success {
+  border-left: 4px solid #22c55e;
+}
+
+/* ERROR */
+.Toastify__toast--error {
+  border-left: 4px solid #ef4444;
+}
+
+/* WARNING */
+.Toastify__toast--warning {
+  border-left: 4px solid #facc15;
+}
+
+/* INFO */
+.Toastify__toast--info {
+  border-left: 4px solid #3b82f6;
+}
+

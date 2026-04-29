@@ -32,6 +32,14 @@ const CreateOrder = "/orders/";
 // VERIFY PAYMENT
 const VerifyPayment = "/orders/payment/verify/";
 
+// ================= USER / PROFILE API =================
+
+
+const Customer = "/users/customers";
+
+
+
+
 
 
 
@@ -72,7 +80,15 @@ export const RemoveWishlistAPI = (id) => `/orders/wishlist/${id}`;
 //view whishlist
 export const GetWishlistAPI = () => Wishlist;
 
-// ================= EXPORT =================
+// ================= CHECKOUT PAYMENT =================
 
 export const CreateOrderAPI = () => CreateOrder;
 export const VerifyPaymentAPI = () => VerifyPayment;
+
+
+//============================= USER /PROFILE =============================================
+//UPDATE USER
+export const UpdateCustomerAPI = (id) => `${Customer}/${id}`;
+
+// DELETE USER
+export const DeleteCustomerAPI = (id) => `${Customer}/${id}`;

@@ -1,6 +1,6 @@
 import ProfileHeader from "../components/profile/ProfileHeader";
 import OrderHistory from "../components/profile/OrderHistory";
-import PaymentMethods from "../components/profile/PaymentMethods";
+// import PaymentMethods from "../components/profile/PaymentMethods";
 import Addresses from "../components/profile/Addresses";
 import QuickSettings from "../components/profile/QuickSettings";
 import Breadcrumb from "../components/Breadcrumb";
@@ -26,7 +26,7 @@ export default function Profile() {
 
                 {/* RIGHT */}
                 <div className="space-y-6">
-                    <PaymentMethods />
+                    {/* <PaymentMethods /> */}
                     <QuickSettings />
                 </div>
 
