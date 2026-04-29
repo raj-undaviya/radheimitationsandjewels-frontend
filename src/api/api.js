@@ -37,6 +37,10 @@ const VerifyPayment = "/orders/payment/verify/";
 const Customer = "/users/customers";
 
 
+//================================ TERMS & CONDITION =========================
+const GetPolicies = "/policies/user/policies";
+
+
 
 
 
@@ -91,3 +95,12 @@ export const UpdateCustomerAPI = (id) => `${Customer}/${id}`;
 
 // DELETE USER
 export const DeleteCustomerAPI = (id) => `${Customer}/${id}`;
+
+//================================== TERMS & CONDITION ======================================
+export const getPoliciesAPI = () => GetPolicies;
+
+export const getPolicyByTypeAPI = (type) =>
+    `/policies/user/policies/${type}`;
+
+//==================== SEARCH API ==============================================
+export const SearchAPI = (query) => `/search?q=${query}`;
