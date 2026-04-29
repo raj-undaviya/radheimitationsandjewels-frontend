@@ -3,6 +3,7 @@ import CartItems from "../components/CartItems";
 import OrderSummary from "../components/OrderSummary";
 import Breadcrumb from "../components/Breadcrumb";
 import { useForm } from "react-hook-form";
+import { toast } from "react-toastify";
 
 import API from "../api/axiosInstance";
 import { GetCartAPI, CreateOrderAPI, VerifyPaymentAPI } from "../api/api";
@@ -78,14 +79,15 @@ export default function Checkout() {
                 city: "Surat",
                 pincode: "395003",
                 payment_method: paymentMethod,
-                coupon_code: couponApplied ? coupon : null
+                // ✅ OPTIONAL COUPON
+                ...(couponApplied && coupon ? { coupon_code: coupon } : {})
             });
 
             const data = res.data;
 
             // COD
             if (paymentMethod === "cod") {
-                alert("Order placed successfully!");
+                toast.success("Order placed successfully (COD)");
                 return;
             }
 
@@ -111,19 +113,20 @@ export default function Checkout() {
                             razorpay_signature: response.razorpay_signature
                         });
 
-                        const discount = Number(data.data.discount_amount || 0);
+                        const discount = Number(data.data?.discount_amount || 0);
 
                         if (discount > 0) {
-                            alert(`🎉 You saved ₹${discount}`);
+                            toast.success(`🎉 Payment successful! You saved ₹${discount}`);
                         } else {
-                            alert("Payment successful 🎉");
+                            toast.success("🎉 Payment successful!");
                         }
 
+                        // optional: refresh cart / clear UI
                         window.dispatchEvent(new Event("cartUpdated"));
 
                     } catch (err) {
                         console.log(err);
-                        alert("Payment verification failed ❌");
+                        toast.error("Payment verification failed ❌");
                     }
                 },
 
@@ -247,7 +250,12 @@ export default function Checkout() {
                         <button
                             type="button"
                             onClick={() => {
-                                if (!coupon) return alert("Enter coupon code");
+                                if (!coupon.trim()) {
+                                    toast.error("Enter coupon code");
+                                    return;
+                                }
+                                setCouponApplied(true);
+                                toast.success("Coupon applied");
                                 setCouponApplied(true);
                             }}
                             className="bg-orange-500 hover:bg-orange-600 px-4 rounded-md text-sm font-medium transition"
@@ -256,9 +264,13 @@ export default function Checkout() {
                         </button>
                     </div>
 
-                    {couponApplied && (
-                        <p className="text-yellow-400 text-sm mt-2">
-                            Coupon will be applied at checkout
+                    {couponApplied ? (
+                        <p className="text-green-400 text-sm mt-2">
+                            Coupon "{coupon}" applied
+                        </p>
+                    ) : (
+                        <p className="text-gray-500 text-xs mt-2">
+                            Coupon is optional
                         </p>
                     )}
                 </div>
