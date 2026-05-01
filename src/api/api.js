@@ -1,10 +1,10 @@
 // ================= AUTH APIs =================
 
 // Register endpoint
-const registerUser = "/users/auth";
+const registerUser = "/users/auth/";
 
 //Login endpoint
-const loginUser = "/users/auth";
+const loginUser = "/users/auth/";
 
 //Collections endpoint
 const CollectionSection = "/products/category";
@@ -104,3 +104,6 @@ export const getPolicyByTypeAPI = (type) =>
 
 //==================== SEARCH API ==============================================
 export const SearchAPI = (query) => `/search?q=${query}`;
+
+// ================= ORDERS FETCH API =================
+export const GetOrdersAPI = () => "/orders/";

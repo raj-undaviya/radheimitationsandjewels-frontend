@@ -36,7 +36,7 @@ export default function SubscribeSection() {
                         className="bg-black/60 border border-gray-700 px-6 py-3 w-full sm:w-105 text-gray-300 hover:border-[#EC5B13] outline-none"
                     />
 
-                    <button className="bg-[#EC5B13] hover:bg-[#d94e0f] px-8 py-3 text-sm tracking-wider">
+                    <button className="bg-[#EC5B13] hover:bg-[#d94e0f] px-8 py-3 text-sm tracking-wider cursor-pointer">
                         SUBSCRIBE
                     </button>
 

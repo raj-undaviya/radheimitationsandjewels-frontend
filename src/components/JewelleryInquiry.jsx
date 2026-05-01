@@ -326,7 +326,7 @@ export default function JewelleryInquiry() {
                     <button disabled={loading}
                         type="button"
                         onClick={() => setShowBooking(true)}
-                        className="w-full bg-orange-600 hover:bg-orange-700 text-white font-semibold py-3 rounded-lg transition"
+                        className="w-full bg-orange-600 hover:bg-orange-700 text-white font-semibold py-3 rounded-lg transition cursor-pointer"
                     >
                         {loading ? "Submitting..." : "Book an Appointment →"}
                     </button>

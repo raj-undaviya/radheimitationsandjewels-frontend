@@ -138,7 +138,7 @@ export default function Collections() {
 
             window.dispatchEvent(new Event("cartUpdated"));
 
-            navigate("/cart");
+            // navigate("/cart");
 
         } catch (err) {
             console.log(err);
@@ -196,7 +196,7 @@ export default function Collections() {
                             {/* ❤️ WISHLIST ICON */}
                             <button
                                 onClick={() => toggleWishlist(product)}
-                                className="absolute top-3 right-3 z-10 hover:scale-110 transition"
+                                className="absolute top-3 right-3 z-10 hover:scale-110 transition cursor-pointer"
                             >
                                 <FiHeart
                                     size={20}
@@ -225,14 +225,14 @@ export default function Collections() {
 
                                 <button
                                     onClick={() => navigate(`/product/${product.id}`)}
-                                    className="bg-[#2f1a12] py-2 rounded-md text-sm"
+                                    className="bg-[#2f1a12] py-2 rounded-md text-sm cursor-pointer"
                                 >
                                     View Details
                                 </button>
 
                                 <button
                                     onClick={() => handleAddToCart(product)}
-                                    className="bg-orange-500 py-2 rounded-md text-sm font-semibold hover:bg-orange-600"
+                                    className="bg-orange-500 py-2 rounded-md text-sm font-semibold hover:bg-orange-600 cursor-pointer"
                                 >
                                     Add to Cart
                                 </button>

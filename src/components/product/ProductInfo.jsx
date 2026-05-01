@@ -13,43 +13,34 @@ export default function ProductInfo({ product }) {
 
         const token = localStorage.getItem("token");
 
-        // NOT LOGGED IN
         if (!token) {
             toast.error("Please login first");
             navigate("/login");
-            return;
+            return false;
         }
 
-        // PRODUCT INVALID
         if (!product || !product.id) {
             toast.error("Invalid product");
-            return;
+            return false;
         }
 
         try {
-            const res = await API.post(AddToCartAPI(), {
+            await API.post(AddToCartAPI(), {
                 product: product.id,
                 quantity: 1,
             });
 
-            console.log("Cart Response:", res.data);
-
-            toast.success("Added to cart");
-
-            // 🔥 update navbar/cart instantly
             window.dispatchEvent(new Event("cartUpdated"));
 
-            navigate("/cart");
+            return true; // ✅ success
 
         } catch (err) {
-            console.log("Add to cart error:", err);
-
-            // Better error handling
             if (err.response) {
                 toast.error(err.response.data.message || "Failed to add to cart");
             } else {
                 toast.error("Server not reachable");
             }
+            return false; // ❌ failed
         }
     };
 
@@ -82,12 +73,17 @@ export default function ProductInfo({ product }) {
 
                 <button
                     onClick={() => addToCart(product)}
-                    className="bg-orange-500 px-8 py-3 rounded-xl font-semibold hover:bg-orange-600 transition"
+                    className="bg-orange-500 px-8 py-3 rounded-xl font-semibold hover:bg-orange-600 transition cursor-pointer"
                 >
                     ADD TO CART
                 </button>
 
-                <button className="border border-orange-500 px-8 py-3 rounded-xl font-semibold hover:bg-orange-500 transition">
+                <button
+                    onClick={async () => {
+                        await addToCart(product);
+                        navigate("/checkout");
+                    }}
+                    className="border border-orange-500 px-8 py-3 rounded-xl font-semibold hover:bg-orange-500 transition cursor-pointer">
                     BUY NOW
                 </button>
 

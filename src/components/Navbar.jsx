@@ -93,8 +93,6 @@ export default function Navbar() {
     ];
 
     return (
-        // ✅ FIX 1: overflow-x-clip instead of overflow-x-hidden
-        // overflow-x-hidden creates stacking context that clips dropdowns
         <div className="overflow-x-clip">
 
             <nav className="w-full bg-black text-gray-300">
@@ -128,7 +126,7 @@ export default function Navbar() {
                         {/* Right Section */}
                         <div className="flex items-center gap-3 shrink-0">
 
-                            {/* ✅ FIX 2: Outer relative wrapper for correct dropdown anchoring */}
+                            {/* dropdown  */}
                             <div ref={searchRef} className="hidden lg:flex relative z-[999]">
 
                                 {/* Search Input */}
@@ -150,7 +148,7 @@ export default function Navbar() {
                                     )}
                                 </div>
 
-                                {/* ✅ FIX 3: Dropdown anchored to outer relative wrapper */}
+                                {/* Dropdown */}
                                 {searchQuery && (
                                     <div className="absolute top-[110%] right-0
                                         w-[300px] xl:w-[380px]

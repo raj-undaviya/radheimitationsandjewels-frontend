@@ -10,6 +10,9 @@ import { GetCartAPI, CreateOrderAPI, VerifyPaymentAPI } from "../api/api";
 
 export default function Checkout() {
 
+    const [showSuccessModal, setShowSuccessModal] = useState(false);
+    const [orderData, setOrderData] = useState(null);
+
     const [coupon, setCoupon] = useState("");
     const [couponApplied, setCouponApplied] = useState(false);
 
@@ -87,7 +90,14 @@ export default function Checkout() {
 
             // COD
             if (paymentMethod === "cod") {
-                toast.success("Order placed successfully (COD)");
+                setOrderData(data); // optional (for order id, etc.)
+                setShowSuccessModal(true);
+
+                // optional: clear cart UI
+                window.dispatchEvent(new Event("cartUpdated"));
+
+                window.dispatchEvent(new Event("orderUpdated"));
+
                 return;
             }
 
@@ -123,6 +133,8 @@ export default function Checkout() {
 
                         // optional: refresh cart / clear UI
                         window.dispatchEvent(new Event("cartUpdated"));
+
+                        window.dispatchEvent(new Event("orderUpdated"));
 
                     } catch (err) {
                         console.log(err);
@@ -309,6 +321,51 @@ export default function Checkout() {
                 />
 
             </div>
+
+            {showSuccessModal && (
+                <div className="fixed inset-0 bg-black/70 flex items-center justify-center z-50">
+
+                    <div className="bg-[#1c0f09] p-8 rounded-2xl w-[90%] max-w-md text-center shadow-2xl border border-orange-500">
+
+                        <h2 className="text-2xl font-bold text-orange-500 mb-4">
+                            🎉 Order Placed!
+                        </h2>
+
+                        <p className="text-gray-300 mb-2">
+                            Your order has been placed successfully.
+                        </p>
+
+                        <p className="text-sm text-gray-400 mb-6">
+                            Payment Method: Cash on Delivery
+                        </p>
+
+                        <div className="flex gap-3 justify-center">
+
+                            <button
+                                onClick={() => {
+                                    setShowSuccessModal(false);
+                                    window.location.href = "/collections";
+                                }}
+                                className="bg-orange-500 px-4 py-2 rounded-lg font-semibold hover:bg-orange-600"
+                            >
+                                Continue Shopping
+                            </button>
+
+                            {/* <button
+                                onClick={() => {
+                                    setShowSuccessModal(false);
+                                    window.location.href = "/orders";
+                                }}
+                                className="bg-gray-700 px-4 py-2 rounded-lg hover:bg-gray-800"
+                            >
+                                View Orders
+                            </button> */}
+
+                        </div>
+
+                    </div>
+                </div>
+            )}
 
         </div>
     );

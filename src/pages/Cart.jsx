@@ -17,14 +17,21 @@ export default function Cart() {
             const res = await API.get(GetCartAPI());
             const items = res.data?.data?.items || [];
 
-            // ✅ NORMALIZED STRUCTURE
-            const normalized = items.map(item => ({
-                id: item.id,
-                quantity: item.quantity,
-                product: item.product_details || item.product
-            }));
+            setCartItems((prevItems) => {
+                const newItems = items.map(item => ({
+                    id: item.id,
+                    quantity: item.quantity,
+                    product: item.product_details || item.product
+                }));
 
-            setCartItems(normalized);
+                // ✅ keep same order as before
+                return newItems.sort((a, b) => {
+                    const prevIndexA = prevItems.findIndex(p => p.id === a.id);
+                    const prevIndexB = prevItems.findIndex(p => p.id === b.id);
+
+                    return prevIndexA - prevIndexB;
+                });
+            });
 
         } catch (err) {
             console.log(err);
@@ -38,9 +45,9 @@ export default function Cart() {
     }, []);
 
     const subtotal = cartItems.reduce(
-    (acc, item) => acc + (item.product?.price || 0) * item.quantity,
-    0
-);
+        (acc, item) => acc + (item.product?.price || 0) * item.quantity,
+        0
+    );
 
     const tax = Math.round(subtotal * 0.03);
     const total = subtotal + tax;
