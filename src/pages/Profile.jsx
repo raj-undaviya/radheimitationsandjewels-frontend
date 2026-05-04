@@ -7,31 +7,33 @@ import Breadcrumb from "../components/Breadcrumb";
 
 export default function Profile() {
     return (
-        <div className="min-h-screen bg-black text-white px-4 md:px-12 md:py-10">
+        <div className="min-h-screen bg-black text-white">
 
-            {/* ✅ Breadcrumb */}
-            <div className="mb-4 overflow-x-auto">
-                <Breadcrumb customLast="My Profile" />
-            </div>
+            <div className="max-w-6xl mx-auto px-4 md:px-6 lg:px-8 py-6 md:py-10">
 
-            <ProfileHeader />
-
-            <div className="grid lg:grid-cols-3 gap-6 mt-6">
-
-                {/* LEFT */}
-                <div className="lg:col-span-2 space-y-6">
-                    <OrderHistory />
-                    <Addresses />
+                {/* Breadcrumb */}
+                <div className="mb-4 overflow-x-auto">
+                    <Breadcrumb customLast="My Profile" />
                 </div>
 
-                {/* RIGHT */}
-                <div className="space-y-6">
-                    {/* <PaymentMethods /> */}
-                    <QuickSettings />
+                <ProfileHeader />
+
+                <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mt-6">
+
+                    {/* LEFT */}
+                    <div className="lg:col-span-2 space-y-6">
+                        <OrderHistory />
+                        <Addresses />
+                    </div>
+
+                    {/* RIGHT */}
+                    <div className="space-y-6 w-full">
+                        <QuickSettings />
+                    </div>
+
                 </div>
 
             </div>
-
         </div>
     );
 }

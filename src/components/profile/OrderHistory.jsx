@@ -138,56 +138,67 @@ export default function OrderHistory() {
             </div>
 
             {/* TABLE */}
-            <div className="overflow-hidden rounded-xl border border-[#ffffff10]">
+            <div className="rounded-xl border border-[#ffffff10]">
 
-                {/* HEADER */}
-                <div className="grid grid-cols-[1fr_2fr_1.2fr_1fr] bg-[#2a1208] text-xs text-gray-400 px-4 py-3">
-                    <span>Order ID</span>
-                    <span>Product</span>
-                    <span>Status</span>
-                    <span className="text-right">Total</span>
-                </div>
+                {/* MOBILE SCROLL ONLY */}
+                <div className="rounded-xl border border-[#ffffff10]">
 
-                {/* BODY */}
-                {orders.length === 0 ? (
-                    <div className="text-center py-6 text-gray-400">
-                        No orders found
+                    <div className="overflow-x-auto md:overflow-visible scrollbar-thin pb-2">
+
+                        <table className="w-full min-w-[600px] md:min-w-full text-sm text-left border-collapse">
+
+                            <thead className="bg-[#2a1208] text-gray-400 text-xs sticky top-0 z-10">
+                                <tr>
+                                    <th className="px-4 py-3 whitespace-nowrap">Order ID</th>
+                                    <th className="px-4 py-3">Product</th>
+                                    <th className="px-4 py-3 whitespace-nowrap">Status</th>
+                                    <th className="px-4 py-3 text-right whitespace-nowrap">Total</th>
+                                </tr>
+                            </thead>
+
+                            <tbody>
+                                {orders.length === 0 ? (
+                                    <tr>
+                                        <td colSpan="4" className="text-center py-6 text-gray-400">
+                                            No orders found
+                                        </td>
+                                    </tr>
+                                ) : (
+                                    orders.map((order) => (
+                                        <tr
+                                            key={order.id}
+                                            className="border-t border-[#ffffff10] hover:bg-[#2a1208]"
+                                        >
+                                            <td className="px-4 py-4 text-gray-400 text-xs whitespace-nowrap">
+                                                {order.id}
+                                            </td>
+
+                                            <td className="px-4 py-4 max-w-[220px]">
+                                                <p className="truncate">{order.product}</p>
+                                                <p className="text-gray-500 text-xs">{order.date}</p>
+                                            </td>
+
+                                            <td className="px-4 py-4">
+                                                <span
+                                                    className={`px-2 py-1 rounded-full text-xs ${statusStyle[order.status]}`}
+                                                >
+                                                    {order.status}
+                                                </span>
+                                            </td>
+
+                                            <td className="px-4 py-4 text-right font-medium whitespace-nowrap">
+                                                ₹{Number(order.price || 0).toLocaleString()}
+                                            </td>
+                                        </tr>
+                                    ))
+                                )}
+                            </tbody>
+
+                        </table>
+
                     </div>
-                ) : (
-                    orders.map((order) => (
-                        <div
-                            key={order.id}
-                            className="grid grid-cols-[1fr_2fr_1.2fr_1fr] items-center px-4 py-4 text-sm border-b border-[#ffffff10] hover:bg-[#2a1208] transition"
-                        >
 
-                            {/* ORDER ID */}
-                            <span className="text-gray-400 text-xs">
-                                {order.id}
-                            </span>
-
-                            {/* PRODUCT */}
-                            <div>
-                                <p>{order.product}</p>
-                                <p className="text-gray-500 text-xs">
-                                    {order.date}
-                                </p>
-                            </div>
-
-                            {/* STATUS */}
-                            <span
-                                className={`px-2 py-1 rounded-full text-xs w-fit ${statusStyle[order.status] || "bg-gray-500/20 text-gray-300"}`}
-                            >
-                                {order.status}
-                            </span>
-
-                            {/* PRICE */}
-                            <span className="text-right font-medium">
-                                ₹{Number(order.price || 0).toLocaleString()}
-                            </span>
-
-                        </div>
-                    ))
-                )}
+                </div>
 
             </div>
 

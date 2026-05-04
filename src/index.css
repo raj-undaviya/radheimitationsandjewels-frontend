@@ -235,3 +235,9 @@ body {
 .Toastify__toast--info {
     border-left: 4px solid #3b82f6;
 }
+
+/* In index.css or the parent page */
+.dashboard-container {   /* whatever your parent class is */
+    overflow-x: hidden;
+    width: 100%;
+}

@@ -7,22 +7,22 @@ const registerUser = "/users/auth/";
 const loginUser = "/users/auth/";
 
 //Collections endpoint
-const CollectionSection = "/products/category";
+const CollectionSection = "/products/category/";
 
 //product Collection endpoint 
 const ProductSection = "/products/";
 
 //Product Gallery endpoint
-const ProductGallery = "/products";
+const ProductGallery = "/products/";
 
 //Home page custom jwelley inquiry endpoint
 const JewelleryInquiry = "/appointments/";
 
 //========================== CART API =====================================
-const AddToCart = "/orders/cart";
+const AddToCart = "/orders/cart/";
 
 //========================== WHISHLIST API =================================
-const Wishlist = "/orders/wishlist";
+const Wishlist = "/orders/wishlist/";
 
 // ================= ORDER API =================
 
@@ -34,12 +34,15 @@ const VerifyPayment = "/orders/payment/verify/";
 
 // ================= USER / PROFILE API =================
 
-const Customer = "/users/customers";
+const Customer = "/users/customers/";
 
 
 //================================ TERMS & CONDITION =========================
-const GetPolicies = "/policies/user/policies";
+const GetPolicies = "/policies/user/policies/";
 
+// ================= ADDRESS API =================
+
+const Address = "/users/addresses/";
 
 
 
@@ -65,20 +68,20 @@ export const getTimeSlotsAPI = (date) => {
 // ADD TO CART
 export const AddToCartAPI = () => AddToCart;
 //in product page add to cart api
-export const GetCartAPI = () => "/orders/cart";
+export const GetCartAPI = () => "/orders/cart/";
 
 // UPDATE QUANTITY
-export const UpdateCartItemAPI = (id) => `/orders/cart/${id}`;
+export const UpdateCartItemAPI = (id) => `/orders/cart/${id}/`;
 
 // REMOVE ITEM FROM CART
-export const RemoveCartItemAPI = (id) => `/orders/cart/${id}`;
+export const RemoveCartItemAPI = (id) => `/orders/cart/${id}/`;
 
 //========================== WHISHLIST FUNCTION API ====================
 //add to whishlist
 export const AddToWishlistAPI = () => Wishlist;
 
 //remove whishlist
-export const RemoveWishlistAPI = (id) => `/orders/wishlist/${id}`;
+export const RemoveWishlistAPI = (id) => `/orders/wishlist/${id}/`;
 
 //view whishlist
 export const GetWishlistAPI = () => Wishlist;
@@ -91,19 +94,35 @@ export const VerifyPaymentAPI = () => VerifyPayment;
 
 //============================= USER /PROFILE =============================================
 //UPDATE USER
-export const UpdateCustomerAPI = (id) => `${Customer}/${id}`;
+export const UpdateCustomerAPI = (id) => `${Customer}/${id}/`;
 
 // DELETE USER
-export const DeleteCustomerAPI = (id) => `${Customer}/${id}`;
+export const DeleteCustomerAPI = (id) => `${Customer}/${id}/`;
 
 //================================== TERMS & CONDITION ======================================
 export const getPoliciesAPI = () => GetPolicies;
 
 export const getPolicyByTypeAPI = (type) =>
-    `/policies/user/policies/${type}`;
+    `/policies/user/policies/${type}/`;
 
 //==================== SEARCH API ==============================================
-export const SearchAPI = (query) => `/search?q=${query}`;
+export const SearchAPI = (query) => `/search?q=${query}/`;
 
 // ================= ORDERS FETCH API =================
 export const GetOrdersAPI = () => "/orders/";
+
+//================================== ADDRESS FUNCTION ==================================
+// ADD
+export const AddAddressAPI = () => Address;
+
+// GET ALL (you should have this ideally)
+export const GetAddressesAPI = () => Address;
+
+// GET SINGLE
+export const GetSingleAddressAPI = (id) => `${Address}${id}/`;
+
+// UPDATE
+export const UpdateAddressAPI = (id) => `${Address}${id}/`;
+
+// DELETE
+export const DeleteAddressAPI = (id) => `${Address}${id}/`;

@@ -1,57 +1,135 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { MapPin, CheckCircle } from "lucide-react";
+import { useForm } from "react-hook-form";
+
+import API from "../../api/axiosInstance";
+import {
+    AddAddressAPI,
+    UpdateAddressAPI,
+    DeleteAddressAPI,
+    GetAddressesAPI
+} from "../../api/api";
 
 export default function Addresses() {
 
-    const [addresses, setAddresses] = useState([
-        {
-            id: 1,
-            title: "Home",
-            text: "402, Radiant Heights, Diamond Road, Surat, Gujarat - 395003",
-            isDefault: true
-        },
-        {
-            id: 2,
-            title: "Office",
-            text: "Radhe Imitations HQ, Sector 4, Gandhinagar, Gujarat - 382010",
-            isDefault: false
+    const {
+        register,
+        handleSubmit,
+        reset,
+        formState: { errors }
+    } = useForm({
+        defaultValues: {
+            label: "",
+            full_name: "",
+            phone: "",
+            address_line: "",
+            city: "",
+            state: "",
+            pincode: "",
+            country: "India"
         }
-    ]);
+    });
 
+    const [addresses, setAddresses] = useState([]);
     const [showForm, setShowForm] = useState(false);
-    const [title, setTitle] = useState("");
-    const [text, setText] = useState("");
+    const [editingAddress, setEditingAddress] = useState(null);
+    const [loading, setLoading] = useState(false);
 
-    // ADD ADDRESS
-    const handleAdd = () => {
-        if (!title.trim() || !text.trim()) return;
+    // 🔥 FETCH ADDRESSES
+    const fetchAddresses = async () => {
+        try {
+            const res = await API.get(GetAddressesAPI());
 
-        const newAddress = {
-            id: Date.now(),
-            title,
-            text,
-            isDefault: false
-        };
+            const list = Array.isArray(res.data.data)
+                ? res.data.data
+                : [res.data.data];
 
-        setAddresses(prev => [...prev, newAddress]);
-        setTitle("");
-        setText("");
-        setShowForm(false);
+            setAddresses(
+                list.map(a => ({
+                    id: a.id,
+                    title: a.label,
+                    text: a.address_line,
+                    isDefault: a.is_default
+                }))
+            );
+        } catch (err) {
+            console.error(err);
+        }
     };
 
-    // DELETE
-    const handleDelete = (id) => {
-        setAddresses(prev => prev.filter(a => a.id !== id));
+    useEffect(() => {
+        fetchAddresses();
+    }, []);
+
+    // 🔥 SUBMIT (ADD + EDIT)
+    const onSubmit = async (data) => {
+        setLoading(true);
+        try {
+            if (editingAddress) {
+                await API.patch(UpdateAddressAPI(editingAddress.id), data);
+            } else {
+                await API.post(AddAddressAPI(), {
+                    ...data,
+                    is_default: false
+                });
+            }
+
+            fetchAddresses();
+            reset();
+            setEditingAddress(null);
+            setShowForm(false);
+
+        } catch (err) {
+            console.error(err);
+        }
+        setLoading(false);
     };
 
-    // SET DEFAULT
-    const setDefault = (id) => {
-        setAddresses(prev =>
-            prev.map(addr => ({
-                ...addr,
-                isDefault: addr.id === id
-            }))
-        );
+    // 🔥 EDIT
+    const handleEdit = (addr) => {
+        setEditingAddress(addr);
+
+        reset({
+            label: addr.title,
+            full_name: "",
+            phone: "",
+            address_line: addr.text,
+            city: "",
+            state: "",
+            pincode: "",
+            country: "India"
+        });
+
+        setShowForm(true);
+    };
+
+    // 🔥 DELETE
+    const handleDelete = async (id) => {
+        try {
+            await API.delete(DeleteAddressAPI(id));
+            fetchAddresses();
+        } catch (err) {
+            console.error(err);
+        }
+    };
+
+    // 🔥 SET DEFAULT
+    const setDefault = async (id) => {
+        try {
+            await API.patch(UpdateAddressAPI(id), { is_default: true });
+
+            const others = addresses.filter(a => a.id !== id);
+
+            await Promise.all(
+                others.map(a =>
+                    API.patch(UpdateAddressAPI(a.id), { is_default: false })
+                )
+            );
+
+            fetchAddresses();
+        } catch (err) {
+            console.error(err);
+        }
     };
 
     return (
@@ -66,88 +144,143 @@ export default function Addresses() {
 
                 <button
                     onClick={() => setShowForm(!showForm)}
-                    className="bg-[#2a1208] hover:bg-[#3a1a0c] text-orange-400 px-3 py-1 rounded-md text-sm"
+                    className="bg-[#2a1208] text-orange-400 px-3 py-1 rounded-md text-sm"
                 >
                     + Add New
                 </button>
             </div>
 
-            {/* FORM */}
+            {/* 🔥 FORM */}
             {showForm && (
-                <div className="mb-5 space-y-3">
-                    <input
-                        value={title}
-                        onChange={(e) => setTitle(e.target.value)}
-                        placeholder="Title (Home / Office)"
-                        className="w-full bg-black border border-gray-700 rounded-lg px-3 py-2 text-sm"
-                    />
+                <form
+                    onSubmit={handleSubmit(onSubmit)}
+                    className="mb-6 bg-[#140a05] p-6 rounded-2xl border border-[#ffffff10] space-y-5"
+                >
 
-                    <textarea
-                        value={text}
-                        onChange={(e) => setText(e.target.value)}
-                        placeholder="Full Address"
-                        className="w-full bg-black border border-gray-700 rounded-lg px-3 py-2 text-sm"
-                    />
+                    {/* ROW 1 */}
+                    <div className="grid md:grid-cols-2 gap-4">
+                        <div>
+                            <label className="text-xs text-gray-400 mb-1 block">Label</label>
+                            <input
+                                {...register("label", { required: "Label required" })}
+                                placeholder="Home / Office"
+                                className="inputField"
+                            />
+                            {errors.label && <p className="error">{errors.label.message}</p>}
+                        </div>
 
-                    <div className="flex gap-2">
+                        <div>
+                            <label className="text-xs text-gray-400 mb-1 block">Full Name</label>
+                            <input
+                                {...register("full_name", { required: "Name required" })}
+                                placeholder="John Doe"
+                                className="inputField"
+                            />
+                            {errors.full_name && <p className="error">{errors.full_name.message}</p>}
+                        </div>
+                    </div>
+
+                    {/* ADDRESS */}
+                    <div>
+                        <label className="text-xs text-gray-400 mb-1 block">Full Address</label>
+                        <textarea
+                            {...register("address_line", { required: "Address required" })}
+                            placeholder="Flat 101, Apartment..."
+                            className="inputField h-20 resize-none"
+                        />
+                    </div>
+
+                    {/* PHONE */}
+                    <div>
+                        <label className="text-xs text-gray-400 mb-1 block">Phone</label>
+                        <input
+                            {...register("phone", {
+                                required: "Phone required",
+                                pattern: { value: /^[0-9]{10}$/, message: "Invalid phone" }
+                            })}
+                            placeholder="9876543210"
+                            className="inputField"
+                        />
+                        {errors.phone && <p className="error">{errors.phone.message}</p>}
+                    </div>
+
+                    {/* CITY / STATE / PIN */}
+                    <div className="grid md:grid-cols-3 gap-4">
+                        <div>
+                            <label className="text-xs text-gray-400 mb-1 block">City</label>
+                            <input {...register("city", { required: true })} className="inputField" />
+                        </div>
+
+                        <div>
+                            <label className="text-xs text-gray-400 mb-1 block">State</label>
+                            <input {...register("state", { required: true })} className="inputField" />
+                        </div>
+
+                        <div>
+                            <label className="text-xs text-gray-400 mb-1 block">Pincode</label>
+                            <input {...register("pincode", { required: true })} className="inputField" />
+                        </div>
+                    </div>
+
+                    {/* COUNTRY */}
+                    <div>
+                        <label className="text-xs text-gray-400 mb-1 block">Country</label>
+                        <input value="India" disabled className="inputField opacity-70" />
+                    </div>
+
+                    {/* BUTTONS */}
+                    <div className="flex justify-end gap-3 pt-3">
                         <button
-                            onClick={handleAdd}
-                            className="bg-orange-500 px-4 py-2 rounded-lg text-sm font-medium"
-                        >
-                            Save
-                        </button>
-
-                        <button
-                            onClick={() => setShowForm(false)}
-                            className="bg-gray-700 px-4 py-2 rounded-lg text-sm"
+                            type="button"
+                            onClick={() => {
+                                reset();
+                                setShowForm(false);
+                                setEditingAddress(null);
+                            }}
+                            className="px-5 py-2 rounded-lg bg-gray-700 hover:bg-gray-600 text-sm"
                         >
                             Cancel
                         </button>
+
+                        <button
+                            type="submit"
+                            className="px-5 py-2 rounded-lg bg-orange-500 hover:bg-orange-600 text-sm font-medium shadow-lg shadow-orange-500/20"
+                        >
+                            {loading ? "Saving..." : editingAddress ? "Update" : "Save"}
+                        </button>
                     </div>
-                </div>
+
+                </form>
             )}
 
             {/* ADDRESS GRID */}
             <div className="grid md:grid-cols-2 gap-4">
-
                 {addresses.map((addr) => (
                     <div
                         key={addr.id}
                         onClick={() => setDefault(addr.id)}
-                        className={`relative p-5 rounded-xl border cursor-pointer transition
-                        ${addr.isDefault
-                                ? "border-orange-500 bg-[#2a1208]"
-                                : "border-[#ffffff10] hover:border-orange-400"
-                            }`}
+                        className={`relative p-5 rounded-xl border cursor-pointer
+                        ${addr.isDefault ? "border-orange-500 bg-[#2a1208]" : "border-[#ffffff10]"}`}
                     >
 
-                        {/* CHECK ICON */}
                         {addr.isDefault && (
-                            <CheckCircle
-                                size={20}
-                                className="absolute top-4 right-4 text-orange-400"
-                            />
+                            <CheckCircle size={20} className="absolute top-4 right-4 text-orange-400" />
                         )}
 
-                        {/* TITLE */}
-                        <div className="flex items-center gap-2 mb-2">
-                            <h4 className="font-semibold">{addr.title}</h4>
+                        <h4 className="font-semibold">{addr.title}</h4>
 
-                            {addr.isDefault && (
-                                <span className="bg-orange-500/20 text-orange-400 text-xs px-2 py-0.5 rounded">
-                                    DEFAULT
-                                </span>
-                            )}
-                        </div>
-
-                        {/* ADDRESS */}
-                        <p className="text-gray-400 text-sm leading-relaxed">
+                        <p className="text-gray-400 text-sm mt-2">
                             {addr.text}
                         </p>
 
-                        {/* ACTIONS */}
                         <div className="flex gap-4 mt-4 text-sm">
-                            <button className="text-gray-400 hover:text-white">
+                            <button
+                                onClick={(e) => {
+                                    e.stopPropagation();
+                                    handleEdit(addr);
+                                }}
+                                className="text-gray-400 hover:text-white"
+                            >
                                 Edit
                             </button>
 
@@ -156,7 +289,7 @@ export default function Addresses() {
                                     e.stopPropagation();
                                     handleDelete(addr.id);
                                 }}
-                                className="text-red-400 hover:text-red-500"
+                                className="text-red-400"
                             >
                                 Delete
                             </button>
@@ -164,9 +297,8 @@ export default function Addresses() {
 
                     </div>
                 ))}
-
             </div>
 
         </div>
     );
-}       
+}
