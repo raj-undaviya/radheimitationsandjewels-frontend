@@ -109,12 +109,17 @@ export default function ProfileHeader() {
         }
     };
 
-    // SUBMIT
+    //submit
     const onSubmit = async (data) => {
         try {
             setLoading(true);
 
-            let imageUrl = preview;
+            if (!user?.id) {
+                toast.error("User ID missing");
+                return;
+            }
+
+            let imageUrl = user.profile_image;
 
             if (selectedFile) {
                 const uploaded = await uploadImage(selectedFile);
@@ -127,7 +132,7 @@ export default function ProfileHeader() {
                 role: "customer",
                 phonenumber: user.phonenumber,
                 is_staff: false,
-                profile_image: imageUrl
+                ...(imageUrl ? { profile_image: imageUrl } : {})
             };
 
             await API.put(UpdateCustomerAPI(user.id), payload);
@@ -135,11 +140,12 @@ export default function ProfileHeader() {
             const updatedUser = {
                 ...user,
                 ...data,
-                profile_image: imageUrl
+                profile_image: imageUrl || user.profile_image
             };
 
             setUser(updatedUser);
             localStorage.setItem("user", JSON.stringify(updatedUser));
+            setSelectedFile(null);
 
             toast.success("Profile updated");
 
@@ -158,6 +164,8 @@ export default function ProfileHeader() {
         try {
             setLoading(true);
 
+            if (!user?.id) return;
+
             await API.delete(DeleteCustomerAPI(user.id));
 
             localStorage.removeItem("user");
@@ -173,8 +181,6 @@ export default function ProfileHeader() {
             setLoading(false);
         }
     };
-
-    // SKELETON
 
     // SKELETON
     if (loading && !user) {

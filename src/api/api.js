@@ -56,7 +56,7 @@ export const registerUserAPI = () => registerUser;
 export const loginUserAPI = () => loginUser;
 export const CollectionAPI = () => CollectionSection;
 export const ProductSectionAPI = () => ProductSection;
-export const ProductGalleryAPI = (id) => `${ProductGallery}/${id}`;
+export const ProductGalleryAPI = (id) => `${ProductGallery}${id}/`;
 export const JewelleryInquiryAPI = () => JewelleryInquiry;
 
 //booking appointment 
@@ -94,10 +94,10 @@ export const VerifyPaymentAPI = () => VerifyPayment;
 
 //============================= USER /PROFILE =============================================
 //UPDATE USER
-export const UpdateCustomerAPI = (id) => `${Customer}/${id}/`;
+export const UpdateCustomerAPI = (id) => `${Customer}${id}/`;
 
 // DELETE USER
-export const DeleteCustomerAPI = (id) => `${Customer}/${id}/`;
+export const DeleteCustomerAPI = (id) => `${Customer}${id}/`;
 
 //================================== TERMS & CONDITION ======================================
 export const getPoliciesAPI = () => GetPolicies;
@@ -106,7 +106,7 @@ export const getPolicyByTypeAPI = (type) =>
     `/policies/user/policies/${type}/`;
 
 //==================== SEARCH API ==============================================
-export const SearchAPI = (query) => `/search?q=${query}/`;
+export const SearchAPI = (query) => `/search?q=${query}`;
 
 // ================= ORDERS FETCH API =================
 export const GetOrdersAPI = () => "/orders/";
