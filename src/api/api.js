@@ -93,6 +93,7 @@ export const VerifyPaymentAPI = () => VerifyPayment;
 
 
 //============================= USER /PROFILE =============================================
+export const GetCustomerAPI = (id) => `/users/customers/${id}/`;
 //UPDATE USER
 export const UpdateCustomerAPI = (id) => `${Customer}${id}/`;
 

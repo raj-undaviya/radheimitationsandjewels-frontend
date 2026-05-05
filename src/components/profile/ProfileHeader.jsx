@@ -4,7 +4,7 @@ import { toast } from "react-toastify";
 import { Camera, UploadCloud, X } from "lucide-react";
 
 import API from "../../api/axiosInstance";
-import { UpdateCustomerAPI, DeleteCustomerAPI } from "../../api/api";
+import { UpdateCustomerAPI, DeleteCustomerAPI, GetCustomerAPI } from "../../api/api";
 
 export default function ProfileHeader() {
     const [dragActive, setDragActive] = useState(false);
@@ -20,26 +20,34 @@ export default function ProfileHeader() {
 
     // LOAD USER
     useEffect(() => {
-        setLoading(true);
+        const fetchUser = async () => {
+            try {
+                setLoading(true);
 
-        setTimeout(() => {
-            const storedUser = JSON.parse(localStorage.getItem("user"));
+                const res = await API.get(GetCustomerAPI(6)); // 👈 your ID
 
-            if (storedUser) {
-                setUser(storedUser);
-                setPreview(storedUser.profile_image || "");
+                const userData = res.data.customer;
+
+                setUser(userData);
+                setPreview(userData.profile_image || "");
 
                 reset({
-                    username: storedUser.username || "",
-                    first_name: storedUser.first_name || "",
-                    last_name: storedUser.last_name || "",
-                    email: storedUser.email || "",
+                    username: userData.username || "",
+                    first_name: userData.first_name || "",
+                    last_name: userData.last_name || "",
+                    email: userData.email || "",
                     password: ""
                 });
-            }
 
-            setLoading(false);
-        }, 500);
+            } catch (err) {
+                console.error(err);
+                toast.error("Failed to load user");
+            } finally {
+                setLoading(false);
+            }
+        };
+
+        fetchUser();
     }, [reset]);
 
     // IMAGE VALIDATION
@@ -130,7 +138,7 @@ export default function ProfileHeader() {
                 ...data,
                 password: data.password || "Test@123",
                 role: "customer",
-                phonenumber: user.phonenumber,
+                phone: user.phone,
                 is_staff: false,
                 ...(imageUrl ? { profile_image: imageUrl } : {})
             };
@@ -144,7 +152,6 @@ export default function ProfileHeader() {
             };
 
             setUser(updatedUser);
-            localStorage.setItem("user", JSON.stringify(updatedUser));
             setSelectedFile(null);
 
             toast.success("Profile updated");
@@ -168,7 +175,6 @@ export default function ProfileHeader() {
 
             await API.delete(DeleteCustomerAPI(user.id));
 
-            localStorage.removeItem("user");
             toast.success("Account deleted");
 
             setTimeout(() => {
