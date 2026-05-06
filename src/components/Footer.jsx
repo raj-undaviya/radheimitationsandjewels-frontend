@@ -7,25 +7,6 @@ export default function Footer() {
 
             <div className="max-w-7xl mx-auto grid grid-cols-2 md:grid-cols-4 gap-10 border-b border-gray-700 pb-10">
 
-                {/* Brand */}
-                {/* <div className="col-span-2 md:col-span-1 text-center md:text-left">
-                    <div className="flex items-center gap-3 mb-4">
-                        <img
-                            src={logo}
-                            alt="Radhe Imitations & Jewels"
-                            className="h-12 w-auto object-contain"
-                        />
-                        <h2 className="text-white text-xl font-semibold tracking-widest font-serif">
-                            RADHE IMITATIONS & JEWELS
-                        </h2>
-                    </div>
-
-                    <p className="text-sm text-gray-400 max-w-sm">
-                        India's most loved jewelry brand, crafting dreams into reality since
-                        1994.
-                    </p>
-                </div> */}
-
                 <div className="col-span-2 md:col-span-1 flex flex-col items-center text-center">
 
                     <img
@@ -84,7 +65,7 @@ export default function Footer() {
             {/* Bottom */}
             <div className="max-w-7xl mx-auto flex flex-col md:flex-row justify-center items-center pt-6  text-gray-500 gap-3">
 
-                <p className="text-[10px] md:text-xs">© 2024 TITAN COMPANY LIMITED. ALL RIGHTS RESERVED.</p>
+                <p className="text-[10px] md:text-xs">© 2026 TITAN COMPANY LIMITED. ALL RIGHTS RESERVED.</p>
 
                 <div className="flex gap-6 text-xs">
                     <span>PRIVACY POLICY</span>

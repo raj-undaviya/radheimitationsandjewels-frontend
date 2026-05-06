@@ -1,6 +1,7 @@
+//common breadcrumb component work for all
+
 import { Link, useLocation } from "react-router-dom";
 import { FiChevronRight } from "react-icons/fi";
-
 
 export default function Breadcrumb({ customLast }) {
 

@@ -1,7 +1,9 @@
 import { Link } from "react-router-dom";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
-import { useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom"
+import { toast } from "react-toastify";
+
 import API from "../api/axiosInstance";
 import { registerUserAPI } from "../api/api";
 
@@ -61,11 +63,15 @@ export default function Register() {
 
             console.log("SUCCESS:", response.data);
 
+            toast.success("Registration successful");
+
             navigate("/login");
 
         } catch (error) {
             console.log("BACKEND ERROR:", error.response?.data);
-            alert(error.response?.data?.message || "Registration failed");
+            toast.error(
+                error.response?.data?.message || "Registration failed"
+            );
         } finally {
             setLoading(false);
         }

@@ -1,7 +1,7 @@
 import { FiMinus, FiPlus } from "react-icons/fi";
 import API from "../api/axiosInstance";
 import { RemoveCartItemAPI, UpdateCartItemAPI } from "../api/api";
-import toast from "react-hot-toast";
+import { toast } from "react-toastify";
 import { useEffect, useState } from "react";
 
 export default function CartItems({ cartItems, refreshCart, loading }) {
@@ -9,7 +9,7 @@ export default function CartItems({ cartItems, refreshCart, loading }) {
     const [localItems, setLocalItems] = useState(cartItems);
 
     const handleRemove = async (id) => {
-        // ✅ instant UI update
+        // instant UI update
         setLocalItems(prev => prev.filter(item => item.id !== id));
 
         try {
@@ -25,7 +25,7 @@ export default function CartItems({ cartItems, refreshCart, loading }) {
     const handleIncrease = async (item) => {
         const newQty = item.quantity + 1;
 
-        // ✅ update UI instantly
+        // update UI instantly
         setLocalItems(prev =>
             prev.map(i => i.id === item.id ? { ...i, quantity: newQty } : i)
         );
@@ -44,7 +44,7 @@ export default function CartItems({ cartItems, refreshCart, loading }) {
 
         const newQty = item.quantity - 1;
 
-        // ✅ update UI instantly
+        // update UI instantly
         setLocalItems(prev =>
             prev.map(i => i.id === item.id ? { ...i, quantity: newQty } : i)
         );

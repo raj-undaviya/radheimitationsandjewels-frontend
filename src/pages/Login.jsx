@@ -51,9 +51,15 @@ export default function Login() {
             localStorage.setItem("token", token);
 
             // SAVE USER
-            localStorage.setItem("user", JSON.stringify({
-                email: data.email
-            }));
+            // localStorage.setItem("user", JSON.stringify({
+            //     email: data.email
+            // }));
+
+            // SAVE FULL USER
+            localStorage.setItem(
+                "user",
+                JSON.stringify(response.data?.data)
+            );
 
             // AUTO ADD TO CART
             const pending = JSON.parse(localStorage.getItem("pendingCart"));
@@ -185,7 +191,7 @@ export default function Login() {
                         type="submit"
                         className={`w-full py-3 rounded-lg font-semibold transition
                         ${isValid
-                                ? "bg-gradient-to-r from-orange-400 to-orange-600 hover:opacity-90"
+                                ? "bg-linear-to-r from-orange-400 to-orange-600 hover:opacity-90"
                                 : "bg-gray-600 cursor-not-allowed"}`}
                     >
                         {loading ? (

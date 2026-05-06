@@ -18,7 +18,7 @@ export default function Navbar() {
     const searchRef = useRef(null);
     const navigate = useNavigate();
 
-    // ─── Cart ──────────────────────────────────────────────
+    //===== CART ======
     const fetchCartCount = async () => {
         try {
             const res = await API.get(GetCartAPI());
@@ -32,7 +32,7 @@ export default function Navbar() {
         return () => window.removeEventListener("cartUpdated", fetchCartCount);
     }, []);
 
-    // ─── Wishlist ──────────────────────────────────────────
+    // ===== WHISLIST =====
     useEffect(() => {
         const fetchWishlist = async () => {
             try {
@@ -46,7 +46,7 @@ export default function Navbar() {
         return () => window.removeEventListener("wishlistUpdated", fetchWishlist);
     }, []);
 
-    // ─── Search ────────────────────────────────────────────
+    // ===== SERACH =====
     const handleSearch = async (value) => {
         if (!value.trim()) {
             setSearchResults([]);
@@ -68,7 +68,7 @@ export default function Navbar() {
         return () => clearTimeout(delay);
     }, [searchQuery]);
 
-    // ─── Close dropdown on outside click ──────────────────
+    //CLOSE DROP DOWN ON OUTSIDE CLICK
     useEffect(() => {
         const handleClickOutside = (e) => {
             if (searchRef.current && !searchRef.current.contains(e.target)) {
@@ -80,7 +80,7 @@ export default function Navbar() {
         return () => document.removeEventListener("mousedown", handleClickOutside);
     }, []);
 
-    // ─── Block body scroll when mobile search open ─────────
+    //Block body scroll when mobile search open 
     useEffect(() => {
         document.body.style.overflow = searchOpen ? "hidden" : "auto";
         return () => (document.body.style.overflow = "auto");
@@ -152,11 +152,11 @@ export default function Navbar() {
                                 {/* Dropdown */}
                                 {searchQuery && (
                                     <div className="absolute top-[110%] right-0
-                                        w-[300px] xl:w-[380px]
+                                        w-75 xl:w-95
                                         bg-black/95 backdrop-blur-md
                                         border border-white/10
                                         rounded-xl shadow-2xl
-                                        max-h-[350px] overflow-y-auto">
+                                        max-h-87.5 overflow-y-auto">
 
                                         {searchLoading ? (
                                             <p className="p-3 text-gray-400 text-sm text-center">Searching...</p>
@@ -226,7 +226,7 @@ export default function Navbar() {
                 </div>
             </nav>
 
-            {/* ── MOBILE SEARCH OVERLAY ── */}
+            {/* MOBILE SEARCH OVERLAY */}
             {searchOpen && (
                 <div
                     className="fixed inset-0 z-50 bg-black/40 backdrop-blur-md flex justify-center px-4 pt-20"
@@ -316,16 +316,27 @@ export default function Navbar() {
                     ))}
                 </ul>
                 <div className="flex gap-6 px-6 mt-10 text-2xl justify-center">
+
                     <div onClick={() => { navigate("/wishlist"); setMenuOpen(false); }} className="relative cursor-pointer">
+
                         <FiHeart className="text-[#94A3B8] hover:text-[#EC5B13]" />
-                        {wishlist?.length > 0 && <span className="absolute -top-2 -right-2 bg-orange-500 text-xs px-1.5 rounded-full">{wishlist?.length}</span>}
+                        {wishlist?.length > 0 &&
+                            <span className="absolute -top-2 -right-2 bg-orange-500 text-xs px-1.5 rounded-full">{wishlist?.length}
+                            </span>}
                     </div>
+
                     <div onClick={() => { navigate("/cart"); setMenuOpen(false); }} className="relative cursor-pointer">
+
                         <FiShoppingBag className="text-[#94A3B8] hover:text-[#EC5B13]" />
-                        {cartCount > 0 && <span className="absolute -top-2 -right-2 bg-orange-500 text-xs px-1.5 rounded-full">{cartCount}</span>}
+                        {cartCount > 0 &&
+                            <span className="absolute -top-2 -right-2 bg-orange-500 text-xs px-1.5 rounded-full">{cartCount}
+                            </span>}
                     </div>
+
                     <div onClick={() => { navigate("/profile"); setMenuOpen(false); }} className="cursor-pointer text-[#94A3B8] hover:text-[#EC5B13]">
+
                         <FiUser />
+
                     </div>
                 </div>
             </div>

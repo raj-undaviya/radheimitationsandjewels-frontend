@@ -1,3 +1,4 @@
+//right side of order summury
 import { useNavigate, useLocation } from "react-router-dom";
 
 export default function OrderSummary({
@@ -44,7 +45,7 @@ export default function OrderSummary({
 
             </div>
 
-            {/* ✅ SHOW BUTTON ONLY ON CART PAGE */}
+            {/* SHOW BUTTON ONLY ON CART PAGE */}
             {!isCheckoutPage && (
                 <button
                     onClick={() => navigate("/checkout")}

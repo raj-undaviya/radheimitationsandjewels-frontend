@@ -1,7 +1,7 @@
 import { useNavigate } from "react-router-dom";
 import { Clock } from "lucide-react";
 import { useState, useEffect } from "react";
-import toast from "react-hot-toast";
+import { toast } from "react-toastify";
 
 import API from "../../api/axiosInstance";
 import { GetOrdersAPI } from "../../api/api";
@@ -50,7 +50,7 @@ export default function OrderHistory() {
                 console.log(err);
                 toast.error("Failed to load orders");
             } finally {
-                setLoading(false); // ✅ IMPORTANT
+                setLoading(false); 
             }
         };
 

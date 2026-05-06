@@ -1,10 +1,9 @@
-// home page collection component
+// home page collection component [3 box]
 
 import { motion } from "framer-motion";
 import { LuSparkles } from "react-icons/lu";
 import { Link } from "react-router-dom";
 
-//using width layout
 export default function CollectionItem({ Items, reverse }) {
 
     const { description, category_image_url, name, id } = Items;

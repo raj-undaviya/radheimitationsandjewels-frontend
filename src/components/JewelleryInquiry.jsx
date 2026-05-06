@@ -23,7 +23,7 @@ export default function JewelleryInquiry() {
         defaultValues: {
             name: "",
             // phone: "+91",
-            email: user?.email || "",   // ✅ auto fill
+            email: user?.email || "",  //email auto fill from login local storage data
             description: ""
         }
     });
@@ -54,6 +54,7 @@ export default function JewelleryInquiry() {
         }
     }, []);
 
+    //image upload
     const { getRootProps, getInputProps, isDragActive } = useDropzone({
         onDrop,
         accept: {

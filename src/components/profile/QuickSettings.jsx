@@ -5,14 +5,14 @@ export default function QuickSettings() {
     const navigate = useNavigate();
 
     const handleLogout = () => {
-        // ✅ Remove user + token
+        // Remove user + token
         localStorage.removeItem("user");
         localStorage.removeItem("token");
 
-        // 🔥 Notify app (optional but good)
+        // Notify app (optional but good)
         window.dispatchEvent(new Event("userUpdated"));
 
-        // ✅ Redirect
+        // Redirect to login again
         navigate("/login");
     };
 

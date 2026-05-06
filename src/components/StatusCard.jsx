@@ -1,3 +1,4 @@
+//succes or failed ui after otp verification
 import { FaCheck, FaTimes } from "react-icons/fa";
 import { motion } from "framer-motion";
 import { useNavigate } from "react-router-dom";

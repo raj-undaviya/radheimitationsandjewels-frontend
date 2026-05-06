@@ -1,14 +1,10 @@
 import { useState, useEffect } from "react";
 import { MapPin, CheckCircle } from "lucide-react";
 import { useForm } from "react-hook-form";
+import { toast } from "react-toastify";
 
 import API from "../../api/axiosInstance";
-import {
-    AddAddressAPI,
-    UpdateAddressAPI,
-    DeleteAddressAPI,
-    GetAddressesAPI
-} from "../../api/api";
+import { AddAddressAPI, UpdateAddressAPI, DeleteAddressAPI, GetAddressesAPI } from "../../api/api";
 
 export default function Addresses() {
 
@@ -35,7 +31,7 @@ export default function Addresses() {
     const [editingAddress, setEditingAddress] = useState(null);
     const [loading, setLoading] = useState(false);
 
-    // 🔥 FETCH ADDRESSES
+    //FETCH ADDRESSES
     const fetchAddresses = async () => {
         try {
             const res = await API.get(GetAddressesAPI());
@@ -57,6 +53,7 @@ export default function Addresses() {
 
         } catch (err) {
             console.error(err);
+            toast.error("Failed to load addresses");
         }
     };
 
@@ -64,17 +61,24 @@ export default function Addresses() {
         fetchAddresses();
     }, []);
 
-    // 🔥 SUBMIT (ADD + EDIT)
+    // SUBMIT (ADD + EDIT)
     const onSubmit = async (data) => {
         setLoading(true);
         try {
             if (editingAddress) {
+
                 await API.patch(UpdateAddressAPI(editingAddress.id), data);
+
+                toast.success("Address updated");
+
             } else {
+
                 await API.post(AddAddressAPI(), {
                     ...data,
                     is_default: false
                 });
+
+                toast.success("Address added");
             }
 
             fetchAddresses();
@@ -84,11 +88,12 @@ export default function Addresses() {
 
         } catch (err) {
             console.error(err);
+            toast.error("Failed to save address");
         }
         setLoading(false);
     };
 
-    // 🔥 EDIT
+    // EDIT
     const handleEdit = (addr) => {
         setEditingAddress(addr);
 
@@ -106,17 +111,23 @@ export default function Addresses() {
         setShowForm(true);
     };
 
-    // 🔥 DELETE
+    // DELETE
     const handleDelete = async (id) => {
         try {
+
             await API.delete(DeleteAddressAPI(id));
+
+            toast.success("Address deleted");
+
             fetchAddresses();
+
         } catch (err) {
             console.error(err);
+            toast.error("Failed to delete address");
         }
     };
 
-    // 🔥 SET DEFAULT
+    // SET DEFAULT
     const setDefault = async (id) => {
         try {
             await API.patch(UpdateAddressAPI(id), { is_default: true });
@@ -130,8 +141,10 @@ export default function Addresses() {
             );
 
             fetchAddresses();
+            toast.success("Default address updated");
         } catch (err) {
             console.error(err);
+            toast.error("Failed to update default address");
         }
     };
 
@@ -153,7 +166,7 @@ export default function Addresses() {
                 </button>
             </div>
 
-            {/* 🔥 FORM */}
+            {/* FORM */}
             {showForm && (
                 <form
                     onSubmit={handleSubmit(onSubmit)}

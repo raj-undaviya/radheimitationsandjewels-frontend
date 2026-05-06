@@ -2,6 +2,7 @@ import { useForm } from "react-hook-form";
 import { useState } from "react";
 import contactHero from "../../assets/images/contacthero.png";
 import book1 from "../../assets/images/book1.png";
+import { toast } from "react-toastify";
 // import consultImg from "../../assets/images/consult.jpg";
 
 export default function ContactSection() {
@@ -16,7 +17,7 @@ export default function ContactSection() {
 
     const onSubmit = (data) => {
         console.log(data);
-        alert("Message Sent!");
+        toast.success("Message Sent!");
         reset();
     };
 

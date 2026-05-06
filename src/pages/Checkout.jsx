@@ -82,7 +82,7 @@ export default function Checkout() {
                 city: "Surat",
                 pincode: "395003",
                 payment_method: paymentMethod,
-                // ✅ OPTIONAL COUPON
+                // OPTIONAL COUPON
                 ...(couponApplied && coupon ? { coupon_code: coupon } : {})
             });
 

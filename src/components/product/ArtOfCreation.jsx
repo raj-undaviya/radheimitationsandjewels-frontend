@@ -25,7 +25,7 @@ export default function ArtOfCreation() {
         }
     ];
 
-    // ✅ one state for all images
+    // one state for all images
     const [loadedImages, setLoadedImages] = useState({});
 
     return (

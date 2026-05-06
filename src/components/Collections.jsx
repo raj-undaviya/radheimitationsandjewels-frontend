@@ -1,6 +1,6 @@
 import { FiHeart } from "react-icons/fi";
 import { useEffect, useState } from "react";
-
+import { toast } from "react-toastify";
 import Breadcrumb from "../components/Breadcrumb";
 import { useParams, useNavigate, useLocation } from "react-router-dom";
 
@@ -11,8 +11,6 @@ import {
     AddToWishlistAPI,
     GetWishlistAPI
 } from "../api/api";
-
-import toast from "react-hot-toast";
 
 export default function Collections() {
 
@@ -110,7 +108,7 @@ export default function Collections() {
             toast.error("Wishlist update failed");
         }
     };
-    
+
     // ================= ADD TO CART =================
     const handleAddToCart = async (product) => {
 
@@ -193,7 +191,7 @@ export default function Collections() {
                         <div key={product.id}
                             className="relative bg-[#24130c] p-4 rounded-xl shadow-lg hover:scale-105 transition">
 
-                            {/* ❤️ WISHLIST ICON */}
+                            {/* WISHLIST ICON */}
                             <button
                                 onClick={() => toggleWishlist(product)}
                                 className="absolute top-3 right-3 z-10 hover:scale-110 transition cursor-pointer"

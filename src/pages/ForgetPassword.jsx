@@ -9,7 +9,7 @@ const ForgetPassword = () => {
     const handleSubmit = ({ email }) => {
         console.log("Send reset link to:", email);
 
-        // 👉 Later API call here
+        // Later API call here
 
         navigate("/otp", { state: { email } });
     };

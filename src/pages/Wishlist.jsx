@@ -9,7 +9,7 @@ import {
     RemoveWishlistAPI
 } from "../api/api";
 
-import toast from "react-hot-toast";
+import { toast } from "react-toastify";
 
 export default function Wishlist() {
 

@@ -40,7 +40,7 @@ export default function TermsComponent() {
     return (
         <div className="bg-black text-white min-h-screen py-16 sm:py-20">
 
-            {/* 🔥 CENTERED CONTAINER */}
+            {/* CENTERED CONTAINER */}
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
 
                 {/* HEADER */}
@@ -50,7 +50,7 @@ export default function TermsComponent() {
                     </h1>
                 </div>
 
-                {/* 🔥 MOBILE SIDEBAR (SCROLLABLE) */}
+                {/* MOBILE SIDEBAR (SCROLLABLE) */}
                 <div className="md:hidden mb-6 overflow-x-auto">
                     <div className="flex gap-4 whitespace-nowrap">
 

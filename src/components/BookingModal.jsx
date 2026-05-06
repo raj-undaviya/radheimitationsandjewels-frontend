@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import Calendar from "react-calendar";
 import "react-calendar/dist/Calendar.css";
+import { toast } from "react-toastify";
 
 import API from "../api/axiosInstance";
 import { getTimeSlotsAPI } from "../api/api";
@@ -60,7 +61,7 @@ export default function BookingModal({ isOpen, onClose, onConfirm }) {
     return (
         <div className="fixed inset-0 bg-black/70 flex justify-center items-center z-50">
 
-            <div className="bg-white rounded-2xl p-6 w-[380px] relative shadow-xl">
+            <div className="bg-white rounded-2xl p-6 w-95 relative shadow-xl">
 
                 {/* CLOSE */}
                 <button
@@ -93,7 +94,6 @@ export default function BookingModal({ isOpen, onClose, onConfirm }) {
                     <p className="text-sm font-medium mb-2">
                         Available Time Slots
                     </p>
-
 
                     <div className="grid grid-cols-3 gap-2">
 
@@ -161,14 +161,15 @@ export default function BookingModal({ isOpen, onClose, onConfirm }) {
                 <button
                     onClick={() => {
                         if (!date || !time) {
-                            alert("Select date & time");
+                            toast.error("Select date & time");
                             return;
                         }
 
                         if (bookedSlots.includes(time)) {
-                            alert("This slot is already booked");
+                            toast.error("This slot is already booked");
                             return;
                         }
+                        toast.success("Booking confirmed");
 
                         onConfirm(date, time, appointmentType);
                     }}

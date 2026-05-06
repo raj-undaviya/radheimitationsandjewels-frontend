@@ -19,12 +19,57 @@ export default function ProfileHeader() {
     const { register, handleSubmit, reset, formState: { errors } } = useForm();
 
     // LOAD USER
+    // useEffect(() => {
+    //     const storedUser = JSON.parse(localStorage.getItem("user"));
+    //     const userId = storedUser?.id;
+
+    //     const fetchUser = async () => {
+    //         try {
+    //             setLoading(true);
+
+    //             const res = await API.get(GetCustomerAPI(userId)); // ID
+
+    //             const userData = res.data.customer || {};
+
+    //             setUser(userData);
+    //             setPreview(userData?.profile_image || "");
+
+    //             reset({
+    //                 username: userData.username || "",
+    //                 first_name: userData.first_name || "",
+    //                 last_name: userData.last_name || "",
+    //                 email: userData.email || "",
+    //                 password: ""
+    //             });
+
+    //         } catch (err) {
+    //             console.error(err);
+    //             toast.error("Failed to load user");
+    //         } finally {
+    //             setLoading(false);
+    //         }
+    //     };
+
+    //     fetchUser();
+    // }, [reset]);
+
     useEffect(() => {
+
+        const storedUser = JSON.parse(localStorage.getItem("user"));
+        const userId = storedUser?.id;
+
         const fetchUser = async () => {
             try {
+
+                // SAFETY CHECK
+                if (!userId) {
+                    toast.error("User not found");
+                    return;
+                }
+
                 setLoading(true);
 
-                const res = await API.get(GetCustomerAPI(6)); // 👈 your ID
+                const res = await API.get(GetCustomerAPI(userId));
 
                 const userData = res.data.customer || {};
 
@@ -48,6 +93,7 @@ export default function ProfileHeader() {
         };
 
         fetchUser();
+
     }, [reset]);
 
     // IMAGE VALIDATION

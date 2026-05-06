@@ -1,14 +1,14 @@
 import { useNavigate } from "react-router-dom";
 
 import API from "../../api/axiosInstance";
-import { AddToCartAPI } from "../../api/api"; // ✅ FIXED PATH
-import toast from "react-hot-toast";
+import { AddToCartAPI } from "../../api/api";
+import { toast } from "react-toastify";
 
 export default function ProductInfo({ product }) {
 
     const navigate = useNavigate();
 
-    // ✅ ADD TO CART (API BASED)
+    // ADD TO CART (API BASED)
     const addToCart = async (product) => {
 
         const token = localStorage.getItem("token");
@@ -30,9 +30,12 @@ export default function ProductInfo({ product }) {
                 quantity: 1,
             });
 
+            // SUCCESS MESSAGE
+            toast.success("Added to cart");
+
             window.dispatchEvent(new Event("cartUpdated"));
 
-            return true; // ✅ success
+            return true; // success
 
         } catch (err) {
             if (err.response) {
@@ -40,7 +43,7 @@ export default function ProductInfo({ product }) {
             } else {
                 toast.error("Server not reachable");
             }
-            return false; // ❌ failed
+            return false; // failed
         }
     };
 
@@ -80,8 +83,11 @@ export default function ProductInfo({ product }) {
 
                 <button
                     onClick={async () => {
-                        await addToCart(product);
-                        navigate("/checkout");
+                        const success = await addToCart(product);
+
+                        if (success) {
+                            navigate("/checkout");
+                        }
                     }}
                     className="border border-orange-500 px-8 py-3 rounded-xl font-semibold hover:bg-orange-500 transition cursor-pointer">
                     BUY NOW

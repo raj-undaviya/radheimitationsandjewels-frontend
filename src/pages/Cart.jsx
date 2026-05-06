@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import Breadcrumb from "../components/Breadcrumb";
 import CartItems from "../components/CartItems";
 import OrderSummary from "../components/OrderSummary";
+
 import API from "../api/axiosInstance";
 import { GetCartAPI } from "../api/api";
 
