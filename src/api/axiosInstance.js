@@ -1,13 +1,13 @@
 import axios from "axios";
 
 const API = axios.create({
-    baseURL: "https://radheimitationsandjewels-backend.onrender.com/api",
+    baseURL: "import.meta.env.BACKEND_BASE_URL",
     headers: {
         "Content-Type": "application/json",
     },
 });
 
-// 🔥 VERY IMPORTANT
+// VERY IMPORTANT
 API.interceptors.request.use((config) => {
     const token = localStorage.getItem("token");
 

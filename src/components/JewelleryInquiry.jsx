@@ -2,6 +2,7 @@ import { useCallback, useState, useEffect } from "react";
 import { useDropzone } from "react-dropzone";
 import { useForm } from "react-hook-form";
 import BookingModal from "./BookingModal";
+import { toast } from "react-toastify";
 
 import API from "../api/axiosInstance";
 import { JewelleryInquiryAPI } from "../api/api";
@@ -106,7 +107,7 @@ export default function JewelleryInquiry() {
 
             console.log("API Response:", result);
 
-            alert(result.message || "Appointment booked successfully!");
+            toast.success(result.message || "Appointment booked successfully!");
 
             // reset only on success
             reset();
@@ -117,11 +118,11 @@ export default function JewelleryInquiry() {
             console.error("Axios Error:", error);
 
             if (error.response) {
-                alert(error.response.data?.message || "Server error");
+                toast.error(error.response.data?.message || "Server error");
             } else if (error.request) {
-                alert("No response from server");
+                toast.error("No response from server");
             } else {
-                alert("Something went wrong!");
+                toast.error("Something went wrong!");
             }
 
         } finally {
@@ -146,6 +147,7 @@ export default function JewelleryInquiry() {
 
                     <input type="hidden" {...register("date", { required: true })} />
                     <input type="hidden" {...register("time_slot", { required: true })} />
+                    <input type="hidden" {...register("appointment_type", { required: true })} />
 
                     {/* NAME + PHONE */}
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -338,12 +340,16 @@ export default function JewelleryInquiry() {
             <BookingModal
                 isOpen={showBooking}
                 onClose={() => setShowBooking(false)}
-                onConfirm={(date, time) => {
+                onConfirm={(date, time, appointmentType) => {
                     setValue("date", date.toISOString().split("T")[0]);
+
                     setValue("time_slot", time);
+
+                    setValue("appointment_type", appointmentType);
+
                     setShowBooking(false);
 
-                    handleSubmit(onSubmit)(); // 🔥 THIS LINE ADD
+                    handleSubmit(onSubmit)();
                 }}
             />
 

@@ -9,6 +9,7 @@ export default function BookingModal({ isOpen, onClose, onConfirm }) {
 
     const [date, setDate] = useState(new Date());
     const [time, setTime] = useState("");
+    const [appointmentType, setAppointmentType] = useState("virtual");
 
     const [slots, setSlots] = useState([]);
     const [bookedSlots, setBookedSlots] = useState([]);
@@ -131,6 +132,31 @@ export default function BookingModal({ isOpen, onClose, onConfirm }) {
 
                 </div>
 
+                {/* BOOKING TYPE */}
+                <div className="flex gap-4">
+
+                    <label className="flex items-center gap-2">
+                        <input
+                            type="radio"
+                            value="virtual"
+                            checked={appointmentType === "virtual"}
+                            onChange={(e) => setAppointmentType(e.target.value)}
+                        />
+                        Virtual
+                    </label>
+
+                    <label className="flex items-center gap-2">
+                        <input
+                            type="radio"
+                            value="in_store"
+                            checked={appointmentType === "in_store"}
+                            onChange={(e) => setAppointmentType(e.target.value)}
+                        />
+                        In Store
+                    </label>
+
+                </div>
+
                 {/* CONFIRM */}
                 <button
                     onClick={() => {
@@ -144,7 +170,7 @@ export default function BookingModal({ isOpen, onClose, onConfirm }) {
                             return;
                         }
 
-                        onConfirm(date, time);
+                        onConfirm(date, time, appointmentType);
                     }}
                     className="w-full mt-5 bg-orange-600 text-white py-3 rounded-lg"
                 >

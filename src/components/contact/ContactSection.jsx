@@ -160,7 +160,7 @@ export default function ContactSection() {
                             />
                             {errors.message && <p className="error">{errors.message.message}</p>}
 
-                            <button className="bg-orange-400 text-black px-6 py-3 text-sm font-semibold hover:bg-orange-500 transition">
+                            <button className="bg-orange-400 text-black px-6 py-3 text-sm font-semibold hover:bg-orange-500 transition ">
                                 Transmit Inquiry
                             </button>
 

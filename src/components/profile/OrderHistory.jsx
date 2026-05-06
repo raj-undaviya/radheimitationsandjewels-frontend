@@ -73,7 +73,7 @@ export default function OrderHistory() {
         Processing: "bg-blue-500/20 text-blue-400",
         Cancelled: "bg-red-500/20 text-red-400",
         Pending: "bg-yellow-500/20 text-yellow-400",
-        Confirmed: "bg-purple-500/20 text-purple-400" // ✅ FIXED
+        Confirmed: "bg-purple-500/20 text-purple-400"
     };
 
     // ================= SKELETON =================
@@ -129,12 +129,12 @@ export default function OrderHistory() {
                     Recent Order History
                 </h3>
 
-                <span
+                {/* <span
                     onClick={() => navigate("/orders")}
                     className="text-orange-400 text-sm cursor-pointer hover:underline"
                 >
                     View All
-                </span>
+                </span> */}
             </div>
 
             {/* TABLE */}
