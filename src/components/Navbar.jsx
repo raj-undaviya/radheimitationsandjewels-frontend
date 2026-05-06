@@ -37,7 +37,8 @@ export default function Navbar() {
         const fetchWishlist = async () => {
             try {
                 const res = await API.get(GetWishlistAPI());
-                setWishlist(res.data.data);
+                // setWishlist(res.data.data);
+                setWishlist(res.data?.data || []);
             } catch (err) { console.log(err); }
         };
         fetchWishlist();
@@ -197,8 +198,8 @@ export default function Navbar() {
                             <div className="hidden lg:flex items-center gap-3 xl:gap-4 text-lg xl:text-xl px-2 xl:px-6">
                                 <div onClick={() => navigate("/wishlist")} className="relative cursor-pointer">
                                     <FiHeart className="hover:text-orange-400 text-[#94A3B8] text-xl" />
-                                    {wishlist.length > 0 && (
-                                        <span className="absolute -top-2 -right-2 bg-orange-500 text-xs px-1.5 rounded-full">{wishlist.length}</span>
+                                    {wishlist?.length > 0 && (
+                                        <span className="absolute -top-2 -right-2 bg-orange-500 text-xs px-1.5 rounded-full">{wishlist?.length}</span>
                                     )}
                                 </div>
                                 <div onClick={() => navigate("/cart")} className="relative cursor-pointer">
@@ -317,7 +318,7 @@ export default function Navbar() {
                 <div className="flex gap-6 px-6 mt-10 text-2xl justify-center">
                     <div onClick={() => { navigate("/wishlist"); setMenuOpen(false); }} className="relative cursor-pointer">
                         <FiHeart className="text-[#94A3B8] hover:text-[#EC5B13]" />
-                        {wishlist.length > 0 && <span className="absolute -top-2 -right-2 bg-orange-500 text-xs px-1.5 rounded-full">{wishlist.length}</span>}
+                        {wishlist?.length > 0 && <span className="absolute -top-2 -right-2 bg-orange-500 text-xs px-1.5 rounded-full">{wishlist?.length}</span>}
                     </div>
                     <div onClick={() => { navigate("/cart"); setMenuOpen(false); }} className="relative cursor-pointer">
                         <FiShoppingBag className="text-[#94A3B8] hover:text-[#EC5B13]" />

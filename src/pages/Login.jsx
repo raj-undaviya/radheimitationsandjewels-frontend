@@ -2,6 +2,7 @@ import { Link, useNavigate, useLocation } from "react-router-dom";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { Eye, EyeOff } from "lucide-react";
+import { toast } from "react-toastify";
 
 import API from "../api/axiosInstance";
 import { loginUserAPI, AddToCartAPI } from "../api/api";
@@ -38,23 +39,23 @@ export default function Login() {
 
             console.log("FULL RESPONSE:", response.data);
 
-            // ✅ CORRECT TOKEN PATH (IMPORTANT FIX)
+            //TOKEN path
             const token = response.data?.data?.token;
 
             if (!token) {
-                alert("Token not found in response");
+                toast.error("Token not found in response");
                 return;
             }
 
-            // ✅ SAVE TOKEN
+            // SAVE TOKEN
             localStorage.setItem("token", token);
 
-            // ✅ SAVE USER
+            // SAVE USER
             localStorage.setItem("user", JSON.stringify({
                 email: data.email
             }));
 
-            // ✅ AUTO ADD TO CART
+            // AUTO ADD TO CART
             const pending = JSON.parse(localStorage.getItem("pendingCart"));
 
             if (pending) {
@@ -73,7 +74,10 @@ export default function Login() {
                 }
             }
 
-            // ✅ REDIRECT BACK
+            // SUCCESS MESSAGE
+            toast.success("Login successful");
+
+            // REDIRECT BACK
             const from = location.state?.from || "/";
             navigate(from);
 
@@ -85,7 +89,7 @@ export default function Login() {
                 error?.response?.data?.message ||
                 "Login failed";
 
-            alert(msg);
+            toast.error(msg);
         } finally {
             setLoading(false);
         }
@@ -101,7 +105,7 @@ export default function Login() {
                 </h2>
 
                 <p className="text-gray-400 text-center text-sm mb-6">
-                    Sign in to access your wishlist and orders
+                    Sign in to access your Account
                 </p>
 
                 <form className="space-y-5" onSubmit={handleSubmit(onSubmit)}>

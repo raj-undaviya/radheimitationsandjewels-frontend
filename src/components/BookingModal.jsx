@@ -25,8 +25,8 @@ export default function BookingModal({ isOpen, onClose, onConfirm }) {
             const formattedDate = selectedDate.toISOString().split("T")[0];
             const res = await API.get(getTimeSlotsAPI(formattedDate));
 
-            setSlots(res.data.available_slots);
-            setBookedSlots(res.data.booked_slots);
+            setSlots(res.data.available_slots || []);
+            setBookedSlots(res.data.booked_slots || []);
 
         } catch (err) {
             console.log("ERROR:", err);

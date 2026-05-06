@@ -25,7 +25,8 @@ export default function CollectionsSection() {
             try {
                 const res = await API.get(CollectionAPI());
 
-                setCollections(res.data.data);
+                // setCollections(res.data.data);
+                setCollections(res.data?.data || []);
 
             } catch (err) {
                 console.log("ERROR:", err);
@@ -40,14 +41,14 @@ export default function CollectionsSection() {
 
             <div className="max-w-7xl mx-auto px-6 space-y-20 md:space-y-36">
 
-                {collections.slice(0, 3).map((item, index) => {
+                {collections?.slice(0, 3).map((item, index) => {
                     // const imageUrl = getImageUrl(item.category_image);
                     // console.log('image url', imageUrl);
 
 
                     return (
                         <CollectionItem
-                            Items = {item}
+                            Items={item}
                             key={item.id}
                             // title={item.name}
                             subtitle="COLLECTION"

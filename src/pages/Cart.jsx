@@ -24,7 +24,7 @@ export default function Cart() {
                     product: item.product_details || item.product
                 }));
 
-                // ✅ keep same order as before
+                // keep same order as before
                 return newItems.sort((a, b) => {
                     const prevIndexA = prevItems.findIndex(p => p.id === a.id);
                     const prevIndexB = prevItems.findIndex(p => p.id === b.id);

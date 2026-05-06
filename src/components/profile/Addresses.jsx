@@ -45,13 +45,16 @@ export default function Addresses() {
                 : [res.data.data];
 
             setAddresses(
-                list.map(a => ({
-                    id: a.id,
-                    title: a.label,
-                    text: a.address_line,
-                    isDefault: a.is_default
-                }))
+                list
+                    .filter(Boolean)
+                    .map(a => ({
+                        id: a?.id,
+                        title: a?.label,
+                        text: a?.address_line,
+                        isDefault: a?.is_default
+                    }))
             );
+
         } catch (err) {
             console.error(err);
         }
@@ -255,7 +258,7 @@ export default function Addresses() {
 
             {/* ADDRESS GRID */}
             <div className="grid md:grid-cols-2 gap-4">
-                {addresses.map((addr) => (
+                {addresses?.map((addr) => (
                     <div
                         key={addr.id}
                         onClick={() => setDefault(addr.id)}

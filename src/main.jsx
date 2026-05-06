@@ -13,7 +13,7 @@ ReactDOM.createRoot(document.getElementById("root")).render(
 
     <App />
 
-    {/* 🔥 CUSTOM TOAST */}
+    {/* CUSTOM TOAST */}
     <ToastContainer
       position="top-right"
       autoClose={2500}

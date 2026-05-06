@@ -138,7 +138,7 @@ export default function Checkout() {
 
                     } catch (err) {
                         console.log(err);
-                        toast.error("Payment verification failed ❌");
+                        toast.error("Payment verification failed");
                     }
                 },
 

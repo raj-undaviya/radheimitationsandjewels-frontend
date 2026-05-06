@@ -26,10 +26,10 @@ export default function ProfileHeader() {
 
                 const res = await API.get(GetCustomerAPI(6)); // 👈 your ID
 
-                const userData = res.data.customer;
+                const userData = res.data.customer || {};
 
                 setUser(userData);
-                setPreview(userData.profile_image || "");
+                setPreview(userData?.profile_image || "");
 
                 reset({
                     username: userData.username || "",
@@ -303,7 +303,7 @@ export default function ProfileHeader() {
                             <div className="flex flex-col items-center sm:items-start">
 
                                 <h2 className="text-base sm:text-lg md:text-xl font-semibold text-white leading-tight">
-                                    Welcome back, {user.first_name}
+                                    Welcome back, {user?.first_name}
                                 </h2>
 
                                 {/* BADGE */}
